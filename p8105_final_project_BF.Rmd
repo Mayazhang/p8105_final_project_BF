@@ -9,10 +9,25 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Proporsal
+Proposal
+---------------------------------------------------------------------------------
 
 ### Section 1
 
+* **The group members (names and UNIs)**
+
+* **The tentative project title**
+
+* **The motivation for this project**
+
 ### Section 2
 
+* **The intended final products**
+
+* **The anticipated data sources**
+
 ### Section 3
+
+* **The planned analyses / visualizations / coding challenges**
+
+* **The planned timeline**
