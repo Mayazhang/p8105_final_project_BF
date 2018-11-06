@@ -1,6 +1,6 @@
 ---
 title: "p8105_final_project_BF"
-author: "Xiaoyue Zhang"
+author: "Xiaoyue Zhang", "Jieqi Tu"
 date: "11/6/2018"
 output: github_document
 ---
