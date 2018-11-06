@@ -1,6 +1,6 @@
 ---
 title: "p8105_final_project_BF"
-author: "Xiaoyue Zhang", "Jieqi Tu"
+author: "Xiaoyue Zhang", "Jieqi Tu", "Mengran Ma"
 date: "11/6/2018"
 output: github_document
 ---
@@ -12,3 +12,4 @@ knitr::opts_chunk$set(echo = TRUE)
 111
 222
 333
+444
