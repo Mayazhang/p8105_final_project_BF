@@ -38,6 +38,13 @@ Retail trend and consumer habits of Black Friday
 
 * **The intended final products**
 
+A github.io website containing all the analyses and information about our final project, which includes the following: 
+1. Plots and tables that may help us better understand customers' purchasing behaviours/preferences against different products.
+
+2. Statistical summaries/numerical values for summarizing most worthy-to-buy products on Black Friday based on our results of analysis and propose any suggestion for Black Friday shopping.
+
+3. Regression model where we are trying to predict the dependent variable (the amount of purchase) with the facilitating of the information contained in the other variables.
+
 * **The anticipated data sources**
 
 ### Section 3
