@@ -32,10 +32,44 @@ Retail trend and consumer habits of Black Friday
 
 -   **The intended final products**
 
+A github.io website containing all the analyses and information about our final project, which includes the following:
+
+1.  Plots and tables that may help us better understand Black Friday deals and customers' purchasing behaviours/preferences against different products.
+
+2.  Statistical summaries/numerical values for summarizing most worthy-to-buy products on Black Friday based on our analysis and propose any suggestion for Black Friday shopping.
+
+3.  Regression model where we are trying to predict the dependent variable (the amount of purchase) with the facilitating of the information contained in the other variables.
+
 -   **The anticipated data sources**
+
+The black Friday dataset(<https://www.kaggle.com/mehdidag/black-friday>) derived from kaggle was generated in a competition hosted by Analytics Vidhya. This dataset is a sample of the transactions made in a retail store, which aims at understanding the customer purchase behaviour against different products.
+
+The deals dataset(<https://www.bfads.net/forums/viewtopic.php?f=25&t=35040>) from BFAds.net contains up-to-date 2018 Black Friday deals, which could be a potential source for analyzing featured offers and latest hot sales on Black Friday at well-known stores, such as BestBuy, Targets, and Walmart.
 
 ### Section 3
 
 -   **The planned analyses / visualizations / coding challenges**
+
+1.  **The planned analyses**
+
+2.  **Visualizations**
+
+    -   Boxplots comparing purchase pattern among different factors, such as gender, age, occupation, marital status.
+
+    -   A map demonstrating purchasing power among different cities, possibly matching city size to purchasing power to show pattern difference based on city size.
+
+    -   A bar chart implying popularity of different products, possibly showing price range for different product category using plotly.
+
+    -   Bar charts revealing the characteristics of population that data sampled from, like proportions of each factors (gender, age, occupation etc.).
+
+    -   A map visualizing socialeconomic status classified by occupation among different regions.
+
+    -   Overall theme: adding custom controls, like **dropdown events** allowing selection of specific year, region etc, and **range sliders and selectors** zooming in and out to show months even days when zoomed in.
+
+3.  **Coding challenges**
+
+    -   Making a map may be challenging.
+
+    -   It may be difficult to add price to dataset and visualizing on plotly.
 
 -   **The planned timeline**

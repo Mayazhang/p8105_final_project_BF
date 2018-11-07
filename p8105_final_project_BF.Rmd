@@ -57,4 +57,28 @@ The deals dataset(https://www.bfads.net/forums/viewtopic.php?f=25&t=35040) from 
 
 * **The planned analyses / visualizations / coding challenges**
 
+  1. **The planned analyses**
+  
+  
+  
+  2. **Visualizations**
+  
+    * Boxplots comparing purchase pattern among different factors, such as gender, age, occupation, marital status.
+    
+    * A map demonstrating purchasing power among different cities, possibly matching city size to purchasing power to show pattern difference based on city size.
+    
+    * A bar chart implying popularity of different products, possibly showing price range for different product category using plotly.
+    
+    * Bar charts revealing the characteristics of population that data sampled from, like proportions of each factors (gender, age, occupation etc.).
+    
+    * A map visualizing socialeconomic status classified by occupation among different regions.
+    
+    * Overall theme: adding custom controls, like **dropdown events** allowing selection of specific year, region etc, and **range sliders and selectors** zooming in and out to show months even days when zoomed in.
+  
+  3. **Coding challenges**
+  
+    * Making a map may be challenging.
+    
+    * It may be difficult to add price to dataset and visualizing on plotly.
+
 * **The planned timeline**
