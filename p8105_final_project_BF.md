@@ -34,11 +34,11 @@ Assessing Hospitals Based Medicare Factors by State in U.S.
 
 A github.io website containing all the analyses and information about our final project, which includes the following:
 
-1.  Plots and tables that may help us better understand Black Friday deals and customers' purchasing behaviours/preferences against different products.
+1.  Plots and tables that may help us better understand diseases and certain causes of death through whole United States in order to establish leading causes and expenses of staying in hospitals from patients' aspects.
 
-2.  Statistical summaries/numerical values for summarizing most worthy-to-buy products on Black Friday based on our analysis and propose any suggestion for Black Friday shopping.
+2.  Statistical summaries/numerical values and perhaps in combination with geographical maps for summarizing various aspects of hospitals including facilities, enviroment, infection risk, etc. by state this unit and overall distribution across the U.S.
 
-3.  Regression model where we are trying to predict the dependent variable (the amount of purchase) with the facilitating of the information contained in the other variables.
+3.  Regression model/analyses where we are trying to predict if there is any trend for associations between medicare expenses and other factors, in order to see/forecast future changes and bring up suggestions for hospitals' potential improvements.
 
 -   **The anticipated data sources**
 
@@ -52,24 +52,38 @@ The deals dataset(<https://www.bfads.net/forums/viewtopic.php?f=25&t=35040>) fro
 
 1.  **The planned analyses**
 
-2.  **Visualizations**
+For all rankings and graphing: specify hospital ownership (Government, Proprietary, Voluntary non-profit), hospital type. (Acute Care Hospitals etc.)
 
-    -   Boxplots comparing purchase pattern among different factors, such as gender, age, occupation, marital status.
+Since there is only overall rating for hospitals, we would like to re-classfy hospitals based on factors of interest to illustrate hospitals' strength and weakfulness in different aspects.
 
-    -   A map demonstrating purchasing power among different cities, possibly matching city size to purchasing power to show pattern difference based on city size.
+-   Ranking hospitals based on the overall assessment, such as mortality, safty of care, patients experiences etc. (Data: Hospital General Information)
 
-    -   A bar chart implying popularity of different products, possibly showing price range for different product category using plotly.
+-   Ranking hospitals based on Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) Patient Survey. (Data: HCAHPS)
 
-    -   Bar charts revealing the characteristics of population that data sampled from, like proportions of each factors (gender, age, occupation etc.).
+\*Ranking hospitals based on facilities provided. (Data: Structural Measures)
 
-    -   A map visualizing socialeconomic status classified by occupation among different regions.
+\*Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
 
-    -   Overall theme: adding custom controls, like **dropdown events** allowing selection of specific year, region etc, and **range sliders and selectors** zooming in and out to show months even days when zoomed in.
+1.  **Visualizations**
 
-3.  **Coding challenges**
+    -   Boxplots comparing effectiveness of different services among hospitals.
 
-    -   Making a map may be challenging.
+    -   A map demonstrating infrastructures and facilities provided by different hospitals grouping by pre-specified levels, with label illustrating hospital ownership, and different scores.
 
-    -   It may be difficult to add price to dataset and visualizing on plotly.
+    -   A bar chart revealing the proportion of hospitals (by overall rating) facet by different factors, indicating whether they are below, average, or above national average. (Data: Hospital General Information)
+
+    -   A map visualizing hospital rating by patient, classfying hospitals based on patients' response.
+
+    -   Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
+
+2.  **Coding challenges**
+
+    1.  For visualization:
+
+    -   Making a map consists of different levels (ranking) may be challenging.
+
+    1.  For data manipulation and tidying:
+
+    -   Propor ways of classfying hospitals by different measurements can be difficult, may need to merge different datasets, mutate variables using nest and write functions.
 
 -   **The planned timeline**
