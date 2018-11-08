@@ -67,9 +67,9 @@ The deals dataset(https://www.bfads.net/forums/viewtopic.php?f=25&t=35040) from 
   
   * Ranking hospitals based on Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) Patient Survey. (Data: HCAHPS)
   
-  *Ranking hospitals based on facilities provided. (Data: Structural Measures)
+  * Ranking hospitals based on facilities provided. (Data: Structural Measures)
   
-  *Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
+  * Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
   
   2. **Visualizations**
   
