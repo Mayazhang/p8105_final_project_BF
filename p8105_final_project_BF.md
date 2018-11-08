@@ -6,8 +6,6 @@ Xiaoyue Zhang, Jieqi Tu, Hongyao Xie, Mengran Ma, Bingyu Sun
 Proposal
 --------
 
-### Section 1
-
 -   **Group members**
 
 Bingyu Sun (bs3142), Hongyao Xie (hx2264),
@@ -22,13 +20,11 @@ Assessing Hospitals Based Medicare Factors by State in U.S.
 
 -   **The motivation for this project**
 
-1.  explore different aspects of hospitals including facilities, health workers, infection risk, etc. by state unit and overall distribution in U.S.
+1.  Explore different aspects of hospitals including facilities, health workers, infection risk, etc. by state unit and overall distribution in U.S.
 
-2.  study diseases and cause of death through United States in order to establish leading causes and expenses of staying in hospitals from patients' aspect.
+2.  Study diseases and cause of death through United States in order to establish leading causes and expenses of staying in hospitals from patients' aspect.
 
-3.  establish regression models of the trend of medicare expenses and other factors to predict future changes and bring up suggestion for hospital improvement.
-
-### Section 2
+3.  Establish regression models of the trend of medicare expenses and other factors to predict future changes and bring up suggestion for hospital improvement.
 
 -   **The intended final products**
 
@@ -42,11 +38,7 @@ A github.io website containing all the analyses and information about our final 
 
 -   **The anticipated data sources**
 
-The black Friday dataset(<https://www.kaggle.com/mehdidag/black-friday>) derived from kaggle was generated in a competition hosted by Analytics Vidhya. This dataset is a sample of the transactions made in a retail store, which aims at understanding the customer purchase behaviour against different products.
-
-The deals dataset(<https://www.bfads.net/forums/viewtopic.php?f=25&t=35040>) from BFAds.net contains up-to-date 2018 Black Friday deals, which could be a potential source for analyzing featured offers and latest hot sales on Black Friday at well-known stores, such as BestBuy, Targets, and Walmart.
-
-### Section 3
+The latest version of hospital compare datasets from Data.Medicare.gov will be analyzed in this project. The Medicare is a federal government website managed by the Centers of Medicare & Medicaid Services in Baltimore which aims at providing official data concerning health-related topics. The hospital compare datasets primarily focus on the quality of healthcare at over 4000 Medicare-certified hospitals across states.
 
 #### The planned analyses / visualizations / coding challenges
 
