@@ -57,7 +57,7 @@ The deals dataset(https://www.bfads.net/forums/viewtopic.php?f=25&t=35040) from 
 
 * **The planned analyses / visualizations / coding challenges**
 
-  1. **The planned analyses**
+   1. **The planned analyses**
   
   For all rankings and graphing: specify hospital ownership (Government, Proprietary, Voluntary non-profit), hospital type. (Acute Care Hospitals etc.)
   
@@ -70,35 +70,34 @@ The deals dataset(https://www.bfads.net/forums/viewtopic.php?f=25&t=35040) from 
   * Ranking hospitals based on facilities provided. (Data: Structural Measures)
   
   * Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
+
   
   2. **Visualizations**
   
-    * Boxplots comparing effectiveness of different services among hospitals.
+  * Boxplots comparing effectiveness of different services among hospitals.
     
-    * A map demonstrating infrastructures and facilities provided by different hospitals grouping by pre-specified levels, with label illustrating hospital ownership, and different scores.
+  * A map demonstrating infrastructures and facilities provided by different hospitals grouping by pre-specified levels, with label illustrating hospital ownership, and different scores.
     
-    * A bar chart revealing the proportion of hospitals (by overall rating) facet by different factors, indicating whether they are below, average, or above national average. (Data: Hospital General Information)
+  * A bar chart revealing the proportion of hospitals (by overall rating) facet by different factors, indicating whether they are below, average, or above national average. (Data: Hospital General Information)
     
-    * A map visualizing hospital rating by patient, classfying hospitals based on patients' response.
+  * A map visualizing hospital rating by patient, classfying hospitals based on patients' response.
     
-    * Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
+  * Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
+
   
   3. **Coding challenges**
-    
-<<<<<<< HEAD
-    * It may be difficult to add price to dataset and visualizing on plotly.
 
-* **The planned timeline**
-
-    *
-=======
-    a. For visualization:
+    a) For visualization:
     
     * Making a map consists of different levels (ranking) may be challenging.
     
-    b. For data manipulation and tidying:
+    b) For data manipulation and tidying:
     
     * Propor ways of classfying hospitals by different measurements can be difficult, may need to merge different datasets, mutate variables using nest and write functions.
     
-* **The planned timeline**
->>>>>>> 400cf69be40858475f1782fb7eaae4d2f7c98d30
+  4. **The planned timeline**
+    
+    * Week 1: Data cleaning; Data exploring; Discussion on work splitting.
+    * Week 2: Data analysis and group meetings on revisions.
+    * Week 3: Plots making and group meetings on revisions.
+    * Week 4: Website building and dashboard making; In-class discussion with other gourps.

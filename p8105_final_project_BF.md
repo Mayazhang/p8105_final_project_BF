@@ -60,23 +60,23 @@ Since there is only overall rating for hospitals, we would like to re-classfy ho
 
 -   Ranking hospitals based on Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) Patient Survey. (Data: HCAHPS)
 
-\*Ranking hospitals based on facilities provided. (Data: Structural Measures)
+-   Ranking hospitals based on facilities provided. (Data: Structural Measures)
 
-\*Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
+-   Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
 
 1.  **Visualizations**
 
-    -   Boxplots comparing effectiveness of different services among hospitals.
+-   Boxplots comparing effectiveness of different services among hospitals.
 
-    -   A map demonstrating infrastructures and facilities provided by different hospitals grouping by pre-specified levels, with label illustrating hospital ownership, and different scores.
+-   A map demonstrating infrastructures and facilities provided by different hospitals grouping by pre-specified levels, with label illustrating hospital ownership, and different scores.
 
-    -   A bar chart revealing the proportion of hospitals (by overall rating) facet by different factors, indicating whether they are below, average, or above national average. (Data: Hospital General Information)
+-   A bar chart revealing the proportion of hospitals (by overall rating) facet by different factors, indicating whether they are below, average, or above national average. (Data: Hospital General Information)
 
-    -   A map visualizing hospital rating by patient, classfying hospitals based on patients' response.
+-   A map visualizing hospital rating by patient, classfying hospitals based on patients' response.
 
-    -   Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
+-   Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
 
-2.  **Coding challenges**
+1.  **Coding challenges**
 
     1.  For visualization:
 
@@ -86,4 +86,9 @@ Since there is only overall rating for hospitals, we would like to re-classfy ho
 
     -   Propor ways of classfying hospitals by different measurements can be difficult, may need to merge different datasets, mutate variables using nest and write functions.
 
--   **The planned timeline**
+2.  **The planned timeline**
+
+    -   Week 1: Data cleaning; Data exploring; Discussion on work splitting.
+    -   Week 2: Data analysis and group meetings on revisions.
+    -   Week 3: Plots making and group meetings on revisions.
+    -   Week 4: Website building and dashboard making; In-class discussion with other gourps.
