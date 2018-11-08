@@ -48,15 +48,13 @@ The deals dataset(<https://www.bfads.net/forums/viewtopic.php?f=25&t=35040>) fro
 
 ### Section 3
 
--   **The planned analyses / visualizations / coding challenges**
+#### The planned analyses / visualizations / coding challenges
 
-1.  **The planned analyses**
+**The planned analyses**
 
-For all rankings and graphing: specify hospital ownership (Government, Proprietary, Voluntary non-profit), hospital type. (Acute Care Hospitals etc.)
+-   For all rankings and graphing: specify hospital ownership (Government, Proprietary, Voluntary non-profit), hospital type. (Acute Care Hospitals etc.)
 
-Since there is only overall rating for hospitals, we would like to re-classfy hospitals based on factors of interest to illustrate hospitals' strength and weakfulness in different aspects.
-
--   Ranking hospitals based on the overall assessment, such as mortality, safty of care, patients experiences etc. (Data: Hospital General Information)
+-   Since there is only overall rating for hospitals (Data: Hospital General Information), we would like to re-classfy hospitals based on factors of interest to illustrate hospitals' strength and weakfulness in different aspects.
 
 -   Ranking hospitals based on Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) Patient Survey. (Data: HCAHPS)
 
@@ -64,7 +62,7 @@ Since there is only overall rating for hospitals, we would like to re-classfy ho
 
 -   Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
 
-1.  **Visualizations**
+**Visualizations**
 
 -   Boxplots comparing effectiveness of different services among hospitals.
 
@@ -76,19 +74,19 @@ Since there is only overall rating for hospitals, we would like to re-classfy ho
 
 -   Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
 
-1.  **Coding challenges**
+**Coding challenges**
 
-    1.  For visualization:
+-   For visualization:
 
     -   Making a map consists of different levels (ranking) may be challenging.
 
-    1.  For data manipulation and tidying:
+-   For data manipulation and tidying:
 
     -   Propor ways of classfying hospitals by different measurements can be difficult, may need to merge different datasets, mutate variables using nest and write functions.
 
-2.  **The planned timeline**
+#### The planned timeline
 
-    -   Week 1: Data cleaning; Data exploring; Discussion on work splitting.
-    -   Week 2: Data analysis and group meetings on revisions.
-    -   Week 3: Plots making and group meetings on revisions.
-    -   Week 4: Website building and dashboard making; In-class discussion with other gourps.
+-   Week 1: Data cleaning; Data exploring; Discussion on work splitting.
+-   Week 2: Data analysis and group meetings on revisions.
+-   Week 3: Plots making and group meetings on revisions.
+-   Week 4: Website building and dashboard making; In-class discussion with other gourps.
