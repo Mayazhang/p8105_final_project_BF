@@ -40,11 +40,11 @@ Assessing Hospitals Based Medicare Factors by State in U.S.
 
 A github.io website containing all the analyses and information about our final project, which includes the following: 
 
-1. Plots and tables that may help us better understand Black Friday deals and customers' purchasing behaviours/preferences against different products.
+1. Plots and tables that may help us better understand diseases and certain causes of death through whole United States in order to establish leading causes and expenses of staying in hospitals from patients' aspects.
 
-2. Statistical summaries/numerical values for summarizing most worthy-to-buy products on Black Friday based on our analysis and propose any suggestion for Black Friday shopping.
+2. Statistical summaries/numerical values and perhaps in combination with geographical maps for summarizing various aspects of hospitals including facilities, enviroment, infection risk, etc. by state this unit and overall distribution across the U.S.
 
-3. Regression model where we are trying to predict the dependent variable (the amount of purchase) with the facilitating of the information contained in the other variables.
+3. Regression model/analyses where we are trying to predict if there is any trend for associations between medicare expenses and other factors, in order to see/forecast future changes and bring up suggestions for hospitals' potential improvements.
 
 * **The anticipated data sources**
 
