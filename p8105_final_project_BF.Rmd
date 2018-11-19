@@ -22,15 +22,14 @@ Xiaoyue Zhang (xz2788)
 
 * **The tentative project title**
 
-Assessing Hospitals Based Medicare Factors by State in U.S. 
+Ecologic study of association between crime rate and drug use in U.S. 
 
 * **The motivation for this project**
+ * Explore the association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level.
+ * Study distributions of crimes and drug use in each state and conclude which pair of crime and drug use is highly related in each state
+ * Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use as well as to make predictions.
+ * Draw a map across U.S. about detailed data of crime rate and drug use in each state 
 
-1. Explore different aspects of hospitals including facilities, health workers, infection risk, etc. by state unit and overall distribution in U.S.
-
-2. Study diseases and cause of death through United States in order to establish leading causes and expenses of staying in hospitals from patients' aspect.
-
-3. Establish regression models of the trend of medicare expenses and other factors to predict future changes and bring up suggestion for hospital improvement.
 
 * **The intended final products**
 
