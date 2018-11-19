@@ -50,39 +50,35 @@ The latest version of hospital compare datasets from Data.Medicare.gov will be a
 
 **The planned analyses**
   
-  * For all rankings and graphing: specify hospital ownership (Government, Proprietary, Voluntary non-profit), hospital type. (Acute Care Hospitals etc.)
+  * Analyze the distribution of crime data in each state in the U.S.
   
-  * Since there is only overall rating for hospitals (Data: Hospital General Information), we would like to re-classfy hospitals based on factors of interest to illustrate hospitals' strength and weakfulness in different aspects. 
+  * Analyze the distribution of drug data in each state in the U.S. 
   
-  * Ranking hospitals based on Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) Patient Survey. (Data: HCAHPS)
+  * Explore the relationship between drug use and crime rate in each state.
   
-  * Ranking hospitals based on facilities provided. (Data: Structural Measures)
+  * Make linear regression models of crime-drug data.
   
-  * Ranking hospitals based on effectiveness of different services including emergency, Heart Attack or Chest Pain, Blood Clot Prevention and Treatment etc. (Data: Timely and Effective Care - Hospital)
+  * If the R-squared is too low, try using other transformations.
+  
+  * If other transformations also do not work well, try using piecewise regression or non-linear regression.
 
   
 **Visualizations**
+
+  * Heat map of different drug use for different states.
   
-  * Boxplots comparing effectiveness of different services among hospitals.
+  * Heat map of different crime rate for different states.
+  
+  * Linear regression plots of crime-drug (respectively).
     
-  * A map demonstrating infrastructures and facilities provided by different hospitals grouping by pre-specified levels, with label illustrating hospital ownership, and different scores.
-    
-  * A bar chart revealing the proportion of hospitals (by overall rating) facet by different factors, indicating whether they are below, average, or above national average. (Data: Hospital General Information)
-    
-  * A map visualizing hospital rating by patient, classfying hospitals based on patients' response.
-    
-  * Overall theme: adding custom controls, like **dropdown events** allowing selection of specific rating, region etc, and **range sliders and selectors** zooming in and out to show data for each hospital when zoomed in.
 
   
 **Coding challenges**
 
   * For visualization:
     
-    * Making a map consists of different levels (ranking) may be challenging.
-    
-  * For data manipulation and tidying:
-    
-    * Propor ways of classfying hospitals by different measurements can be difficult, may need to merge different datasets, mutate variables using nest and write functions.
+    * Making plots consists of different types of crimes or drug uses may be challenging.
+
     
 #### The planned timeline
     
