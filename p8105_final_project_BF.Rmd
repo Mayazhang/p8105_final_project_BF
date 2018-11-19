@@ -35,11 +35,11 @@ Ecologic study of association between crime rate and drug use in U.S.
 
 A github.io website containing all the analyses and information about our final project, which includes the following: 
 
-1. Plots and tables that may help us better understand diseases and certain causes of death through whole United States in order to establish leading causes and expenses of staying in hospitals from patients' aspects.
+1. Plots and tables that may help us better understand/visualize the distribution of drug use among different states here in the U.S. and across all different levels of age.
 
-2. Statistical summaries/numerical values and perhaps in combination with geographical maps for summarizing various aspects of hospitals including facilities, enviroment, infection risk, etc. by state this unit and overall distribution across the U.S.
+2. Statistical summaries/numerical values and perhaps in combination with geographical maps for summarizing each individual ratio of committing different type of crimes acorss various states (state by state) in the U.S.
 
-3. Regression model/analyses where we are trying to predict if there is any trend for associations between medicare expenses and other factors, in order to see/forecast future changes and bring up suggestions for hospitals' potential improvements.
+3. Regression model/analyses where we are trying to predict if there is any trend for having association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level. Also we explore which pair of crime and drug use is highly related in each state.
 
 * **The anticipated data sources**
 
