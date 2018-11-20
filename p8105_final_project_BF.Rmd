@@ -43,8 +43,9 @@ A github.io website containing all the analyses and information about our final 
 
 * **The anticipated data sources**
 
-The latest version of hospital compare datasets from Data.Medicare.gov will be analyzed in this project. The Medicare is a federal government website managed by the Centers of Medicare & Medicaid Services in Baltimore which aims at providing official data concerning health-related topics. The hospital compare datasets primarily focus on the quality of healthcare at over 4000 Medicare-certified hospitals across states.
+For this project we will use two datasets: one dataset("crime-data-2016.xls") recorded crime rates in the United States in 2016; the other dataset("drugs.csv") contains information of drug use among different age groups across states.
 
+The crime dataset was derived from the Uniform Crime Reporting(UCR) program by FBI. The program collects real-world data for crime rate and law enforcement, and generates annual report. Here we will use the data from 2015 to 2016. The dataset for drug use was obtained from the National Survey on Drug Use and Health(NSDUH), which provides up-to-date survey results on alcohol, tabacco, drug use, etc.
 
 #### The planned analyses / visualizations / coding challenges
 
