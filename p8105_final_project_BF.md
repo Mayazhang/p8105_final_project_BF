@@ -72,9 +72,9 @@ The crime dataset was derived from the Uniform Crime Reporting(UCR) program by F
 
     -   Combining drug and crime data may be difficult because they consist of different rows and column variables.
 
-\*For statistical analysis:
+-   For statistical analysis:
 
-    * Fitting the approprite regression may involve using cross validation and bootstrapping where writing functions and utilize map statement may be challenging.
+    -   Fitting the approprite regression may involve using cross validation and bootstrapping where writing functions and utilize map statement may be challenging.
 
 -   For visualization:
 
