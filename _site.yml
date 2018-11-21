@@ -5,9 +5,9 @@ navbar:
   right:
     - text: "About This Project"
       href: about.html
-      text: "Plots for Crime Dataset"
+    - text: "Plots for Crime Dataset"
       href: dashboard_Crime_Dataset.html
-      text: "Plots for Drug Dataset"
+    - text: "Plots for Drug Dataset"
       href: dashboard_Drug_Datase.html
     - icon: fa-envelope fa-lg
       href: mailto:<xz2788@cumc.columbia.edu>
