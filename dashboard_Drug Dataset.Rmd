@@ -1,0 +1,27 @@
+---
+title: "Drug_dataset_dashboard.github.io"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+```
+
+
+
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+
+
