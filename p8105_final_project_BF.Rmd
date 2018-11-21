@@ -71,11 +71,21 @@ The crime dataset was derived from the Uniform Crime Reporting(UCR) program by F
   * Heat map of different crime rate for different states.
   
   * Linear regression plots of crime-drug (respectively).
+  
+  * An overal map of the U.S. showing drug use and crime rate where readers can access detaled state information by clicking on the map.
     
 
   
 **Coding challenges**
 
+  * For data cleaning:
+  
+    * Combining drug and crime data may be difficult because they consist of different rows and column variables.
+    
+  *For statistical analysis:
+  
+    * Fitting the approprite regression may involve using cross validation and bootstrapping where writing functions and utilize map statement may be challenging.
+    
   * For visualization:
     
     * Making plots consists of different types of crimes or drug uses may be challenging.
