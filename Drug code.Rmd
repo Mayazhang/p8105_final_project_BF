@@ -1,0 +1,29 @@
+---
+title: "Drug Code"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Data Import
+
+```{r}
+drug_raw =
+  read_csv("./data/drugs.csv") %>%
+  janitor::clean_names()
+```
+
+## Data Cleaning
+
+```{r}
+drug_data =
+  drug_raw %>%
+  select(year, state, x12_17, x12_20, x18_25, x26, contains("marijuana")) %>%
+  select(-contains("except_marijuana")) %>% 
+  gather(key = drug, value = amount, rates_marijuana_new_users_12_17:totals_marijuana_used_past_year_26) %>%
+  separate(drug, into = c("1", "2", "3", "4", "5", "6", "7"), sep = "_")
+```
+
