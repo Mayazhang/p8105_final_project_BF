@@ -15,7 +15,7 @@ library(readxl)
 ```{r}
 # load data and clean up column names
 # not to omit NAs
-crime <- readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
   janitor::clean_names() %>% 
     rename_(population = names(.)[3],
           violent_crime_number = names(.)[4],
@@ -66,13 +66,23 @@ crime %>%
   summarise_each(funs(mean)) %>%
   mutate(area = fct_reorder(area, violent_crime_rate)) %>% 
   ggplot(aes(x = area, y = violent_crime_rate)) +
-  geom_point()+
+  geom_point() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, size = 8),
         title = element_text(size = 6))
 ```
 
+```{r data cleaning on crime dataset}
+# Filter out "percent change" in "year" variable
+crime_clean = 
+  crime %>%
+  filter(year != "NA")
 
+# Change the name of "area" to "state"
+colnames(crime_clean)[1] = "state"
 
+# Create a new "region" variable to indicate the area of state  
+```
 
 
 
