@@ -3,4 +3,45 @@ title: "About This Project"
 ---
 
 
+## About crime data
+
+first draft, change anything if you would like --Hongyao
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+# load data and clean up column names
+# not to omit NAs
+crime <- readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+  janitor::clean_names() %>% 
+    rename_(population = names(.)[3],
+          violent_crime_number = names(.)[4],
+          violent_crime_rate = names(.)[5],
+          murder_manslaughter_number = names(.)[6],
+          murder_manslaughter_rate = names(.)[7],
+          rape_revise_number = names(.)[8],
+          rape_revise_rate = names(.)[9],
+          rape_legacy_number = names(.)[10],
+          rape_legacy_rate = names(.)[11],
+          robbery_number = names(.)[12],
+          robbery_rate = names(.)[13],
+          aggravated_assault_number = names(.)[14],
+          aggravated_assault_rate = names(.)[15],
+          property_crime_number = names(.)[16],
+          property_crime_rate = names(.)[17],
+          burglary_number = names(.)[18],
+          burglary_rate = names(.)[19],
+          larceny_theft_number = names(.)[20],
+          larceny_theft_rate = names(.)[21],
+          motor_vehicle_theft_number = names(.)[22],
+          motor_vehicle_theft_rate = names(.)[23])
+
+# check head
+head(crime)
+```
+
+
 
