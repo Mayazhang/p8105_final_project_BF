@@ -78,10 +78,35 @@ crime_clean =
   crime %>%
   filter(year != "NA")
 
+# Create a new dataframe to store the data of different large areas
+crime_largearea = 
+  crime_clean %>%
+  filter(area %in% c("United States Total", "Northeast", "Midwest", "South", "West"))
+
+# Create subtotal for each big areas
+crime_northeast = 
+  crime_clean %>%
+  filter(area %in% c("New England", "Middle Atlantic"))
+
+crime_midwest = 
+  crime_clean %>%
+  filter(area %in% c("East North Central", "West North Central"))
+
+crime_south = 
+  crime_clean %>%
+  filter(area %in% c("South Atlantic", "East South Central", "West South Central"))
+
+crime_west = 
+  crime_clean %>%
+  filter(area %in% c("Mountain", "Pacific", "Puerto Rico"))
+
 # Change the name of "area" to "state"
 colnames(crime_clean)[1] = "state"
 
-# Create a new "region" variable to indicate the area of state  
+# Filter out these areas in the tidied dataset
+crime_clean = 
+  crime_clean %>%
+  filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
 ```
 
 
