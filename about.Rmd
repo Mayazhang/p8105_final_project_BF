@@ -109,7 +109,10 @@ crime_clean =
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
 ```
 
-
+```{r distribution of violent crime rate for each state}
+ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
+  theme_bw()
+```
 
 
 
