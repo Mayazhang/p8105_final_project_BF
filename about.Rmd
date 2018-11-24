@@ -37,11 +37,55 @@ crime <- readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %
           larceny_theft_number = names(.)[20],
           larceny_theft_rate = names(.)[21],
           motor_vehicle_theft_number = names(.)[22],
-          motor_vehicle_theft_rate = names(.)[23])
+          motor_vehicle_theft_rate = names(.)[23]) %>% 
+  mutate(area = as.factor(area)) 
+crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
+
+# fill up area name
+i = 1
+for(i in 0:65) {
+  n = 3 * i + 1
+  crime$area[n + 1] = paste0(crime$area[n]) 
+  crime$area[n + 2] = paste0(crime$area[n])
+  i = i + 1
+}
 
 # check head
 head(crime)
 ```
+
+Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)
+
+```{r}
+# rank areas by average violent crime rate from 2015 to 2016
+crime %>% 
+  group_by(area) %>% 
+  filter(year != "Percent change") %>%
+  summarise_each(funs(mean)) %>%
+  mutate(area = fct_reorder(area, violent_crime_rate)) %>% 
+  ggplot(aes(x = area, y = violent_crime_rate)) +
+  geom_point()+
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 6))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
