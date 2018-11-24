@@ -56,6 +56,8 @@ head(crime)
 
 Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)
 
+Change anything if you want (HX)
+
 ```{r}
 # rank areas by average violent crime rate from 2015 to 2016
 crime %>% 
