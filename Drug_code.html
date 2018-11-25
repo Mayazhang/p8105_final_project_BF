@@ -255,15 +255,20 @@ $(document).ready(function () {
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
-<pre class="r"><code>drug_data =
-  drug_raw %&gt;%
-  select(year, state, x12_17, x12_20, x18_25, x26, contains(&quot;marijuana&quot;)) %&gt;%
-  select(-contains(&quot;except_marijuana&quot;)) %&gt;% 
-  gather(key = drug, value = amount, rates_marijuana_new_users_12_17:totals_marijuana_used_past_year_26) %&gt;%
-  separate(drug, into = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;), sep = &quot;_&quot;)</code></pre>
-<pre><code>## Warning: Expected 7 pieces. Missing pieces filled with `NA` in 7956
-## rows [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-## 20, ...].</code></pre>
+<pre class="r"><code>drug_clean = 
+  drug_raw %&gt;% 
+  select(x12_17, x18_25:rates_alcohol_dependence_past_year_26, rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26, 
+  rates_marijuana_new_users_12_17:rates_marijuana_used_past_month_26, state, year)
+
+  #gather(key = &quot;age&quot;, value = &quot;population_in_thousands&quot;, x12_17:x26) %&gt;% 
+  #gather(key = &quot;alcohol_abuse&quot;, value = &quot;alcohol_abuse_rate&quot;, rates_alcohol_abuse_past_year_12_17:rates_alcohol_abuse_past_year_26)
+
+#function(key, value, range){
+  
+#  x = gather(key = key, value = value, range) %&gt;% 
+#    mutate(key = str_replace(key, &quot;rates_&quot;, &quot;&quot;))
+  
+#}</code></pre>
 </div>
 
 

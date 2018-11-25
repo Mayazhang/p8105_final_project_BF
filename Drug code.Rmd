@@ -10,7 +10,7 @@ library(tidyverse)
 
 ## Data Import
 
-```{r}
+```{r read_data}
 drug_raw =
   read_csv("./data/drugs.csv") %>%
   janitor::clean_names()
@@ -18,12 +18,20 @@ drug_raw =
 
 ## Data Cleaning
 
-```{r}
-drug_data =
-  drug_raw %>%
-  select(year, state, x12_17, x12_20, x18_25, x26, contains("marijuana")) %>%
-  select(-contains("except_marijuana")) %>% 
-  gather(key = drug, value = amount, rates_marijuana_new_users_12_17:totals_marijuana_used_past_year_26) %>%
-  separate(drug, into = c("1", "2", "3", "4", "5", "6", "7"), sep = "_")
+```{r clean_data}
+drug_clean = 
+  drug_raw %>% 
+  select(x12_17, x18_25:rates_alcohol_dependence_past_year_26, rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26, 
+  rates_marijuana_new_users_12_17:rates_marijuana_used_past_month_26, state, year)
+
+  #gather(key = "age", value = "population_in_thousands", x12_17:x26) %>% 
+  #gather(key = "alcohol_abuse", value = "alcohol_abuse_rate", rates_alcohol_abuse_past_year_12_17:rates_alcohol_abuse_past_year_26)
+
+#function(key, value, range){
+  
+#  x = gather(key = key, value = value, range) %>% 
+#    mutate(key = str_replace(key, "rates_", ""))
+  
+#}
 ```
 
