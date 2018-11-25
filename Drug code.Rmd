@@ -20,24 +20,16 @@ drug_raw =
 
 ```{r clean_data}
 drug_clean = 
-  drug_raw %>% 
-  select(x12_17, x18_25:rates_alcohol_dependence_past_year_26, rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26, 
-  rates_marijuana_new_users_12_17:rates_marijuana_used_past_month_26, state, year) %>%
-  select(-(x12_17:x26)) %>%
+  drug_raw %>%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_month_26) %>%
   gather(key, value, -state, -year) %>% 
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
-  separate(key, into = c("rate", "age"), sep = ":", extra = "merge")
-  #spread(rate, value)
+  separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
+  mutate(rate = str_replace(rate, "^rates_", ""))
   
-
-  #gather(key = "age", value = "population_in_thousands", x12_17:x26) %>% 
-  #gather(key = "alcohol_abuse", value = "alcohol_abuse_rate", rates_alcohol_abuse_past_year_12_17:rates_alcohol_abuse_past_year_26)
-
-#function(key, value, range){
-  
-#  x = gather(key = key, value = value, range) %>% 
-#    mutate(key = str_replace(key, "rates_", ""))
-  
-#}
 ```
 
