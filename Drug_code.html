@@ -259,16 +259,11 @@ $(document).ready(function () {
   drug_raw %&gt;% 
   select(x12_17, x18_25:rates_alcohol_dependence_past_year_26, rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26, 
   rates_marijuana_new_users_12_17:rates_marijuana_used_past_month_26, state, year) %&gt;%
-  select(-(x12_17:x26)) %&gt;% 
+  select(-(x12_17:x26)) %&gt;%
   gather(key, value, -state, -year) %&gt;% 
-  mutate(key = str_replace(key, &quot;year_&quot;, &quot;year.&quot;)) %&gt;% 
-  mutate(key = str_replace(key, &quot;month_&quot;, &quot;month.&quot;)) %&gt;% 
-  mutate(key = str_replace(key, &quot;risk_&quot;, &quot;risk.&quot;)) %&gt;% 
-  mutate(key = str_replace(key, &quot;users_&quot;, &quot;users.&quot;)) %&gt;% 
-  separate(key, c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;.&quot;)</code></pre>
-<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 25857 rows [1,
-## 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].</code></pre>
-<pre class="r"><code>  #spread(rate, value)
+  mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
+  separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;)
+  #spread(rate, value)
   
 
   #gather(key = &quot;age&quot;, value = &quot;population_in_thousands&quot;, x12_17:x26) %&gt;% 
