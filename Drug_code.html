@@ -255,7 +255,7 @@ $(document).ready(function () {
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
-<pre class="r"><code>drug_clean = 
+<pre class="r"><code>drug_data = 
   drug_raw %&gt;%
   select(year, state,
          rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
@@ -266,7 +266,15 @@ $(document).ready(function () {
   mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
   separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;%
   mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;)) %&gt;% 
-  spread(rate, value)</code></pre>
+  spread(rate, value)
+
+population_data = drug_raw %&gt;% 
+  select(x12_17, x18_25:x26, year, state) %&gt;% 
+  gather(key = &quot;age&quot;, value = &quot;popul_in_thousands&quot;, -state, -year) %&gt;% 
+  mutate(age = str_replace(age, &quot;x&quot;, &quot;&quot;))
+
+drug_clean = left_join(drug_data, population_data)</code></pre>
+<pre><code>## Joining, by = c(&quot;year&quot;, &quot;state&quot;, &quot;age&quot;)</code></pre>
 </div>
 
 

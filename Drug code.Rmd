@@ -19,7 +19,7 @@ drug_raw =
 ## Data Cleaning
 
 ```{r clean_data}
-drug_clean = 
+drug_data = 
   drug_raw %>%
   select(year, state,
          rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
@@ -31,6 +31,12 @@ drug_clean =
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
   mutate(rate = str_replace(rate, "^rates_", "")) %>% 
   spread(rate, value)
-  
+
+population_data = drug_raw %>% 
+  select(x12_17, x18_25:x26, year, state) %>% 
+  gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
+  mutate(age = str_replace(age, "x", ""))
+
+drug_clean = left_join(drug_data, population_data)
 ```
 
