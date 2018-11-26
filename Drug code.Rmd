@@ -6,6 +6,7 @@ title: "Drug Code"
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(plotly)
 ```
 
 ## Data Import
@@ -32,7 +33,8 @@ drug_data =
   mutate(rate = str_replace(rate, "^rates_", "")) %>% 
   spread(rate, value)
 
-population_data = drug_raw %>% 
+population_data = 
+  drug_raw %>% 
   select(x12_17, x18_25:x26, year, state) %>% 
   gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
   mutate(age = str_replace(age, "x", ""))
@@ -156,6 +158,32 @@ drug_clean %>%
 ```
 
 ## Explore other drugs
+
+**Cocaine**
+
+```{r cocaine_past_year}
+drug_cocaine = 
+  drug_clean %>% 
+  select(year, state, age, contains("cocaine")) %>%
+  group_by(year) %>%
+  summarize(mean_past_year_cocaine = mean(illicit_drugs_cocaine_used_past_year))
+ 
+fit_cocaine = fitted(loess(drug_cocaine$mean_past_year_cocaine ~ drug_cocaine$year))
+ 
+drug_cocaine %>%
+  plot_ly(x = ~year, y = ~mean_past_year_cocaine, type = "bar", showlegend = FALSE, marker = list(color = ~year, showscale = FALSE)) %>% 
+  add_lines(y = fit_cocaine, showlegend = FALSE, color = 'black')
+```
+
+```{r drug_cocaine_state}
+drug_clean %>% 
+  select(year, state, age, contains("cocaine")) %>%
+  group_by(state) %>%
+  summarize(
+    mean_past_year_cocaine_state = mean(illicit_drugs_cocaine_used_past_year)) %>%
+  mutate(state = fct_reorder(state, mean_past_year_cocaine_state)) %>% 
+  plot_ly(x = ~state, y = ~mean_past_year_cocaine_state, type = "bar", showlegend = FALSE, marker = list(color = ~state, showscale = FALSE))
+```
 
 
 
