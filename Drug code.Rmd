@@ -40,3 +40,106 @@ population_data = drug_raw %>%
 drug_clean = left_join(drug_data, population_data)
 ```
 
+## Explore alcohol use with different degree by state and year
+
+*Alcohol use by state
+
+```{r alcohol_use_state}
+drug_clean %>% 
+  group_by(state) %>% 
+  summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
+            mean_alcohol_binge = mean(alcohol_binge_past_month),
+            mean_alcohol_dependence = mean(alcohol_dependence_past_year),
+            mean_alcoh_treatment = mean(alcohol_need_treatment_past_year)) %>% 
+  gather(key = "degree", value = "rate", -state) %>% 
+  ggplot(aes(x = state, y = rate)) +
+  geom_bar(aes(fill = degree), stat = "identity") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Alcohol use in each state by degree",
+    x = "State",
+    y = "Rate of alcohol use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+
+```{r alcohol_use}
+drug_clean %>% 
+  group_by(state, age) %>% 
+  summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
+            mean_alcohol_binge = mean(alcohol_binge_past_month),
+            mean_alcohol_dependence = mean(alcohol_dependence_past_year),
+            mean_alcoh_treatment = mean(alcohol_need_treatment_past_year),
+            mean_alcohol_use = mean(alcohol_use_past_month)) %>% 
+  ggplot(aes(x = state, y = mean_alcohol_abuse)) +
+  geom_bar(aes(fill = age), stat = "identity") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Alcohol abuse in each state by age",
+    x = "State",
+    y = "Rate of alcohol abuse",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+
+drug_clean %>% 
+  group_by(state, age) %>% 
+  summarize(mean_alcohol_binge = mean(alcohol_binge_past_month)) %>% 
+  ggplot(aes(x = state, y = mean_alcohol_binge)) +
+  geom_bar(aes(fill = age), stat = "identity") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Alcohol binge in each state by age",
+    x = "State",
+    y = "Rate of alcohol binge",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+
+drug_clean %>% 
+  group_by(state, age) %>% 
+  summarize(mean_alcohol_dependence = mean(alcohol_dependence_past_year)) %>% 
+  ggplot(aes(x = state, y = mean_alcohol_dependence)) +
+  geom_bar(aes(fill = age), stat = "identity") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Alcohol dependence in each state by age",
+    x = "State",
+    y = "Rate of alcohol dependence",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+
+drug_clean %>% 
+  group_by(state, age) %>% 
+  summarize(mean_alcoh_treatment = mean(alcohol_need_treatment_past_year)) %>% 
+  ggplot(aes(x = state, y = mean_alcoh_treatment)) +
+  geom_bar(aes(fill = age), stat = "identity") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Alcohol use need treatment in each state by age",
+    x = "State",
+    y = "Rate of alcohol use need treatment",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+* Alcohol use by year
+
+```{r alcohol_use_year}
+
+```
+
+
+
+
+
+

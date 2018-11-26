@@ -276,6 +276,96 @@ population_data = drug_raw %&gt;%
 drug_clean = left_join(drug_data, population_data)</code></pre>
 <pre><code>## Joining, by = c(&quot;year&quot;, &quot;state&quot;, &quot;age&quot;)</code></pre>
 </div>
+<div id="explore-alcohol-use-with-different-degree-by-state-and-year" class="section level2">
+<h2>Explore alcohol use with different degree by state and year</h2>
+<p>*Alcohol use by state</p>
+<pre class="r"><code>drug_clean %&gt;% 
+  group_by(state) %&gt;% 
+  summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
+            mean_alcohol_binge = mean(alcohol_binge_past_month),
+            mean_alcohol_dependence = mean(alcohol_dependence_past_year),
+            mean_alcoh_treatment = mean(alcohol_need_treatment_past_year)) %&gt;% 
+  gather(key = &quot;degree&quot;, value = &quot;rate&quot;, -state) %&gt;% 
+  ggplot(aes(x = state, y = rate)) +
+  geom_bar(aes(fill = degree), stat = &quot;identity&quot;) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = &quot;Alcohol use in each state by degree&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Rate of alcohol use&quot;,
+    caption = &quot;Data from drug_use&quot;
+  ) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Drug_code_files/figure-html/alcohol_use_state-1.png" width="672" /></p>
+<pre class="r"><code>drug_clean %&gt;% 
+  group_by(state, age) %&gt;% 
+  summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
+            mean_alcohol_binge = mean(alcohol_binge_past_month),
+            mean_alcohol_dependence = mean(alcohol_dependence_past_year),
+            mean_alcoh_treatment = mean(alcohol_need_treatment_past_year),
+            mean_alcohol_use = mean(alcohol_use_past_month)) %&gt;% 
+  ggplot(aes(x = state, y = mean_alcohol_abuse)) +
+  geom_bar(aes(fill = age), stat = &quot;identity&quot;) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = &quot;Alcohol abuse in each state by age&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Rate of alcohol abuse&quot;,
+    caption = &quot;Data from drug_use&quot;
+  ) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Drug_code_files/figure-html/alcohol_use-1.png" width="672" /></p>
+<pre class="r"><code>drug_clean %&gt;% 
+  group_by(state, age) %&gt;% 
+  summarize(mean_alcohol_binge = mean(alcohol_binge_past_month)) %&gt;% 
+  ggplot(aes(x = state, y = mean_alcohol_binge)) +
+  geom_bar(aes(fill = age), stat = &quot;identity&quot;) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = &quot;Alcohol binge in each state by age&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Rate of alcohol binge&quot;,
+    caption = &quot;Data from drug_use&quot;
+  ) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Drug_code_files/figure-html/alcohol_use-2.png" width="672" /></p>
+<pre class="r"><code>drug_clean %&gt;% 
+  group_by(state, age) %&gt;% 
+  summarize(mean_alcohol_dependence = mean(alcohol_dependence_past_year)) %&gt;% 
+  ggplot(aes(x = state, y = mean_alcohol_dependence)) +
+  geom_bar(aes(fill = age), stat = &quot;identity&quot;) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = &quot;Alcohol dependence in each state by age&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Rate of alcohol dependence&quot;,
+    caption = &quot;Data from drug_use&quot;
+  ) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Drug_code_files/figure-html/alcohol_use-3.png" width="672" /></p>
+<pre class="r"><code>drug_clean %&gt;% 
+  group_by(state, age) %&gt;% 
+  summarize(mean_alcoh_treatment = mean(alcohol_need_treatment_past_year)) %&gt;% 
+  ggplot(aes(x = state, y = mean_alcoh_treatment)) +
+  geom_bar(aes(fill = age), stat = &quot;identity&quot;) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = &quot;Alcohol use need treatment in each state by age&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Rate of alcohol use need treatment&quot;,
+    caption = &quot;Data from drug_use&quot;
+  ) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Drug_code_files/figure-html/alcohol_use-4.png" width="672" /></p>
+<ul>
+<li>Alcohol use by year</li>
+</ul>
+</div>
 
 
 
