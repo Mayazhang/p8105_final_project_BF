@@ -265,7 +265,8 @@ $(document).ready(function () {
   gather(key, value, -state, -year) %&gt;% 
   mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
   separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;%
-  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;))</code></pre>
+  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;)) %&gt;% 
+  spread(rate, value)</code></pre>
 </div>
 
 
