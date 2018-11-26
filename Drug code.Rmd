@@ -135,10 +135,27 @@ drug_clean %>%
 * Alcohol use by year
 
 ```{r alcohol_use_year}
-
+drug_clean %>% 
+  group_by(year) %>% 
+  summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
+            mean_alcohol_binge = mean(alcohol_binge_past_month),
+            mean_alcohol_dependence = mean(alcohol_dependence_past_year),
+            mean_alcoh_treatment = mean(alcohol_need_treatment_past_year)) %>% 
+  gather(key = "degree", value = "rate", -year) %>% 
+  ggplot(aes(x = year, y = rate)) +
+  geom_line(aes(color = degree)) +
+  theme_bw() +
+  labs(
+    title = "Alcohol use through years by degree",
+    x = "Year",
+    y = "Rate of alcohol use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom") +
+  scale_x_continuous(breaks = c(2002, 2006, 2010, 2014))
 ```
 
-
+## Explore other drugs
 
 
 

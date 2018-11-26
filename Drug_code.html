@@ -365,6 +365,28 @@ drug_clean = left_join(drug_data, population_data)</code></pre>
 <ul>
 <li>Alcohol use by year</li>
 </ul>
+<pre class="r"><code>drug_clean %&gt;% 
+  group_by(year) %&gt;% 
+  summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
+            mean_alcohol_binge = mean(alcohol_binge_past_month),
+            mean_alcohol_dependence = mean(alcohol_dependence_past_year),
+            mean_alcoh_treatment = mean(alcohol_need_treatment_past_year)) %&gt;% 
+  gather(key = &quot;degree&quot;, value = &quot;rate&quot;, -year) %&gt;% 
+  ggplot(aes(x = year, y = rate)) +
+  geom_line(aes(color = degree)) +
+  theme_bw() +
+  labs(
+    title = &quot;Alcohol use through years by degree&quot;,
+    x = &quot;Year&quot;,
+    y = &quot;Rate of alcohol use&quot;,
+    caption = &quot;Data from drug_use&quot;
+  ) +
+  theme(legend.position = &quot;bottom&quot;) +
+  scale_x_continuous(breaks = c(2002, 2006, 2010, 2014))</code></pre>
+<p><img src="Drug_code_files/figure-html/alcohol_use_year-1.png" width="672" /></p>
+</div>
+<div id="explore-other-drugs" class="section level2">
+<h2>Explore other drugs</h2>
 </div>
 
 
