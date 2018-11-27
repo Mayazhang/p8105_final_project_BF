@@ -161,18 +161,33 @@ drug_clean %>%
 
 **Cocaine**
 
-```{r cocaine_past_year}
-drug_cocaine = 
+```{r illicit_use_year}
   drug_clean %>% 
-  select(year, state, age, contains("cocaine")) %>%
+  select(year, contains("illicit")) %>%
   group_by(year) %>%
-  summarize(mean_past_year_cocaine = mean(illicit_drugs_cocaine_used_past_year))
+  summarize(mean_cocaine_use = mean(illicit_drugs_cocaine_used_past_year),
+            mean_illicit_abuse = mean(illicit_drugs_abuse_past_month),
+            mean_illicit_dependence = mean(illicit_drugs_dependence_past_year),
+            mean_illicit_treatment = mean(illicit_drugs_need_treatment_past_year)) %>%
+  gather(key = "degree", value = "rate", -year) %>% 
+  ggplot(aes(x = year, y = rate)) +
+  geom_line(aes(color = degree)) +
+  theme_bw() +
+  labs(
+    title = "Illicit drug use through years by degree",
+    x = "Year",
+    y = "Rate of illicit drug use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom") +
+  scale_x_continuous(breaks = c(2002, 2006, 2010, 2014))
+
  
-fit_cocaine = fitted(loess(drug_cocaine$mean_past_year_cocaine ~ drug_cocaine$year))
+#fit_cocaine = fitted(loess(drug_cocaine$mean_past_year_cocaine ~ drug_cocaine$year))
  
-drug_cocaine %>%
-  plot_ly(x = ~year, y = ~mean_past_year_cocaine, type = "bar", showlegend = FALSE, marker = list(color = ~year, showscale = FALSE)) %>% 
-  add_lines(y = fit_cocaine, showlegend = FALSE, color = 'black')
+#drug_cocaine %>%
+  #plot_ly(x = ~year, y = ~mean_past_year_cocaine, type = "bar", showlegend = FALSE, marker = list(color = ~year, showscale = FALSE)) %>% 
+  #add_lines(y = fit_cocaine, showlegend = FALSE, color = 'black')
 ```
 
 ```{r drug_cocaine_state}
