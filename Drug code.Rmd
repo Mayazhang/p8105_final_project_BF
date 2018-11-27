@@ -161,6 +161,8 @@ drug_clean %>%
 
 **Cocaine**
 
+* Illicit drug use by year
+
 ```{r illicit_use_year}
   drug_clean %>% 
   select(year, contains("illicit")) %>%
@@ -200,6 +202,28 @@ drug_clean %>%
   plot_ly(x = ~state, y = ~mean_past_year_cocaine_state, type = "bar", showlegend = FALSE, marker = list(color = ~state, showscale = FALSE))
 ```
 
+* Illicit drug use by state
+
+```{r illicit_state}
+drug_clean %>% 
+  group_by(state) %>% 
+  summarize(mean_cocaine_use = mean(illicit_drugs_cocaine_used_past_year),
+            mean_illicit_abuse = mean(illicit_drugs_abuse_past_month),
+            mean_illicit_dependence = mean(illicit_drugs_dependence_past_year),
+            mean_illicit_treatment = mean(illicit_drugs_need_treatment_past_year)) %>%
+  gather(key = "degree", value = "rate", -state) %>% 
+  ggplot(aes(x = state, y = rate)) +
+  geom_bar(aes(fill = degree), stat = "identity") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Illicit drug use in each state by degree",
+    x = "State",
+    y = "Rate of illicit drug use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+```
 
 
 
