@@ -1,0 +1,94 @@
+---
+title: "Shiny Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(viridis)
+library(plotly)
+```
+
+```{r data_cleaning}
+drug_raw =
+  read_csv("../data/drugs.csv") %>%
+  janitor::clean_names()
+
+drug_data = 
+  drug_raw %>%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
+  gather(key, value, -state, -year) %>% 
+  mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
+  separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
+  mutate(rate = str_replace(rate, "^rates_", "")) %>% 
+  spread(rate, value)
+
+population_data = 
+  drug_raw %>% 
+  select(x12_17, x18_25:x26, year, state) %>% 
+  gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
+  mutate(age = str_replace(age, "x", ""))
+
+drug_clean = left_join(drug_data, population_data)
+```
+
+
+```{r variable_for_shiny}
+drug_choice = c("alcohol", "illicit", "marijuana")
+
+state_choice = drug_clean %>% distinct(state) %>% pull()  
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+# selectInput widget
+selectInput("state_choice", label = h3("Select state"),
+            choices = state_choice, selected = "New York")
+
+# radioButtons widget
+radioButtons("drug_choice", label = h3("Choose drug type"),
+    choices = drug_choice, 
+    selected = "marijuana")
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+renderPlotly({
+  drug_clean %>% 
+  filter(state == input$state_choice) %>%
+  select(state, year, starts_with(input$drug_choice)) %>% 
+  gather(key = "degree", value = "rate", -year, -state) %>% 
+    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree)
+})
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
