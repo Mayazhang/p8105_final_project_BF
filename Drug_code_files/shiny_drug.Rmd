@@ -51,7 +51,7 @@ state_choice = drug_clean %>% distinct(state) %>% pull()
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-```{r}
+```{r creat_sidebars}
 # selectInput widget
 selectInput("state_choice", label = h3("Select state"),
             choices = state_choice, selected = "New York")
@@ -83,8 +83,15 @@ Column {data-width=350}
 
 ### Chart B
 
-```{r}
-
+```{r perception_risk}
+renderPlotly({
+  drug_clean %>% 
+  filter(state == input$state_choice) %>%
+  select(starts_with(input$drug_choice), year, age) %>% 
+  select(year, age, contains("perceptions")) %>% 
+  gather(-year, -age, key = "drug", value = "perception_risk") %>% 
+  plot_ly(x = ~year, y = ~perception_risk, type = "bar", color = ~age)
+})
 ```
 
 ### Chart C
