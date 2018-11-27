@@ -26,7 +26,7 @@ drug_data =
          rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
          rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
          rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
-         rates_marijuana_new_users_12_17:rates_marijuana_used_past_month_26) %>%
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
   gather(key, value, -state, -year) %>% 
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
@@ -154,7 +154,7 @@ drug_clean %>%
     caption = "Data from drug_use"
   ) +
   theme(legend.position = "bottom") +
-  scale_x_continuous(breaks = c(2002, 2006, 2010, 2014))
+  scale_x_continuous(breaks = c(2002:2014))
 ```
 
 ## Explore other drugs
@@ -225,5 +225,56 @@ drug_clean %>%
   theme(legend.position = "bottom")
 ```
 
+* Marijuana
+
+```{r}
+drug_clean %>%
+  group_by(year, age) %>% 
+  summarize(mean_marijuana_year = mean(marijuana_used_past_year)) %>% 
+  ggplot(aes(x = year, y = mean_marijuana_year, color = age)) +
+  geom_line() +
+  theme_bw() +
+  labs(
+    title = "Marijuana use through years by age",
+    x = "Year",
+    y = "Rate of marijuana use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom") +
+  scale_x_continuous(breaks = c(2002:2014))
+```
+
+```{r}
+drug_clean %>%
+  group_by(state, age) %>% 
+  summarize(mean_marijuana_year = mean(marijuana_used_past_year)) %>% 
+  ggplot(aes(x = state, y = mean_marijuana_year)) +
+  geom_bar(aes(fill = age), stat = "identity") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Marijuana use through state by age",
+    x = "Year",
+    y = "Rate of marijuana use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+
+drug_clean %>%
+  group_by(state) %>% 
+  summarize(mean_marijuana_year = mean(marijuana_used_past_year)) %>% 
+  mutate(state = fct_reorder(state, mean_marijuana_year)) %>% 
+  ggplot(aes(x = state, y = mean_marijuana_year)) +
+  geom_bar(stat = "identity") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(
+    title = "Marijuana use through state",
+    x = "Year",
+    y = "Rate of marijuana use",
+    caption = "Data from drug_use"
+  ) +
+  theme(legend.position = "bottom")
+```
 
 
