@@ -65,15 +65,16 @@ radioButtons("drug_choice", label = h3("Choose drug type"),
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Drug use in states through year
 
 ```{r}
 renderPlotly({
   drug_clean %>% 
   filter(state == input$state_choice) %>%
-  select(state, year, starts_with(input$drug_choice)) %>% 
+  select(state, year, starts_with(input$drug_choice), -contains("perceptions")) %>% 
   gather(key = "degree", value = "rate", -year, -state) %>% 
-    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree)
+  mutate(text_label = str_c("Degree: $", degree)) %>%   
+    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree, text = ~text_label)
 })
 ```
 
