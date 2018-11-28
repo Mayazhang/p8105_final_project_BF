@@ -187,7 +187,10 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="about.html">About This Project</a>
+  <a href="about.html">Crime Dataset Cleaning &amp; Exploring</a>
+</li>
+<li>
+  <a href="Drug_code.html">Drug Dataset Cleaning &amp; Exploring</a>
 </li>
 <li>
   <a href="dashboard_Crime_Dataset.html">Plots for Crime Dataset</a>
@@ -225,12 +228,12 @@ $(document).ready(function () {
 <h2>About crime data</h2>
 <p>first draft, change anything if you would like –Hongyao</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ─ Attaching packages ───────────────── tidyverse 1.2.1 ─</code></pre>
 <pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ───────────────────────── tidyverse_conflicts() ──
+<pre><code>## ─ Conflicts ────────────────── tidyverse_conflicts() ─
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)</code></pre>
@@ -261,7 +264,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for(i in 0:65) {
