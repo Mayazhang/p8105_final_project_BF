@@ -12,6 +12,7 @@ library(flexdashboard)
 library(tidyverse)
 library(viridis)
 library(plotly)
+library(shiny)
 ```
 
 ```{r data_cleaning}
