@@ -62,6 +62,12 @@ crime_clean_rate =
 
 #group_by(state) %>% select(grep("rate",names(.))) %>% summarise_all(funs(mean))
 #crime_mean_rate[,2:11] = crime_mean_rate[,2:11]/100
+
+#state_transform <- state.abb
+#names(state_transform) <- state.name
+
+#crime_clean_rate <- crime_clean_rate %>% mutate(state = state_transform[state])
+#crime_clean_rate <- crime_clean_rate %>% mutate(state = as.character(state))
 ```
 
 
@@ -81,11 +87,11 @@ Column {.sidebar}
 ```{r creat_sidebars}
 # selectInput widget
 selectInput("crime_choice", label = h3("Select Crime"),
-            choices = crime_choice, selected = "murder manslaughter")
+            choices = crime_choice, selected = "murder_manslaughter_rate")
 
 # radioButtons widget
 radioButtons("year_choice", label = h3("Select Year"),
-             choices = year_choice,selected = "2016")
+             choices = year_choice, selected = 2016)
 ```
 
 Column {data-width=650}
@@ -146,7 +152,7 @@ renderPlotly({
   crime_clean_rate %>%
     filter(state != "District of Columbia") %>% 
     filter(year == input$year_choice,
-           crime_type == input$crime_type) %>%
+           crime_type == input$crime_choice) %>%
     select(state, rate) %>%
     plot_geo(locationmode = 'USA-states') %>%
   add_trace(
