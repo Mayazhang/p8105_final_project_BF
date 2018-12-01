@@ -173,6 +173,26 @@ drug_sum_marijuana <-
 drug_mean_rate <- cbind(drug_sum_row$state, drug_sum_alcohol, drug_sum_illicit, drug_sum_marijuana)
 
 head(drug_mean_rate)
+
+# Combine X and Y into one data frame
+regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %>%
+  select(-rape_legacy_rate, -`drug_sum_row$state`)
+```
+
+#### Linear Regression
+
+```{r linear regression}
+# Make linear models for each crime type in each state
+regression_data = 
+  regression_data_raw %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest()
 ```
 
 
