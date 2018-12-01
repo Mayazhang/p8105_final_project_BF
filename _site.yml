@@ -3,8 +3,10 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "About This Project"
+    - text: "Crime Dataset Cleaning & Exploring"
       href: about.html
+    - text: "Drug Dataset Cleaning & Exploring"
+      href: Drug_code.html
     - text: "Plots for Crime Dataset"
       href: dashboard_Crime_Dataset.html
     - text: "Plots for Drug Dataset"
