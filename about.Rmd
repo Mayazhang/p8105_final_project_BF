@@ -195,6 +195,9 @@ regression_data =
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest()
+
+regression_data %>% 
+  filter(p.value < 0.1)
 ```
 
 

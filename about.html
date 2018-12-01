@@ -464,7 +464,18 @@ regression_data =
     linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %&gt;%
   select(-data) %&gt;%
-  unnest()</code></pre>
+  unnest()
+
+regression_data %&gt;% 
+  filter(p.value &lt; 0.1)</code></pre>
+<pre><code>## # A tibble: 5 x 6
+##   crime_type              term        estimate std.error statistic p.value
+##   &lt;chr&gt;                   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 murder_manslaughter_ra… illicit_sum -0.00148  0.000852     -1.73 0.0896 
+## 2 murder_manslaughter_ra… marijuana_…  0.00180  0.00104       1.74 0.0890 
+## 3 burglary_rate           illicit_sum -0.0705   0.0361       -1.95 0.0566 
+## 4 burglary_rate           alcohol_sum -0.0315   0.0100       -3.14 0.00288
+## 5 burglary_rate           marijuana_…  0.103    0.0439        2.35 0.0231</code></pre>
 </div>
 <div id="some-graphs" class="section level4">
 <h4>some graphs</h4>
