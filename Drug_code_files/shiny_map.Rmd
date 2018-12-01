@@ -1,0 +1,151 @@
+---
+title: "Shiny Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(viridis)
+library(plotly)
+library(readxl)
+```
+
+```{r data_cleaning}
+crime = readxl::read_excel("../data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+  janitor::clean_names() %>% 
+    rename_(population = names(.)[3],
+          violent_crime_number = names(.)[4],
+          violent_crime_rate = names(.)[5],
+          murder_manslaughter_number = names(.)[6],
+          murder_manslaughter_rate = names(.)[7],
+          rape_revise_number = names(.)[8],
+          rape_revise_rate = names(.)[9],
+          rape_legacy_number = names(.)[10],
+          rape_legacy_rate = names(.)[11],
+          robbery_number = names(.)[12],
+          robbery_rate = names(.)[13],
+          aggravated_assault_number = names(.)[14],
+          aggravated_assault_rate = names(.)[15],
+          property_crime_number = names(.)[16],
+          property_crime_rate = names(.)[17],
+          burglary_number = names(.)[18],
+          burglary_rate = names(.)[19],
+          larceny_theft_number = names(.)[20],
+          larceny_theft_rate = names(.)[21],
+          motor_vehicle_theft_number = names(.)[22],
+          motor_vehicle_theft_rate = names(.)[23]) %>% 
+  mutate(area = as.factor(area)) 
+crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
+
+# fill up area name
+i = 1
+for(i in 0:65) {
+  n = 3 * i + 1
+  crime$area[n + 1] = paste0(crime$area[n]) 
+  crime$area[n + 2] = paste0(crime$area[n])
+  i = i + 1
+}
+
+#clean data
+crime_clean_rate =
+  crime %>%
+  filter(year != "NA") %>% 
+  rename(state = area) %>% 
+  filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
+  
+#group_by(state) %>% select(grep("rate",names(.))) %>% summarise_all(funs(mean))
+#crime_mean_rate[,2:11] = crime_mean_rate[,2:11]/100
+```
+
+
+```{r variable_for_shiny}
+crime_choice = 
+  crime_clean_rate %>% 
+  select(-rape_legacy_rate) %>% 
+  gather(key = type, value = rate, -state) %>% 
+  distinct(type) %>% 
+  pull()
+
+year_choice = crime_clean_rate %>% distinct(year) %>% pull()  
+#use mean or two years???
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r creat_sidebars}
+# selectInput widget
+selectInput("crime_choice", label = h3("Select Crime"),
+            choices = crime_choice, selected = "murder_manslaughter_rate")
+
+# radioButtons widget
+radioButtons("year_choice", label = h3("Select Year"),choices = year_choice,selected = "2016")
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Drug use in states through year
+
+```{r}
+crime_new =
+  crime_clean_rate %>% 
+  gather(key = crime_type, value = rate, -state) %>% 
+  mutate(crime_type = str_replace_all(crime_type, c("_rate" = "", "_" = " "))) 
+
+crime_2 =
+  crime_clean_rate %>% 
+  filter(year == 2016) %>% 
+  select(state, violent_crime_rate) %>%
+  filter(state != "District of Columbia")
+
+  #mutate(text_label = str_c("Crime type: ", crime_type, '\nRate: ', rate)) %>%
+
+crime_2$hover = with(crime_2, paste(state, '<br>'))
+   
+# give state boundaries a white border
+l <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+plot_geo(crime_2, locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~violent_crime_rate, text = ~hover, locations = state.abb,
+    color = ~violent_crime_rate, colors = 'Purples'
+  ) %>%
+  colorbar(title = "Crime Rate") %>%
+  layout(
+    title = 'Violent Crime Rate',
+    geo = g
+  )                    
+  
+
+#figure out add district of columbia, and abb match??
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r perception_risk}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
