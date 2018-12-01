@@ -143,13 +143,15 @@ dim(crime_mean_rate) #right
 head(crime_mean_rate)
 ```
 
-X: 51 states, each with mean drug rate (3 types of crimes)
+X: 51 states, each with mean drug rate (3 types of drugs)
 
 ```{r}
-drug_sum_row <- 
-  drug_clean %>% 
+drug_sum_row = drug_clean %>% 
+  group_by(state, age) %>%
+  select(-year) %>% 
+  summarise_all(funs(mean)) %>% 
   group_by(state) %>% 
-  select(-c(year,age)) %>% 
+  select(-age) %>% 
   summarise_all(funs(sum))
 
 drug_sum_alcohol <-
@@ -161,7 +163,7 @@ drug_sum_alcohol <-
 drug_sum_illicit <-
   drug_sum_row %>% 
   select(grep("illicit",names(.))) %>%
-  mutate(illicit_sum = rowSums(.[1:3])) %>% 
+  mutate(illicit_sum = rowSums(.[1:4])) %>% 
   select(illicit_sum)
 
 drug_sum_marijuana <-

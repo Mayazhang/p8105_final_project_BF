@@ -224,19 +224,20 @@ $(document).ready(function () {
 </div>
 
 
-<div id="about-crime-data" class="section level2">
-<h2>About crime data</h2>
+<div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
+<h4>load crime and drug data and do some clean up!</h4>
 <p>first draft, change anything if you would like –Hongyao</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ─ Attaching packages ───────────────── tidyverse 1.2.1 ─</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ─ Conflicts ────────────────── tidyverse_conflicts() ─
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)</code></pre>
+<p>Load crime data and some primary clean up</p>
 <pre class="r"><code># load data and clean up column names
 # not to omit NAs
 crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quot;A4:W202&quot;)) %&gt;% 
@@ -264,7 +265,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for(i in 0:65) {
@@ -294,23 +295,7 @@ head(crime)</code></pre>
 ## #   burglary_number &lt;dbl&gt;, burglary_rate &lt;dbl&gt;,
 ## #   larceny_theft_number &lt;dbl&gt;, larceny_theft_rate &lt;dbl&gt;,
 ## #   motor_vehicle_theft_number &lt;dbl&gt;, motor_vehicle_theft_rate &lt;dbl&gt;</code></pre>
-<p>Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)</p>
-<p>Change anything if you want (HX)</p>
-<pre class="r"><code># rank areas by average violent crime rate from 2015 to 2016
-crime %&gt;% 
-  group_by(area) %&gt;% 
-  filter(year != &quot;Percent change&quot;) %&gt;%
-  summarise_each(funs(mean)) %&gt;%
-  mutate(area = fct_reorder(area, violent_crime_rate)) %&gt;% 
-  ggplot(aes(x = area, y = violent_crime_rate)) +
-  geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 8),
-        title = element_text(size = 6))</code></pre>
-<pre><code>## `summarise_each()` is deprecated.
-## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
-## To map `funs` over all variables, use `summarise_all()`</code></pre>
-<p><img src="about_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>some further clean up on crime data</p>
 <pre class="r"><code># Filter out &quot;percent change&quot; in &quot;year&quot; variable
 crime_clean = 
   crime %&gt;%
@@ -345,6 +330,161 @@ colnames(crime_clean)[1] = &quot;state&quot;
 crime_clean = 
   crime_clean %&gt;%
   filter(!state %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;, &quot;New England&quot;, &quot;Middle Atlantic&quot;, &quot;East North Central&quot;, &quot;West North Central&quot;, &quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;, &quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))</code></pre>
+<p>load drug data and clean up</p>
+<pre class="r"><code># Remove the block later
+drug_raw =
+  read_csv(&quot;./data/drugs.csv&quot;) %&gt;%
+  janitor::clean_names()</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_integer(),
+##   `Rates.Alcohol.Abuse Past Year.12-17` = col_double(),
+##   `Rates.Alcohol.Abuse Past Year.18-25` = col_double(),
+##   `Rates.Alcohol.Abuse Past Year.26+` = col_double(),
+##   `Rates.Alcohol.Binge Past Month.12-17` = col_double(),
+##   `Rates.Alcohol.Binge Past Month.18-25` = col_double(),
+##   `Rates.Alcohol.Binge Past Month.26+` = col_double(),
+##   `Rates.Alcohol.Dependence Past Year.12-17` = col_double(),
+##   `Rates.Alcohol.Dependence Past Year.18-25` = col_double(),
+##   `Rates.Alcohol.Dependence Past Year.26+` = col_double(),
+##   `Rates.Alcohol.In Minors.Abuse` = col_double(),
+##   `Rates.Alcohol.In Minors.Use` = col_double(),
+##   `Rates.Alcohol.Need Treatment Past Year.12-17` = col_double(),
+##   `Rates.Alcohol.Need Treatment Past Year.18-25` = col_double(),
+##   `Rates.Alcohol.Need Treatment Past Year.26+` = col_double(),
+##   `Rates.Alcohol.Perceptions of Risk.12-17` = col_double(),
+##   `Rates.Alcohol.Perceptions of Risk.18-25` = col_double(),
+##   `Rates.Alcohol.Perceptions of Risk.26+` = col_double(),
+##   `Rates.Alcohol.Use Past Month.12-17` = col_double(),
+##   `Rates.Alcohol.Use Past Month.18-25` = col_double(),
+##   `Rates.Alcohol.Use Past Month.26+` = col_double()
+##   # ... with 43 more columns
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>drug_data = 
+  drug_raw %&gt;%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %&gt;%
+  gather(key, value, -state, -year) %&gt;% 
+  mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
+  separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;%
+  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;)) %&gt;% 
+  spread(rate, value)
+
+population_data = 
+  drug_raw %&gt;% 
+  select(x12_17, x18_25:x26, year, state) %&gt;% 
+  gather(key = &quot;age&quot;, value = &quot;popul_in_thousands&quot;, -state, -year) %&gt;% 
+  mutate(age = str_replace(age, &quot;x&quot;, &quot;&quot;))
+
+drug_clean = left_join(drug_data, population_data)</code></pre>
+<pre><code>## Joining, by = c(&quot;year&quot;, &quot;state&quot;, &quot;age&quot;)</code></pre>
+</div>
+<div id="get-y-and-x-for-regression" class="section level4">
+<h4>Get Y and X for regression</h4>
+<p>Y: 51 states, each with mean crime rates (10 types of crimes)</p>
+<pre class="r"><code>crime_mean_rate &lt;- 
+  crime_clean %&gt;% 
+  group_by(state) %&gt;% 
+  select(grep(&quot;rate&quot;,names(.))) %&gt;% 
+  summarise_all(funs(mean))</code></pre>
+<pre><code>## Adding missing grouping variables: `state`</code></pre>
+<pre class="r"><code>crime_mean_rate[,2:11] &lt;- crime_mean_rate[,2:11]/100
+
+# check dimension
+dim(crime_mean_rate) #right</code></pre>
+<pre><code>## [1] 51 11</code></pre>
+<pre class="r"><code>head(crime_mean_rate)</code></pre>
+<pre><code>## # A tibble: 6 x 11
+##   state violent_crime_r… murder_manslaug… rape_revise_rate rape_legacy_rate
+##   &lt;fct&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Alab…             5.03           0.078             0.407            0.292
+## 2 Alas…             7.68           0.075             1.32             0.949
+## 3 Ariz…             4.40           0.05              0.465            0.343
+## 4 Arka…             5.40           0.0675            0.696            0.498
+## 5 Cali…             4.37           0.0485            0.339            0.250
+## 6 Colo…             3.30           0.0345            0.626            0.458
+## # ... with 6 more variables: robbery_rate &lt;dbl&gt;,
+## #   aggravated_assault_rate &lt;dbl&gt;, property_crime_rate &lt;dbl&gt;,
+## #   burglary_rate &lt;dbl&gt;, larceny_theft_rate &lt;dbl&gt;,
+## #   motor_vehicle_theft_rate &lt;dbl&gt;</code></pre>
+<p>X: 51 states, each with mean drug rate (3 types of drugs)</p>
+<pre class="r"><code>drug_sum_row = drug_clean %&gt;% 
+  group_by(state, age) %&gt;%
+  select(-year) %&gt;% 
+  summarise_all(funs(mean)) %&gt;% 
+  group_by(state) %&gt;% 
+  select(-age) %&gt;% 
+  summarise_all(funs(sum))
+
+drug_sum_alcohol &lt;-
+  drug_sum_row %&gt;% 
+  select(grep(&quot;alcohol&quot;,names(.))) %&gt;%
+  mutate(alcohol_sum = rowSums(.[1:6])) %&gt;% 
+  select(alcohol_sum)
+
+drug_sum_illicit &lt;-
+  drug_sum_row %&gt;% 
+  select(grep(&quot;illicit&quot;,names(.))) %&gt;%
+  mutate(illicit_sum = rowSums(.[1:4])) %&gt;% 
+  select(illicit_sum)
+
+drug_sum_marijuana &lt;-
+  drug_sum_row %&gt;% 
+  select(grep(&quot;marijuana&quot;,names(.))) %&gt;%
+  mutate(marijuana_sum = rowSums(.[1:4])) %&gt;% 
+  select(marijuana_sum)
+
+drug_mean_rate &lt;- cbind(drug_sum_row$state, drug_sum_alcohol, drug_sum_illicit, drug_sum_marijuana)
+
+head(drug_mean_rate)</code></pre>
+<pre><code>##   drug_sum_row$state alcohol_sum illicit_sum marijuana_sum
+## 1            Alabama    348.5669    56.19923      183.4815
+## 2             Alaska    378.0608    79.76923      187.6946
+## 3            Arizona    381.9392    73.02462      176.6023
+## 4           Arkansas    351.6715    61.57769      182.1669
+## 5         California    379.2208    73.55615      183.5223
+## 6           Colorado    404.9269    90.40385      193.0815</code></pre>
+<pre class="r"><code># Combine X and Y into one data frame
+regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %&gt;%
+  select(-rape_legacy_rate, -`drug_sum_row$state`)</code></pre>
+</div>
+<div id="linear-regression" class="section level4">
+<h4>Linear Regression</h4>
+<pre class="r"><code># Make linear models for each crime type in each state
+regression_data = 
+  regression_data_raw %&gt;%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
+  group_by(crime_type) %&gt;%
+  nest() %&gt;%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %&gt;%
+  select(-data) %&gt;%
+  unnest()</code></pre>
+</div>
+<div id="some-graphs" class="section level4">
+<h4>some graphs</h4>
+<p>Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)</p>
+<p>Change anything if you want (HX)</p>
+<pre class="r"><code># rank areas by average violent crime rate from 2015 to 2016
+crime %&gt;% 
+  group_by(area) %&gt;% 
+  filter(year != &quot;Percent change&quot;) %&gt;%
+  summarise_each(funs(mean)) %&gt;%
+  mutate(area = fct_reorder(area, violent_crime_rate)) %&gt;% 
+  ggplot(aes(x = area, y = violent_crime_rate)) +
+  geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 6))</code></pre>
+<pre><code>## `summarise_each()` is deprecated.
+## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
+## To map `funs` over all variables, use `summarise_all()`</code></pre>
+<p><img src="about_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
   theme_bw()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
