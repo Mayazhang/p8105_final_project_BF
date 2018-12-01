@@ -12,7 +12,6 @@ library(flexdashboard)
 library(tidyverse)
 library(viridis)
 library(plotly)
-library(readxl)
 ```
 
 ```{r data_cleaning}
@@ -44,7 +43,7 @@ crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
 
 # fill up area name
 i = 1
-for(i in 0:65) {
+for (i in 0:65) {
   n = 3 * i + 1
   crime$area[n + 1] = paste0(crime$area[n]) 
   crime$area[n + 2] = paste0(crime$area[n])
@@ -56,8 +55,11 @@ crime_clean_rate =
   crime %>%
   filter(year != "NA") %>% 
   rename(state = area) %>% 
-  filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
-  
+  filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>%
+  select(-rape_legacy_rate, -contains("number"), -population) %>% 
+  gather(key = crime_type, value = rate, -state, -year)
+  #mutate(crime_type = str_replace_all(crime_type, c("_rate" = "", "_" = " "))) 
+
 #group_by(state) %>% select(grep("rate",names(.))) %>% summarise_all(funs(mean))
 #crime_mean_rate[,2:11] = crime_mean_rate[,2:11]/100
 ```
@@ -66,9 +68,7 @@ crime_clean_rate =
 ```{r variable_for_shiny}
 crime_choice = 
   crime_clean_rate %>% 
-  select(-rape_legacy_rate) %>% 
-  gather(key = type, value = rate, -state) %>% 
-  distinct(type) %>% 
+  distinct(crime_type) %>% 
   pull()
 
 year_choice = crime_clean_rate %>% distinct(year) %>% pull()  
@@ -81,10 +81,11 @@ Column {.sidebar}
 ```{r creat_sidebars}
 # selectInput widget
 selectInput("crime_choice", label = h3("Select Crime"),
-            choices = crime_choice, selected = "murder_manslaughter_rate")
+            choices = crime_choice, selected = "murder manslaughter")
 
 # radioButtons widget
-radioButtons("year_choice", label = h3("Select Year"),choices = year_choice,selected = "2016")
+radioButtons("year_choice", label = h3("Select Year"),
+             choices = year_choice,selected = "2016")
 ```
 
 Column {data-width=650}
@@ -93,20 +94,8 @@ Column {data-width=650}
 ### Drug use in states through year
 
 ```{r}
-crime_new =
-  crime_clean_rate %>% 
-  gather(key = crime_type, value = rate, -state) %>% 
-  mutate(crime_type = str_replace_all(crime_type, c("_rate" = "", "_" = " "))) 
-
-crime_2 =
-  crime_clean_rate %>% 
-  filter(year == 2016) %>% 
-  select(state, violent_crime_rate) %>%
-  filter(state != "District of Columbia")
-
   #mutate(text_label = str_c("Crime type: ", crime_type, '\nRate: ', rate)) %>%
 
-crime_2$hover = with(crime_2, paste(state, '<br>'))
    
 # give state boundaries a white border
 l <- list(color = toRGB("white"), width = 2)
@@ -118,10 +107,15 @@ g <- list(
   lakecolor = toRGB('white')
 )
 
-plot_geo(crime_2, locationmode = 'USA-states') %>%
+crime_clean_rate %>% 
+  filter(state != "District of Columbia") %>% 
+  filter(year == 2016,
+         crime_type == "violent_crime_rate") %>% 
+  select(state, rate) %>%
+  plot_geo(locationmode = 'USA-states') %>%
   add_trace(
-    z = ~violent_crime_rate, text = ~hover, locations = state.abb,
-    color = ~violent_crime_rate, colors = 'Purples'
+    z = ~rate, text = ~paste(state, '<br>'), locations = state.abb,
+    color = ~rate, colors = 'Purples'
   ) %>%
   colorbar(title = "Crime Rate") %>%
   layout(
@@ -140,7 +134,31 @@ Column {data-width=350}
 ### Chart B
 
 ```{r perception_risk}
-
+renderPlotly({
+  l <- list(color = toRGB("white"), width = 2)
+  g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+  
+  crime_clean_rate %>%
+    filter(state != "District of Columbia") %>% 
+    filter(year == input$year_choice,
+           crime_type == input$crime_type) %>%
+    select(state, rate) %>%
+    plot_geo(locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~rate, text = ~paste(state, '<br>'), locations = state.abb,
+    color = ~rate, colors = 'Purples'
+  ) %>%
+  colorbar(title = "Crime Rate") %>%
+  layout(
+    title = 'Violent Crime Rate',
+    geo = g
+  )
+})
 ```
 
 ### Chart C
