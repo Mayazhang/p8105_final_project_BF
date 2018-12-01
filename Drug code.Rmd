@@ -40,8 +40,6 @@ population_data =
   mutate(age = str_replace(age, "x", ""))
 
 drug_clean = left_join(drug_data, population_data)
-
-cbind(crime$violent_crime_rate, drug_clean$)
 ```
 
 ## Explore alcohol use with different degree by state and year
