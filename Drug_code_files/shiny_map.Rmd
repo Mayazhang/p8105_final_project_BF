@@ -161,7 +161,7 @@ renderPlotly({
   ) %>%
   colorbar(title = "Crime Rate") %>%
   layout(
-    title = 'Violent Crime Rate',
+    title = 'Crime Rate Distribution',
     geo = g
   )
 })
