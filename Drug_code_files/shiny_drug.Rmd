@@ -69,12 +69,14 @@ Column {data-width=650}
 
 ```{r}
 renderPlotly({
+x = list(title = "Year")
+y = list(title = "Rate")
   drug_clean %>% 
   filter(state == input$state_choice) %>%
   select(state, year, starts_with(input$drug_choice), -contains("perceptions")) %>% 
   gather(key = "degree", value = "rate", -year, -state) %>% 
   mutate(text_label = str_c("Degree: $", degree)) %>%   
-    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree, text = ~text_label)
+    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree, text = ~text_label) %>%  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
 })
 ```
 
@@ -85,12 +87,16 @@ Column {data-width=350}
 
 ```{r perception_risk}
 renderPlotly({
-  drug_clean %>% 
+x = list(title = "Year")
+y = list(title = "Rate for Perception of Risk")  
+drug_clean$age = recode(drug_clean$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
+drug_clean %>% 
   filter(state == input$state_choice) %>%
   select(starts_with(input$drug_choice), year, age) %>% 
   select(year, age, contains("perceptions")) %>% 
   gather(-year, -age, key = "drug", value = "perception_risk") %>% 
-  plot_ly(x = ~year, y = ~perception_risk, type = "bar", color = ~age)
+  plot_ly(x = ~year, y = ~perception_risk, type = "bar", color = ~age) %>% 
+  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
 })
 ```
 
