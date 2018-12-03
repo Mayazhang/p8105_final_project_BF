@@ -3,16 +3,16 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Crime Dataset Explore"
-      href: about.html
     - text: "Drug Dataset Explore"
       href: Drug_code.html
     - text: "Regression Analysis"
-      href: 
+      href: about.html
     - text: "Shiny(Drug Displaying)"
       href: 
     - text: "Shiny(Map Displaying)"
       href: 
+    - icon: fa-youtube-square
+      href: https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s
     - icon: fa-envelope fa-lg
       href: mailto:<xz2788@cumc.columbia.edu>
     - icon: fa-github fa-lg
