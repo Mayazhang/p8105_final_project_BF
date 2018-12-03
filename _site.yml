@@ -3,15 +3,15 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Crime Dataset Cleaning & Exploring"
+    - text: "Crime Dataset Explore"
       href: about.html
-    - text: "Drug Dataset Cleaning & Exploring"
+    - text: "Drug Dataset Explore"
       href: Drug_code.html
-    - text: "Regression Analysis for Drug & Crime"
+    - text: "Regression Analysis"
       href: 
-    - text: "Shiny for Drug Displaying"
+    - text: "Shiny(Drug Displaying)"
       href: 
-    - text: "Shiny for Map Displaying"
+    - text: "Shiny(Map Displaying)"
       href: 
     - icon: fa-envelope fa-lg
       href: mailto:<xz2788@cumc.columbia.edu>
