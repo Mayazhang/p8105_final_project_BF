@@ -194,6 +194,7 @@ regression_model =
   select(-data) %>%
   unnest()
 
+# Filter the model that has p-value is less than 0.1
 regression_model %>% 
   filter(p.value < 0.1)
 ```
