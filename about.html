@@ -187,14 +187,14 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="about.html">Crime Dataset Cleaning &amp; Exploring</a>
+  <a href="about.html">Crime Dataset Explore</a>
 </li>
 <li>
-  <a href="Drug_code.html">Drug Dataset Cleaning &amp; Exploring</a>
+  <a href="Drug_code.html">Drug Dataset Explore</a>
 </li>
-<li class="dropdown-header">Regression Analysis for Drug &amp; Crime</li>
-<li class="dropdown-header">Shiny for Drug Displaying</li>
-<li class="dropdown-header">Shiny for Map Displaying</li>
+<li class="dropdown-header">Regression Analysis</li>
+<li class="dropdown-header">Shiny(Drug Displaying)</li>
+<li class="dropdown-header">Shiny(Map Displaying)</li>
 <li>
   <a href="mailto:&lt;xz2788@cumc.columbia.edu&gt;">
     <span class="fa fa-envelope fa-lg"></span>
@@ -224,12 +224,12 @@ $(document).ready(function () {
 <div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
 <h4>load crime and drug data and do some clean up!</h4>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ─ Attaching packages ───────────────── tidyverse 1.2.1 ─</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ─ Conflicts ────────────────── tidyverse_conflicts() ─
+<pre><code>## ── Conflicts ────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)</code></pre>
@@ -261,7 +261,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for (i in 0:65) {
@@ -522,18 +522,18 @@ new_reg_data %&gt;%
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                estimate    std.error statistic  p.value
-##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)         -1.29e+1 7.72            -1.67  0.102   
-##  2 illicit_sum         -1.03e-1 0.0430          -2.39  0.0208  
-##  3 alcohol_sum         -8.81e-3 0.00983         -0.896 0.375   
-##  4 marijuana_sum        1.57e-1 0.0499           3.14  0.00297 
-##  5 total_pop_thousands -2.31e-8 0.0000000426    -0.541 0.591   
-##  6 (Intercept)          6.88e+0 7.38             0.933 0.356   
-##  7 illicit_sum         -6.23e-2 0.0362          -1.72  0.0920  
-##  8 alcohol_sum         -4.04e-2 0.0112          -3.61  0.000754
-##  9 marijuana_sum        9.87e-2 0.0439           2.25  0.0293  
-## 10 total_pop_thousands -4.38e-8 0.0000000346    -1.27  0.212   
+##    term                estimate    std.error statistic   p.value
+##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 (Intercept)          2.03e+0 6.53             0.311 0.757    
+##  2 illicit_sum         -6.26e-2 0.0274          -2.28  0.0273   
+##  3 alcohol_sum         -3.17e-2 0.00816         -3.88  0.000329 
+##  4 marijuana_sum        1.05e-1 0.0355           2.96  0.00492  
+##  5 total_pop_thousands  1.02e-8 0.0000000198     0.517 0.607    
+##  6 (Intercept)          1.47e+1 7.28             2.02  0.0494   
+##  7 illicit_sum         -6.05e-2 0.0356          -1.70  0.0957   
+##  8 alcohol_sum         -5.48e-2 0.0125          -4.38  0.0000672
+##  9 marijuana_sum        8.56e-2 0.0391           2.19  0.0339   
+## 10 total_pop_thousands -7.21e-8 0.0000000459    -1.57  0.123    
 ## # ... with 490 more rows</code></pre>
 </div>
 <div id="some-graphs" class="section level4">
