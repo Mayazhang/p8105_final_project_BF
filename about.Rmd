@@ -229,6 +229,22 @@ From the results of regression model that includes "total_population" as variabl
 
 Burglary rate is negtively related to that of illicit and alcohol use while marijuana use is positively associated with burglary rate in whole population in U.S. 
 
+* Try bootstrap of the model of burglary rate
+
+```{r}
+new_reg_data %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  filter(crime_type == "burglary_rate") %>% 
+  modelr::bootstrap(n = 100) %>% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    results = map(linear_model, broom::tidy)) %>% 
+  select(results) %>%
+  unnest()
+  
+```
+
+
 #### some graphs
 
 Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)
