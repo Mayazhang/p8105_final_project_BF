@@ -7,10 +7,12 @@ navbar:
       href: about.html
     - text: "Drug Dataset Cleaning & Exploring"
       href: Drug_code.html
-    - text: "Plots for Crime Dataset"
-      href: dashboard_Crime_Dataset.html
-    - text: "Plots for Drug Dataset"
-      href: dashboard_Drug_Dataset.html
+    - text: "Regression Analysis for Drug & Crime"
+      href: 
+    - text: "Shiny for Drug Displaying"
+      href: 
+    - text: "Shiny for Map Displaying"
+      href: 
     - icon: fa-envelope fa-lg
       href: mailto:<xz2788@cumc.columbia.edu>
     - icon: fa-github fa-lg
