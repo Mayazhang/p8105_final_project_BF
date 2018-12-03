@@ -5,8 +5,6 @@ title: "About This Project"
 
 #### load crime and drug data and do some clean up!
 
-first draft, change anything if you would like --Hongyao
-
 ```{r}
 library(tidyverse)
 library(readxl)
@@ -45,7 +43,7 @@ crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
 
 # fill up area name
 i = 1
-for(i in 0:65) {
+for (i in 0:65) {
   n = 3 * i + 1
   crime$area[n + 1] = paste0(crime$area[n]) 
   crime$area[n + 2] = paste0(crime$area[n])
@@ -185,7 +183,7 @@ regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %>%
 
 ```{r linear regression}
 # Make linear models for each crime type in each state
-regression_data = 
+regression_model = 
   regression_data_raw %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   group_by(crime_type) %>%
@@ -196,10 +194,40 @@ regression_data =
   select(-data) %>%
   unnest()
 
-regression_data %>% 
+regression_model %>% 
   filter(p.value < 0.1)
 ```
 
+* Put "population" into the model
+
+Set the significant level at 0.1
+
+```{r}
+# Clean up the population data to get the average in each state
+population_data = population_data %>% 
+  group_by(state, age) %>% 
+  summarize(mean_pop = mean(popul_in_thousands)) %>% 
+  group_by(state) %>% 
+  summarize(total_pop_thousands = sum(mean_pop))
+
+new_reg_data = left_join(regression_data_raw, population_data)
+
+# Construct new regression models
+new_reg_data %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest() %>% 
+  filter(p.value < 0.1)
+```
+
+From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, the rate of murder and manslaughter is inversely related to that of illicit drug use and positively associated with marijuana use in whole population in U.S.
+
+Burglary rate is negtively related to that of illicit and alcohol use while marijuana use is positively associated with burglary rate in whole population in U.S. 
 
 #### some graphs
 

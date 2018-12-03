@@ -226,22 +226,13 @@ $(document).ready(function () {
 
 <div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
 <h4>load crime and drug data and do some clean up!</h4>
-<p>first draft, change anything if you would like –Hongyao</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<<<<<<< HEAD
-<pre><code>## ── Attaching packages ─────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-=======
 <pre><code>## ── Attaching packages ───────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
->>>>>>> 9df6e198b2dc532a3eca0bfca3ada546398ddc0e
 <pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<<<<<<< HEAD
-<pre><code>## ── Conflicts ────────────────────────────────────────────── tidyverse_conflicts() ──
-=======
 <pre><code>## ── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
->>>>>>> 9df6e198b2dc532a3eca0bfca3ada546398ddc0e
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)</code></pre>
@@ -276,7 +267,7 @@ crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
 <pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
-for(i in 0:65) {
+for (i in 0:65) {
   n = 3 * i + 1
   crime$area[n + 1] = paste0(crime$area[n]) 
   crime$area[n + 2] = paste0(crime$area[n])
@@ -463,7 +454,7 @@ regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %&gt;%
 <div id="linear-regression" class="section level4">
 <h4>Linear Regression</h4>
 <pre class="r"><code># Make linear models for each crime type in each state
-regression_data = 
+regression_model = 
   regression_data_raw %&gt;%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
   group_by(crime_type) %&gt;%
@@ -474,7 +465,7 @@ regression_data =
   select(-data) %&gt;%
   unnest()
 
-regression_data %&gt;% 
+regression_model %&gt;% 
   filter(p.value &lt; 0.1)</code></pre>
 <pre><code>## # A tibble: 5 x 6
 ##   crime_type              term        estimate std.error statistic p.value
@@ -484,6 +475,43 @@ regression_data %&gt;%
 ## 3 burglary_rate           illicit_sum -0.0705   0.0361       -1.95 0.0566 
 ## 4 burglary_rate           alcohol_sum -0.0315   0.0100       -3.14 0.00288
 ## 5 burglary_rate           marijuana_…  0.103    0.0439        2.35 0.0231</code></pre>
+<ul>
+<li>Put “population” into the model</li>
+</ul>
+<p>Set the significant level at 0.1</p>
+<pre class="r"><code># Clean up the population data to get the average in each state
+population_data = population_data %&gt;% 
+  group_by(state, age) %&gt;% 
+  summarize(mean_pop = mean(popul_in_thousands)) %&gt;% 
+  group_by(state) %&gt;% 
+  summarize(total_pop_thousands = sum(mean_pop))
+
+new_reg_data = left_join(regression_data_raw, population_data)</code></pre>
+<pre><code>## Joining, by = &quot;state&quot;</code></pre>
+<pre><code>## Warning: Column `state` joining factor and character vector, coercing into
+## character vector</code></pre>
+<pre class="r"><code># Construct new regression models
+new_reg_data %&gt;%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
+  group_by(crime_type) %&gt;%
+  nest() %&gt;%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %&gt;%
+  select(-data) %&gt;%
+  unnest() %&gt;% 
+  filter(p.value &lt; 0.1)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   crime_type          term          estimate   std.error statistic p.value
+##   &lt;chr&gt;               &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 murder_manslaughte… illicit_sum   -1.48e-3     8.62e-4     -1.71 0.0931 
+## 2 murder_manslaughte… marijuana_sum  1.80e-3     1.05e-3      1.72 0.0924 
+## 3 rape_revise_rate    total_pop_th… -7.93e-9     4.63e-9     -1.71 0.0935 
+## 4 burglary_rate       illicit_sum   -7.10e-2     3.64e-2     -1.95 0.0570 
+## 5 burglary_rate       alcohol_sum   -3.18e-2     1.01e-2     -3.14 0.00293
+## 6 burglary_rate       marijuana_sum  1.03e-1     4.42e-2      2.34 0.0237</code></pre>
+<p>From the results of regression model that includes “total_population” as variable, we can see that at the significant level of 0.1, the rate of murder and manslaughter is inversely related to that of illicit drug use and positively associated with marijuana use in whole population in U.S.</p>
+<p>Burglary rate is negtively related to that of illicit and alcohol use while marijuana use is positively associated with burglary rate in whole population in U.S.</p>
 </div>
 <div id="some-graphs" class="section level4">
 <h4>some graphs</h4>
@@ -503,7 +531,7 @@ crime %&gt;%
 <pre><code>## `summarise_each()` is deprecated.
 ## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
 ## To map `funs` over all variables, use `summarise_all()`</code></pre>
-<p><img src="about_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
   theme_bw()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
