@@ -334,6 +334,17 @@ lm(robbery_rate ~ marijuana, data = new_reg_data) %>% summary()
 
 From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions
 
+```{r model assumptions check for SLR models}
+# Make models and see the diagnostic graphs
+SLR_murder_alcohol = lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data)
+plot(SLR_murder_alcohol)
+
+SLR_burglary_alcohol = lm(burglary_rate ~ alcohol, data = new_reg_data)
+plot(SLR_burglary_alcohol)
+```
+
+From the diagnostics, the simple linear model of murder rate and alcohol use has a relatively better residual distribution, and there is no heavy tails in the QQ plot. However, the redisuals vs fitted plot of the model of burglary rate and alcohol, has a skewed line. Therefore, it may not meet the assumption.
+
 * Try bootstrap of the model of burglary rate
 
 ```{r}
