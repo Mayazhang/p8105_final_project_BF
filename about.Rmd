@@ -51,6 +51,9 @@ for (i in 0:65) {
   i = i + 1
 }
 
+crime  <- crime %>% 
+  na.omit()
+
 # check head
 head(crime)
 ```
