@@ -56,7 +56,7 @@ crime_clean_rate =
   filter(year != "NA") %>% 
   rename(state = area) %>% 
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>%
-  select(-rape_legacy_rate, -contains("number"), -population) %>% 
+  select(-rape_legacy_rate, -contains("number"), -population) %>%
   gather(key = crime_type, value = rate, -state, -year)
   #mutate(crime_type = str_replace_all(crime_type, c("_rate" = "", "_" = " "))) 
 
