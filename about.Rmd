@@ -97,6 +97,93 @@ crime_clean =
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
 ```
 
+#### Some Graphs
+
+Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)
+
+Change anything if you want (HX)
+
+```{r}
+# rank areas by average violent crime rate from 2015 to 2016
+crime %>% 
+  group_by(area) %>% 
+  filter(year != "Percent change") %>%
+  summarise_each(funs(mean)) %>%
+  mutate(area = fct_reorder(area, violent_crime_rate)) %>% 
+  ggplot(aes(x = area, y = violent_crime_rate)) +
+  geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 6))
+```
+
+
+See the crime distribution at different geographic levels.
+```{r distribution of violent crime rate}
+# At state level
+ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 10)) +
+  labs(
+    title = "Crime Rate in Each State",
+    x = "State",
+    y = "Crime Rate (Per 100000)"
+  )
+
+# At area level
+ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in Each Area",
+    x = "Area",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the midwest area
+ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in Midwest Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the northeast area
+ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in Northeast Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the south area
+ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in South Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the west area
+ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in West Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+```
+
+
+
+
 Load drug data and clean up
 
 ```{r drug dataset load and clean up}
@@ -260,93 +347,6 @@ new_reg_data %>%
   select(results) %>%
   unnest()
 ```
-
-
-#### some graphs
-
-Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)
-
-Change anything if you want (HX)
-
-```{r}
-# rank areas by average violent crime rate from 2015 to 2016
-crime %>% 
-  group_by(area) %>% 
-  filter(year != "Percent change") %>%
-  summarise_each(funs(mean)) %>%
-  mutate(area = fct_reorder(area, violent_crime_rate)) %>% 
-  ggplot(aes(x = area, y = violent_crime_rate)) +
-  geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 8),
-        title = element_text(size = 6))
-```
-
-
-See the crime distribution at different geographic levels.
-```{r distribution of violent crime rate}
-# At state level
-ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 10)) +
-  labs(
-    title = "Crime Rate in Each State",
-    x = "State",
-    y = "Crime Rate (Per 100000)"
-  )
-
-# At area level
-ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in Each Area",
-    x = "Area",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the midwest area
-ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in Midwest Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the northeast area
-ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in Northeast Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the south area
-ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in South Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the west area
-ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in West Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-```
-
-
 
 
 
