@@ -8,6 +8,7 @@ title: "About This Project"
 ```{r}
 library(tidyverse)
 library(readxl)
+library(PerformanceAnalytics)
 ```
 
 Load crime data and some primary clean up
@@ -180,7 +181,16 @@ regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %>%
 ```
 
 #### Linear Regression
+Check the distribution for variables.
+```{r distribution checking}
+# Check distributions 
+regression_data_raw %>%
+  select(-state) %>%
+  chart.Correlation()
+```
 
+
+Make models for MLR of crime types and drug uses. 
 ```{r linear regression}
 # Make linear models for each crime type in each state
 regression_model = 
@@ -224,6 +234,14 @@ new_reg_data %>%
   select(-data) %>%
   unnest() %>% 
   filter(p.value < 0.1)
+```
+From the result we could see that, only burglary has significant estimated coefficients for all three variables. So we would look into the model assumptions.
+
+Check the diagnostics of the models.
+```{r diagnostics for each models}
+model1 = lm(burglary_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = regression_data_raw)
+par(mfrow = c(2,2))
+plot(model1)
 ```
 
 From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, the rate of murder and manslaughter is inversely related to that of illicit drug use and positively associated with marijuana use in whole population in U.S.
