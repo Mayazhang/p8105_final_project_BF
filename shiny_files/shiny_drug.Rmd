@@ -15,7 +15,6 @@ library(viridis)
 library(plotly)
 ```
 
-Do some cleaning with the original data
 
 ```{r data_cleaning}
 # Read in the data from the original website
