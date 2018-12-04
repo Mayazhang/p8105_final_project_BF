@@ -196,7 +196,9 @@ $(document).ready(function () {
 <li>
   <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/">Shiny(Drug Displaying)</a>
 </li>
-<li class="dropdown-header">Shiny(Map Displaying)</li>
+<li>
+  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/">Shiny(Map Displaying)</a>
+</li>
 <li>
   <a href="https://www.youtube.com/watch?v=nEqlPeCH6QE&amp;list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&amp;index=3&amp;t=0s">
     <span class="fa fa-youtube-square"></span>
@@ -242,9 +244,32 @@ $(document).ready(function () {
 </div>
 <div id="data-source-scraping-method-cleaning-etc." class="section level2">
 <h2>Data: Source, scraping method, cleaning, etc.</h2>
+<p>Data cleaning(crime dataset): the crime dataset was loaded from the <a href="https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096">google sheet</a>, detailed data cleaning steps were as follow:</p>
+<ul>
+<li><p>Clean up column names using ‘janitor’ packages and manually</p></li>
+<li><p>Convert column ‘area’ from character to factor</p></li>
+<li><p>Remove comma in columns containing numbers and rates, followed by transformation from character to numeric</p></li>
+<li><p>Fill up area names where appropriate</p></li>
+<li><p>Remove NAs and separate individual state observations and large district observations</p></li>
+<li><p>Remove ‘rape_legacy’ related columns as it has overlapping information with ‘rape_revise’ columns</p></li>
+</ul>
+<p>Data cleaning(drug dataset): The dataset can be accessed through its <a href="https://think.cs.vt.edu/corgis/csv/drugs/drugs.html">original website</a>, detailed data cleaning steps were as follows:</p>
+<ul>
+<li><p>Data description: This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) among different age groups (12-17, 18-25, 26 or above) and states in United States from year 2002 to 2014. Data was collected from individual state as part of the NSDUH study.</p></li>
+<li><p>Mainly focused on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so selected all related columns from the whole dataset (state, year and rate of different substance abuse in different age groups)</p></li>
+<li><p>Gathered all the columns except year and state</p></li>
+<li><p>Replaced the strings before the age number for later separating</p></li>
+<li><p>Separated the data into “age” and “rate” and obtained tidy dataset</p></li>
+<li><p>Extracted population data from corresponding columns (three age groups) and kept “state” and “year” variables for later regression use</p></li>
+</ul>
 </div>
 <div id="exploratory-analysis-visualizations-summaries-and-exploratory-statistical-analyses.-justify-the-steps-you-took-and-show-any-major-changes-to-your-ideas." class="section level2">
 <h2>Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.</h2>
+<ul>
+<li>Process of building shiny for drug data:</li>
+</ul>
+<p>As we have 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degree in each drug (abuse, binge, dependence, need treatment, use). We wanted to analyze the distribution of degrees in each drug in each state through the years and also the distribution of degrees in each drug in each state and in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, so we further conducted analysis of the trend of perception risk in each age group and in each state for selected drug. Thus, we created three charts in total.</p>
+<p>In chart A, we first filtered specific state and drug type been selected and then built an interactive bar chart with “year” as x axis, “rate” as y axis and different degree with different colors. In chart B, similarly we mainly focused on the change through years on what proportion of people in each state obtained perception of risk of a certain drug in different age groups. Thus, we filtered all perception risk rates and then assigned different color to each age group. In chart C, we attached the importance to the trend over years on different age groups in each drug type and in each state. As a result, we colored each degree to see the change in a certain group.</p>
 </div>
 <div id="additional-analysis-if-you-undertake-formal-statistical-analyses-describe-these-in-detail" class="section level2">
 <h2>Additional analysis: If you undertake formal statistical analyses, describe these in detail</h2>
