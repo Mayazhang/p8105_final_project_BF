@@ -46,7 +46,7 @@ crime =
   mutate(area = as.factor(area))
 
 # Remove comma and convert to numeric
-crime[,3:23] <- as.numeric(gsub(",","",unlist(crime1[,3:23])))
+crime[,3:23] <- as.numeric(gsub(",","",unlist(crime[,3:23])))
 
 
 
@@ -74,6 +74,7 @@ state_abb =
   bind_rows(tibble(state = "District of Columbia", abb = "DC"))
 
 crime_with_abb = left_join(crime_clean_rate, state_abb, by = "state")
+
 ```
 
 ```{r drug_data}
