@@ -8,13 +8,16 @@ runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
+# Load necessary packages
 library(flexdashboard)
 library(tidyverse)
 library(viridis)
 library(plotly)
 ```
 
+
 ```{r data_cleaning}
+# Do some cleaning with the data
 drug_raw =
   read_csv("../data/drugs.csv") %>%
   janitor::clean_names()
@@ -30,6 +33,7 @@ drug_data =
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
   mutate(rate = str_replace(rate, "^rates_", "")) %>% 
+#already a tidy dataset up to now, but for later use, we choose to spread it
   spread(rate, value)
 
 population_data = 
@@ -43,6 +47,8 @@ drug_clean = left_join(drug_data, population_data)
 
 
 ```{r variable_for_shiny}
+# Creat variables for later use in shiny
+
 drug_choice = c("alcohol", "illicit", "marijuana")
 
 state_choice = drug_clean %>% distinct(state) %>% pull()  
