@@ -195,7 +195,9 @@ $(document).ready(function () {
 <li>
   <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/">Shiny(Drug Displaying)</a>
 </li>
-<li class="dropdown-header">Shiny(Map Displaying)</li>
+<li>
+  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/">Shiny(Map Displaying)</a>
+</li>
 <li>
   <a href="https://www.youtube.com/watch?v=nEqlPeCH6QE&amp;list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&amp;index=3&amp;t=0s">
     <span class="fa fa-youtube-square"></span>
@@ -529,14 +531,71 @@ new_reg_data %&gt;%
 ## 1 murder_manslaughter alcohol   -0.00146  0.000716     -2.04  0.0474
 ## 2 robbery             marijuana  0.0473   0.0248        1.91  0.0629
 ## 3 burglary            alcohol   -0.0790   0.0323       -2.44  0.0184</code></pre>
-<p>From the result we could see that, only burglary has significant estimated coefficients for all three variables. So we would look into the model assumptions.</p>
-<p>Check the diagnostics of the models.</p>
-<pre class="r"><code>model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana, data = regression_data_raw)
+<p>Check the diagnostics of the model.</p>
+<pre class="r"><code>model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
 par(mfrow = c(2,2))
 plot(model1)</code></pre>
 <p><img src="about_files/figure-html/diagnostics%20for%20each%20models-1.png" width="672" /></p>
-<p>From the results of regression model that includes “total_population” as variable, we can see that at the significant level of 0.1, the rate of murder and manslaughter is inversely related to that of illicit drug use and positively associated with marijuana use in whole population in U.S.</p>
-<p>Burglary rate is negtively related to that of illicit and alcohol use while marijuana use is positively associated with burglary rate in whole population in U.S.</p>
+<p>From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association</p>
+<ul>
+<li>Each simple linear regression</li>
+</ul>
+<pre class="r"><code>lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data) %&gt;% summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = murder_manslaughter_rate ~ alcohol, data = new_reg_data)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.047400 -0.019640 -0.003364  0.008795  0.177346 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  0.1237220  0.0382351   3.236  0.00218 **
+## alcohol     -0.0011214  0.0005871  -1.910  0.06200 . 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.03226 on 49 degrees of freedom
+## Multiple R-squared:  0.06929,    Adjusted R-squared:  0.0503 
+## F-statistic: 3.648 on 1 and 49 DF,  p-value: 0.062</code></pre>
+<pre class="r"><code>lm(burglary_rate ~ alcohol, data = new_reg_data) %&gt;% summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = burglary_rate ~ alcohol, data = new_reg_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.0136 -0.9727  0.0369  0.8640  4.0812 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 10.94166    1.75708   6.227 1.04e-07 ***
+## alcohol     -0.09469    0.02698  -3.509 0.000974 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.483 on 49 degrees of freedom
+## Multiple R-squared:  0.2009, Adjusted R-squared:  0.1845 
+## F-statistic: 12.32 on 1 and 49 DF,  p-value: 0.0009737</code></pre>
+<pre class="r"><code>lm(robbery_rate ~ marijuana, data = new_reg_data) %&gt;% summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = robbery_rate ~ marijuana, data = new_reg_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.8923 -0.3674 -0.0716  0.2013  4.3667 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 0.560138   0.576680   0.971    0.336
+## marijuana   0.006396   0.010555   0.606    0.547
+## 
+## Residual standard error: 0.7645 on 49 degrees of freedom
+## Multiple R-squared:  0.007438,   Adjusted R-squared:  -0.01282 
+## F-statistic: 0.3672 on 1 and 49 DF,  p-value: 0.5473</code></pre>
+<p>From the results of regression model that includes “total_population” as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions</p>
 <ul>
 <li>Try bootstrap of the model of burglary rate</li>
 </ul>
@@ -550,18 +609,18 @@ plot(model1)</code></pre>
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                estimate    std.error statistic  p.value
-##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)          1.07e+1 2.70             3.95  0.000268
-##  2 illicit_drugs        3.67e-2 0.139            0.264 0.793   
-##  3 alcohol             -6.06e-2 0.0384          -1.58  0.122   
-##  4 marijuana           -5.58e-2 0.0535          -1.04  0.302   
-##  5 total_pop_thousands -2.27e-8 0.0000000382    -0.593 0.556   
-##  6 (Intercept)          9.62e+0 3.04             3.16  0.00277 
-##  7 illicit_drugs        5.15e-2 0.117            0.441 0.661   
-##  8 alcohol             -5.77e-2 0.0434          -1.33  0.190   
-##  9 marijuana           -4.70e-2 0.0478          -0.983 0.331   
-## 10 total_pop_thousands -3.27e-8 0.0000000426    -0.767 0.447   
+##    term                estimate    std.error statistic     p.value
+##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 (Intercept)          1.25e+1 2.22             5.61  0.00000111 
+##  2 illicit_drugs        2.91e-2 0.102            0.284 0.777      
+##  3 alcohol             -8.75e-2 0.0299          -2.93  0.00532    
+##  4 marijuana           -4.70e-2 0.0418          -1.12  0.266      
+##  5 total_pop_thousands -3.77e-8 0.0000000371    -1.02  0.315      
+##  6 (Intercept)          1.46e+1 2.53             5.75  0.000000696
+##  7 illicit_drugs        1.25e-1 0.114            1.10  0.277      
+##  8 alcohol             -1.44e-1 0.0333          -4.33  0.0000810  
+##  9 marijuana           -6.64e-2 0.0492          -1.35  0.183      
+## 10 total_pop_thousands -1.21e-7 0.0000000414    -2.93  0.00528    
 ## # ... with 490 more rows</code></pre>
 </div>
 <div id="some-graphs" class="section level4">
@@ -582,7 +641,7 @@ crime %&gt;%
 <pre><code>## `summarise_each()` is deprecated.
 ## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
 ## To map `funs` over all variables, use `summarise_all()`</code></pre>
-<p><img src="about_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
   theme_bw()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>

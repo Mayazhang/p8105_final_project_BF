@@ -226,18 +226,26 @@ new_reg_data %>%
   filter(p.value < 0.1,
          term != "(Intercept)")
 ```
-From the result we could see that, only burglary has significant estimated coefficients for all three variables. So we would look into the model assumptions.
 
-Check the diagnostics of the models.
+Check the diagnostics of the model.
+
 ```{r diagnostics for each models}
-model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana, data = regression_data_raw)
+model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
 par(mfrow = c(2,2))
 plot(model1)
 ```
 
-From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, the rate of murder and manslaughter is inversely related to that of illicit drug use and positively associated with marijuana use in whole population in U.S.
+From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association
 
-Burglary rate is negtively related to that of illicit and alcohol use while marijuana use is positively associated with burglary rate in whole population in U.S. 
+* Each simple linear regression
+
+```{r}
+lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data) %>% summary()
+lm(burglary_rate ~ alcohol, data = new_reg_data) %>% summary()
+lm(robbery_rate ~ marijuana, data = new_reg_data) %>% summary()
+```
+
+From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions
 
 * Try bootstrap of the model of burglary rate
 
@@ -251,7 +259,6 @@ new_reg_data %>%
     results = map(linear_model, broom::tidy)) %>% 
   select(results) %>%
   unnest()
-  
 ```
 
 
