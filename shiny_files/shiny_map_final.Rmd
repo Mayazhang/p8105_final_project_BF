@@ -19,8 +19,8 @@ library(gsheet)
 crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096')
 crime_raw = crime_raw[3:201,]
 
-crime = crime_raw %>% 
-  #readxl::read_excel("../data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+crime = 
+  crime_raw %>% 
   janitor::clean_names() %>% 
     rename_(population = names(.)[3],
           violent_crime_number = names(.)[4],
@@ -44,7 +44,7 @@ crime = crime_raw %>%
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
   mutate(area = as.factor(area)) 
-crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
+crime[,2:23] = as.numeric(unlist(crime[,2:23]))
 
 # fill up area name
 i = 1
@@ -63,26 +63,23 @@ crime_clean_rate =
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>%
   select(-rape_legacy_rate, -contains("number"), -population) %>% 
   gather(key = crime_type, value = rate, -state, -year)
-  #mutate(crime_type = str_replace_all(crime_type, c("_rate" = "", "_" = " "))) 
 
-#group_by(state) %>% select(grep("rate",names(.))) %>% summarise_all(funs(mean))
-#crime_mean_rate[,2:11] = crime_mean_rate[,2:11]/100
+state_abb =
+  tibble(state = state.name) %>%
+  bind_cols(tibble(abb = state.abb)) %>% 
+  bind_rows(tibble(state = "District of Columbia", abb = "DC"))
 
-#state_transform <- state.abb
-#names(state_transform) <- state.name
-
-#crime_clean_rate <- crime_clean_rate %>% mutate(state = state_transform[state])
-#crime_clean_rate <- crime_clean_rate %>% mutate(state = as.character(state))
+crime_with_abb = left_join(crime_clean_rate, state_abb, by = "state")
 ```
 
 
 ```{r variable_for_shiny}
 crime_choice = 
-  crime_clean_rate %>% 
+  crime_with_abb %>% 
   distinct(crime_type) %>% 
   pull()
 
-year_choice = crime_clean_rate %>% distinct(year) %>% pull()  
+year_choice = crime_with_abb %>% distinct(year) %>% pull()  
 #use mean or two years???
 ```
 
@@ -102,49 +99,9 @@ radioButtons("year_choice", label = h3("Select Year"),
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Drug use in states through year
+### Distributions of ten types of crime rates
 
 ```{r}
-  #mutate(text_label = str_c("Crime type: ", crime_type, '\nRate: ', rate)) %>%
-
-   
-# give state boundaries a white border
-l <- list(color = toRGB("white"), width = 2)
-# specify some map projection/options
-g <- list(
-  scope = 'usa',
-  projection = list(type = 'albers usa'),
-  showlakes = TRUE,
-  lakecolor = toRGB('white')
-)
-
-crime_clean_rate %>% 
-  filter(state != "District of Columbia") %>% 
-  filter(year == 2016,
-         crime_type == "violent_crime_rate") %>% 
-  select(state, rate) %>%
-  plot_geo(locationmode = 'USA-states') %>%
-  add_trace(
-    z = ~rate, text = ~paste(state, '<br>'), locations = state.abb,
-    color = ~rate, colors = 'Purples'
-  ) %>%
-  colorbar(title = "Crime Rate") %>%
-  layout(
-    title = 'Violent Crime Rate',
-    geo = g
-  )                    
-  
-
-#figure out add district of columbia, and abb match??
-
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-```{r perception_risk}
 renderPlotly({
   l <- list(color = toRGB("white"), width = 2)
   g <- list(
@@ -154,14 +111,13 @@ renderPlotly({
   lakecolor = toRGB('white')
 )
   
-  crime_clean_rate %>%
-    filter(state != "District of Columbia") %>% 
+  crime_with_abb %>%
     filter(year == input$year_choice,
            crime_type == input$crime_choice) %>%
-    select(state, rate) %>%
+    select(abb, state, rate) %>%
     plot_geo(locationmode = 'USA-states') %>%
   add_trace(
-    z = ~rate, text = ~paste(state, '<br>'), locations = state.abb,
+    z = ~rate, text = ~paste(state, '<br>'), locations = ~abb,
     color = ~rate, colors = 'Purples'
   ) %>%
   colorbar(title = "Crime Rate") %>%
@@ -170,6 +126,15 @@ renderPlotly({
     geo = g
   )
 })
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r }
+
 ```
 
 ### Chart C
