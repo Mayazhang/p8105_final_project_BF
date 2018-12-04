@@ -283,10 +283,67 @@ crime %>%
 ```
 
 
+See the crime distribution at different geographic levels.
+```{r distribution of violent crime rate}
+# At state level
+ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 10)) +
+  labs(
+    title = "Crime Rate in Each State",
+    x = "State",
+    y = "Crime Rate (Per 100000)"
+  )
 
-```{r distribution of violent crime rate for each state}
-ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
-  theme_bw()
+# At area level
+ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in Each Area",
+    x = "Area",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the midwest area
+ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in Midwest Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the northeast area
+ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in Northeast Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the south area
+ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in South Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
+
+# In the west area
+ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = "Crime Rate in West Area",
+    x = "Regions",
+    y = "Crime Rate (Per 100000)"
+  ) 
 ```
 
 
