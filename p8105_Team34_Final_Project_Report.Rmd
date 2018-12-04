@@ -20,6 +20,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##Data: Source, scraping method, cleaning, etc.
 
+Data cleaning(crime dataset): the crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
+
+ * Clean up column names using 'janitor' packages and manually
+ 
+ * Convert column 'area' from character to factor
+ 
+ * Remove comma in columns containing numbers and rates, followed by transformation from character to numeric
+ 
+ * Fill up area names where appropriate
+ 
+ * Remove NAs and separate individual state observations and large district observations
+ 
+ * Remove 'rape_legacy' related columns as it has overlapping information with 'rape_revise' columns
+ 
+ 
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
 

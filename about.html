@@ -195,7 +195,9 @@ $(document).ready(function () {
 <li>
   <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/">Shiny(Drug Displaying)</a>
 </li>
-<li class="dropdown-header">Shiny(Map Displaying)</li>
+<li>
+  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/">Shiny(Map Displaying)</a>
+</li>
 <li>
   <a href="https://www.youtube.com/watch?v=nEqlPeCH6QE&amp;list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&amp;index=3&amp;t=0s">
     <span class="fa fa-youtube-square"></span>
@@ -231,12 +233,12 @@ $(document).ready(function () {
 <div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
 <h4>load crime and drug data and do some clean up!</h4>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ─ Attaching packages ───────────────── tidyverse 1.2.1 ─</code></pre>
-<pre><code>## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
-## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
-## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ─ Conflicts ────────────────── tidyverse_conflicts() ─
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)
@@ -286,7 +288,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for (i in 0:65) {
@@ -354,7 +356,7 @@ colnames(crime_clean)[1] = &quot;state&quot;
 crime_clean = 
   crime_clean %&gt;%
   filter(!state %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;, &quot;New England&quot;, &quot;Middle Atlantic&quot;, &quot;East North Central&quot;, &quot;West North Central&quot;, &quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;, &quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))</code></pre>
-<p>load drug data and clean up</p>
+<p>Load drug data and clean up</p>
 <pre class="r"><code># Remove the block later
 drug_raw =
   read_csv(&quot;./data/drugs.csv&quot;) %&gt;%
@@ -385,7 +387,7 @@ drug_raw =
 ##   # ... with 43 more columns
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>drug_data = 
+<pre class="r"><code>drug_clean = 
   drug_raw %&gt;%
   select(year, state,
          rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
@@ -395,17 +397,13 @@ drug_raw =
   gather(key, value, -state, -year) %&gt;% 
   mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
   separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;%
-  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;)) %&gt;% 
-  spread(rate, value)
+  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;))
 
 population_data = 
   drug_raw %&gt;% 
   select(x12_17, x18_25:x26, year, state) %&gt;% 
   gather(key = &quot;age&quot;, value = &quot;popul_in_thousands&quot;, -state, -year) %&gt;% 
-  mutate(age = str_replace(age, &quot;x&quot;, &quot;&quot;))
-
-drug_clean = left_join(drug_data, population_data)</code></pre>
-<pre><code>## Joining, by = c(&quot;year&quot;, &quot;state&quot;, &quot;age&quot;)</code></pre>
+  mutate(age = str_replace(age, &quot;x&quot;, &quot;&quot;))</code></pre>
 </div>
 <div id="get-y-and-x-for-regression" class="section level4">
 <h4>Get Y and X for regression</h4>
@@ -436,45 +434,38 @@ dim(crime_mean_rate) #right</code></pre>
 ## #   burglary_rate &lt;dbl&gt;, larceny_theft_rate &lt;dbl&gt;,
 ## #   motor_vehicle_theft_rate &lt;dbl&gt;</code></pre>
 <p>X: 51 states, each with mean drug rate (3 types of drugs)</p>
-<pre class="r"><code>drug_sum_row = drug_clean %&gt;% 
-  group_by(state, age) %&gt;%
-  select(-year) %&gt;% 
-  summarise_all(funs(mean)) %&gt;% 
-  group_by(state) %&gt;% 
-  select(-age) %&gt;% 
-  summarise_all(funs(sum))
-
-drug_sum_alcohol &lt;-
-  drug_sum_row %&gt;% 
-  select(grep(&quot;alcohol&quot;,names(.))) %&gt;%
-  mutate(alcohol_sum = rowSums(.[1:6])) %&gt;% 
-  select(alcohol_sum)
-
-drug_sum_illicit &lt;-
-  drug_sum_row %&gt;% 
-  select(grep(&quot;illicit&quot;,names(.))) %&gt;%
-  mutate(illicit_sum = rowSums(.[1:4])) %&gt;% 
-  select(illicit_sum)
-
-drug_sum_marijuana &lt;-
-  drug_sum_row %&gt;% 
-  select(grep(&quot;marijuana&quot;,names(.))) %&gt;%
-  mutate(marijuana_sum = rowSums(.[1:4])) %&gt;% 
-  select(marijuana_sum)
-
-drug_mean_rate &lt;- cbind(drug_sum_row$state, drug_sum_alcohol, drug_sum_illicit, drug_sum_marijuana)
+<pre class="r"><code>drug_mean_rate = drug_clean %&gt;% 
+  group_by(state, rate, age) %&gt;% 
+  summarize(drug_average = mean(value)) %&gt;% 
+  group_by(state, rate) %&gt;% 
+  summarize(drug_sum = sum(drug_average)) %&gt;% 
+  filter(!str_detect(rate, &#39;perceptions&#39;),
+         str_detect(rate, &#39;past_year&#39;)) %&gt;% 
+  mutate(rate = str_replace_all(rate, c(&quot;alcohol_&quot; = &quot;alcohol:&quot;, &quot;illicit_drugs_&quot; = &quot;illicit_drugs:&quot;, &quot;marijuana_&quot; = &quot;marijuana:&quot;))) %&gt;% 
+  separate(rate, into = c(&quot;drug&quot;, &quot;degree&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;% 
+  select(-degree) %&gt;% 
+  group_by(state, drug) %&gt;% 
+  summarize(use_past_year = sum(drug_sum)) %&gt;% 
+# up to here, it&#39;s already a tidy dataset, but for regression we need to define each drug as a variable, so we choose to spread &quot;drug&quot; column
+  spread(key = drug, value = use_past_year)
 
 head(drug_mean_rate)</code></pre>
-<pre><code>##   drug_sum_row$state alcohol_sum illicit_sum marijuana_sum
-## 1            Alabama    348.5669    56.19923      183.4815
-## 2             Alaska    378.0608    79.76923      187.6946
-## 3            Arizona    381.9392    73.02462      176.6023
-## 4           Arkansas    351.6715    61.57769      182.1669
-## 5         California    379.2208    73.55615      183.5223
-## 6           Colorado    404.9269    90.40385      193.0815</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   state [6]
+##   state      alcohol illicit_drugs marijuana
+##   &lt;chr&gt;        &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Alabama       53.2          24.8      41.2
+## 2 Alaska        65.5          31.3      68.4
+## 3 Arizona       68.5          34.1      51.7
+## 4 Arkansas      57.9          27.0      45.6
+## 5 California    63.1          32.4      56.0
+## 6 Colorado      73.1          38.1      70.9</code></pre>
 <pre class="r"><code># Combine X and Y into one data frame
-regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %&gt;%
-  select(-rape_legacy_rate, -`drug_sum_row$state`)</code></pre>
+regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %&gt;% 
+  select(-rape_legacy_rate)</code></pre>
+<pre><code>## Joining, by = &quot;state&quot;</code></pre>
+<pre><code>## Warning: Column `state` joining factor and character vector, coercing into
+## character vector</code></pre>
 </div>
 <div id="linear-regression" class="section level4">
 <h4>Linear Regression</h4>
@@ -492,22 +483,22 @@ regression_model =
   group_by(crime_type) %&gt;%
   nest() %&gt;%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %&gt;%
   select(-data) %&gt;%
   unnest()
 
 # Filter the model that has p-value is less than 0.1
 regression_model %&gt;% 
-  filter(p.value &lt; 0.1)</code></pre>
-<pre><code>## # A tibble: 5 x 6
-##   crime_type              term        estimate std.error statistic p.value
-##   &lt;chr&gt;                   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 murder_manslaughter_ra… illicit_sum -0.00148  0.000852     -1.73 0.0896 
-## 2 murder_manslaughter_ra… marijuana_…  0.00180  0.00104       1.74 0.0890 
-## 3 burglary_rate           illicit_sum -0.0705   0.0361       -1.95 0.0566 
-## 4 burglary_rate           alcohol_sum -0.0315   0.0100       -3.14 0.00288
-## 5 burglary_rate           marijuana_…  0.103    0.0439        2.35 0.0231</code></pre>
+  filter(p.value &lt; 0.1,
+         term != &quot;(Intercept)&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 6
+##   crime_type               term      estimate std.error statistic p.value
+##   &lt;chr&gt;                    &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 murder_manslaughter_rate alcohol   -0.00141  0.000688     -2.04  0.0468
+## 2 robbery_rate             alcohol   -0.0285   0.0161       -1.77  0.0824
+## 3 robbery_rate             marijuana  0.0444   0.0246        1.81  0.0772
+## 4 burglary_rate            alcohol   -0.0682   0.0317       -2.15  0.0363</code></pre>
 <ul>
 <li>Put “population” into the model</li>
 </ul>
@@ -521,36 +512,90 @@ population_data = population_data %&gt;%
 
 new_reg_data = left_join(regression_data_raw, population_data)</code></pre>
 <pre><code>## Joining, by = &quot;state&quot;</code></pre>
-<pre><code>## Warning: Column `state` joining factor and character vector, coercing into
-## character vector</code></pre>
 <pre class="r"><code># Construct new regression models
 new_reg_data %&gt;%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
+  mutate(crime_type = str_replace(crime_type, &quot;_rate&quot;, &quot;&quot;)) %&gt;% 
   group_by(crime_type) %&gt;%
   nest() %&gt;%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %&gt;%
   select(-data) %&gt;%
   unnest() %&gt;% 
-  filter(p.value &lt; 0.1)</code></pre>
-<pre><code>## # A tibble: 6 x 6
-##   crime_type          term          estimate   std.error statistic p.value
-##   &lt;chr&gt;               &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 murder_manslaughte… illicit_sum   -1.48e-3     8.62e-4     -1.71 0.0931 
-## 2 murder_manslaughte… marijuana_sum  1.80e-3     1.05e-3      1.72 0.0924 
-## 3 rape_revise_rate    total_pop_th… -7.93e-9     4.63e-9     -1.71 0.0935 
-## 4 burglary_rate       illicit_sum   -7.10e-2     3.64e-2     -1.95 0.0570 
-## 5 burglary_rate       alcohol_sum   -3.18e-2     1.01e-2     -3.14 0.00293
-## 6 burglary_rate       marijuana_sum  1.03e-1     4.42e-2      2.34 0.0237</code></pre>
-<p>From the result we could see that, only burglary has significant estimated coefficients for all three variables. So we would look into the model assumptions.</p>
-<p>Check the diagnostics of the models.</p>
-<pre class="r"><code>model1 = lm(burglary_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = regression_data_raw)
+  filter(p.value &lt; 0.1,
+         term != &quot;(Intercept)&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 6
+##   crime_type          term      estimate std.error statistic p.value
+##   &lt;chr&gt;               &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 murder_manslaughter alcohol   -0.00146  0.000716     -2.04  0.0474
+## 2 robbery             marijuana  0.0473   0.0248        1.91  0.0629
+## 3 burglary            alcohol   -0.0790   0.0323       -2.44  0.0184</code></pre>
+<p>Check the diagnostics of the model.</p>
+<pre class="r"><code>model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
 par(mfrow = c(2,2))
 plot(model1)</code></pre>
 <p><img src="about_files/figure-html/diagnostics%20for%20each%20models-1.png" width="672" /></p>
-<p>From the results of regression model that includes “total_population” as variable, we can see that at the significant level of 0.1, the rate of murder and manslaughter is inversely related to that of illicit drug use and positively associated with marijuana use in whole population in U.S.</p>
-<p>Burglary rate is negtively related to that of illicit and alcohol use while marijuana use is positively associated with burglary rate in whole population in U.S.</p>
+<p>From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association</p>
+<ul>
+<li>Each simple linear regression</li>
+</ul>
+<pre class="r"><code>lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data) %&gt;% summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = murder_manslaughter_rate ~ alcohol, data = new_reg_data)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.047400 -0.019640 -0.003364  0.008795  0.177346 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  0.1237220  0.0382351   3.236  0.00218 **
+## alcohol     -0.0011214  0.0005871  -1.910  0.06200 . 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.03226 on 49 degrees of freedom
+## Multiple R-squared:  0.06929,    Adjusted R-squared:  0.0503 
+## F-statistic: 3.648 on 1 and 49 DF,  p-value: 0.062</code></pre>
+<pre class="r"><code>lm(burglary_rate ~ alcohol, data = new_reg_data) %&gt;% summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = burglary_rate ~ alcohol, data = new_reg_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.0136 -0.9727  0.0369  0.8640  4.0812 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 10.94166    1.75708   6.227 1.04e-07 ***
+## alcohol     -0.09469    0.02698  -3.509 0.000974 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.483 on 49 degrees of freedom
+## Multiple R-squared:  0.2009, Adjusted R-squared:  0.1845 
+## F-statistic: 12.32 on 1 and 49 DF,  p-value: 0.0009737</code></pre>
+<pre class="r"><code>lm(robbery_rate ~ marijuana, data = new_reg_data) %&gt;% summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = robbery_rate ~ marijuana, data = new_reg_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.8923 -0.3674 -0.0716  0.2013  4.3667 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 0.560138   0.576680   0.971    0.336
+## marijuana   0.006396   0.010555   0.606    0.547
+## 
+## Residual standard error: 0.7645 on 49 degrees of freedom
+## Multiple R-squared:  0.007438,   Adjusted R-squared:  -0.01282 
+## F-statistic: 0.3672 on 1 and 49 DF,  p-value: 0.5473</code></pre>
+<p>From the results of regression model that includes “total_population” as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions</p>
 <ul>
 <li>Try bootstrap of the model of burglary rate</li>
 </ul>
@@ -559,23 +604,23 @@ plot(model1)</code></pre>
   filter(crime_type == &quot;burglary_rate&quot;) %&gt;% 
   modelr::bootstrap(n = 100) %&gt;% 
   mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
     results = map(linear_model, broom::tidy)) %&gt;% 
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                     estimate    std.error statistic  p.value
-##    &lt;chr&gt;                       &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)          1.44         8.68             0.166 0.869   
-##  2 illicit_sum         -0.0807       0.0375          -2.15  0.0366  
-##  3 alcohol_sum         -0.0248       0.0121          -2.04  0.0469  
-##  4 marijuana_sum        0.102        0.0492           2.08  0.0427  
-##  5 total_pop_thousands -0.0000000130 0.0000000272    -0.479 0.634   
-##  6 (Intercept)         -1.60         5.99            -0.267 0.791   
-##  7 illicit_sum         -0.106        0.0294          -3.60  0.000768
-##  8 alcohol_sum         -0.0217       0.00829         -2.62  0.0119  
-##  9 marijuana_sum        0.121        0.0357           3.39  0.00146 
-## 10 total_pop_thousands  0.0000000304 0.0000000458     0.664 0.510   
+##    term                estimate    std.error statistic     p.value
+##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 (Intercept)          1.25e+1 2.22             5.61  0.00000111 
+##  2 illicit_drugs        2.91e-2 0.102            0.284 0.777      
+##  3 alcohol             -8.75e-2 0.0299          -2.93  0.00532    
+##  4 marijuana           -4.70e-2 0.0418          -1.12  0.266      
+##  5 total_pop_thousands -3.77e-8 0.0000000371    -1.02  0.315      
+##  6 (Intercept)          1.46e+1 2.53             5.75  0.000000696
+##  7 illicit_drugs        1.25e-1 0.114            1.10  0.277      
+##  8 alcohol             -1.44e-1 0.0333          -4.33  0.0000810  
+##  9 marijuana           -6.64e-2 0.0492          -1.35  0.183      
+## 10 total_pop_thousands -1.21e-7 0.0000000414    -2.93  0.00528    
 ## # ... with 490 more rows</code></pre>
 </div>
 <div id="some-graphs" class="section level4">
@@ -596,7 +641,7 @@ crime %&gt;%
 <pre><code>## `summarise_each()` is deprecated.
 ## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
 ## To map `funs` over all variables, use `summarise_all()`</code></pre>
-<p><img src="about_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
   theme_bw()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
