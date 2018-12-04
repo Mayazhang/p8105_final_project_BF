@@ -97,7 +97,7 @@ crime_clean =
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
 ```
 
-load drug data and clean up
+Load drug data and clean up
 
 ```{r drug dataset load and clean up}
 # Remove the block later
@@ -105,7 +105,7 @@ drug_raw =
   read_csv("./data/drugs.csv") %>%
   janitor::clean_names()
 
-drug_data = 
+drug_clean = 
   drug_raw %>%
   select(year, state,
          rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
@@ -115,16 +115,13 @@ drug_data =
   gather(key, value, -state, -year) %>% 
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
-  mutate(rate = str_replace(rate, "^rates_", "")) %>% 
-  spread(rate, value)
+  mutate(rate = str_replace(rate, "^rates_", ""))
 
 population_data = 
   drug_raw %>% 
   select(x12_17, x18_25:x26, year, state) %>% 
   gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
   mutate(age = str_replace(age, "x", ""))
-
-drug_clean = left_join(drug_data, population_data)
 ```
 
 
@@ -148,39 +145,21 @@ head(crime_mean_rate)
 X: 51 states, each with mean drug rate (3 types of drugs)
 
 ```{r}
-drug_sum_row = drug_clean %>% 
-  group_by(state, age) %>%
-  select(-year) %>% 
-  summarise_all(funs(mean)) %>% 
-  group_by(state) %>% 
-  select(-age) %>% 
-  summarise_all(funs(sum))
-
-drug_sum_alcohol <-
-  drug_sum_row %>% 
-  select(grep("alcohol",names(.))) %>%
-  mutate(alcohol_sum = rowSums(.[1:6])) %>% 
-  select(alcohol_sum)
-
-drug_sum_illicit <-
-  drug_sum_row %>% 
-  select(grep("illicit",names(.))) %>%
-  mutate(illicit_sum = rowSums(.[1:4])) %>% 
-  select(illicit_sum)
-
-drug_sum_marijuana <-
-  drug_sum_row %>% 
-  select(grep("marijuana",names(.))) %>%
-  mutate(marijuana_sum = rowSums(.[1:4])) %>% 
-  select(marijuana_sum)
-
-drug_mean_rate <- cbind(drug_sum_row$state, drug_sum_alcohol, drug_sum_illicit, drug_sum_marijuana)
+drug_mean_rate = drug_clean %>% 
+  group_by(state, rate, age) %>% 
+  summarize(drug_average = mean(value)) %>% 
+  group_by(state, rate) %>% 
+  summarize(drug_sum = sum(drug_average)) %>% 
+  filter(!str_detect(rate, 'perceptions')) %>% 
+# up to here, it's already a tidy dataset, but for regression we need to define each degree in each drug as a variable, so we choose to spread "rate" column
+  spread(key = rate, value = drug_sum)
 
 head(drug_mean_rate)
 
 # Combine X and Y into one data frame
-regression_data_raw = cbind(crime_mean_rate,drug_mean_rate) %>%
-  select(-rape_legacy_rate, -`drug_sum_row$state`)
+regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %>% 
+  select(-rape_legacy_rate)
+
 ```
 
 #### Linear Regression
