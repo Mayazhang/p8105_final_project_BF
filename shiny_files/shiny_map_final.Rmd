@@ -43,8 +43,12 @@ crime =
           larceny_theft_rate = names(.)[21],
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
-  mutate(area = as.factor(area)) 
-crime[,2:23] = as.numeric(unlist(crime[,2:23]))
+  mutate(area = as.factor(area))
+
+# Remove comma and convert to numeric
+crime[,3:23] <- as.numeric(gsub(",","",unlist(crime1[,3:23])))
+
+
 
 # fill up area name
 i = 1
