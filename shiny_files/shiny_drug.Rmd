@@ -19,7 +19,7 @@ library(plotly)
 ```{r data_cleaning}
 # Do some cleaning with the data
 drug_raw =
-  read_csv("../data/drugs.csv") %>%
+  read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 
 drug_data = 

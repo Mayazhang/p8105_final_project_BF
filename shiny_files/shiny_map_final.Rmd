@@ -12,10 +12,15 @@ library(flexdashboard)
 library(tidyverse)
 library(viridis)
 library(plotly)
+library(gsheet)
 ```
 
 ```{r data_cleaning}
-crime = readxl::read_excel("../data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096')
+crime_raw = crime_raw[3:201,]
+
+crime = crime_raw %>% 
+  #readxl::read_excel("../data/crime-data-2016.xls", range = ("A4:W202")) %>% 
   janitor::clean_names() %>% 
     rename_(population = names(.)[3],
           violent_crime_number = names(.)[4],
