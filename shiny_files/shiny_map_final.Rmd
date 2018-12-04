@@ -173,7 +173,7 @@ renderPlotly({
     plot_geo(locationmode = 'USA-states') %>%
   add_trace(
     z = ~rate, text = ~paste(state, '<br>'), locations = ~abb,
-    color = ~rate, colors = 'Purples'
+    color = ~rate, colors = 'Greens'
   ) %>%
   colorbar(title = "Crime Rate") %>%
   layout(
@@ -205,7 +205,7 @@ renderPlotly({
     plot_geo(locationmode = 'USA-states') %>%
   add_trace(
     z = ~value, text = ~paste(state, '<br>'), locations = ~abb,
-    color = ~value, colors = 'Purples'
+    color = ~value, colors = 'Blues'
   ) %>%
   colorbar(title = "Drug Use Rate") %>%
   layout(
