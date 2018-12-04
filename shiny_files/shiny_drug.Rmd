@@ -33,7 +33,7 @@ drug_clean =
   gather(key, value, -state, -year) %>% 
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
-  mutate(rate = str_replace(rate, "^rates_", ""))
+  mutate(rate = str_replace(rate, "^rates_", "")) 
 
 # Extract the population data for future regression use
 population_data = 

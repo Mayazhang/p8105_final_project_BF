@@ -84,17 +84,19 @@ drug_raw =
   read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 
-drug_data = 
+drug_data_map = 
   drug_raw %>%
-  select(year, state,
-         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
-         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
-         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
-         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
+  select(year, state, contains("rates")) %>%
+  select(year, state, contains("past_year")) %>%
   gather(key, value, -state, -year) %>% 
-  mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
+  mutate(key = str_replace(key, "year_", "year:")) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
-  mutate(rate = str_replace(rate, "^rates_", ""))
+  mutate(rate = str_replace(rate, "^rates_", "")) %>% 
+  filter(rate != "pain_relievers_abuse_past_year") %>% 
+  mutate(rate = str_replace_all(rate, c("alcohol_" = "alcohol:", "illicit_drugs_" = "illicit_drugs:", "marijuana_" = "marijuana:"))) %>%
+  separate(rate, into = c("drug", "degree"), sep = ":", extra = "merge") %>% 
+  group_by(year, state, age, drug) %>%
+  summarize(value = sum(value))
 
 population_data = 
   drug_raw %>% 
@@ -102,31 +104,51 @@ population_data =
   gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
   mutate(age = str_replace(age, "x", ""))
 
-drug_clean = left_join(drug_data, population_data)
+drug_clean_map = left_join(drug_data_map, population_data)
+drug_with_abb = left_join(drug_clean_map, state_abb, by = "state")
 ```
 
 
 ```{r variable_for_shiny}
+# variables for crime
 crime_choice = 
   crime_with_abb %>% 
   distinct(crime_type) %>% 
   pull()
 
 year_choice = crime_with_abb %>% distinct(year) %>% pull()  
-#use mean or two years???
+
+# variables for drug
+drug_choice = unique(drug_with_abb$drug) 
+
+age_choice = unique(drug_with_abb$age)
+
+year_choice_drug = unique(drug_with_abb$year)
 ```
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r creat_sidebars}
-# selectInput widget
+# selectInput widget for crime choice
 selectInput("crime_choice", label = h3("Select Crime"),
             choices = crime_choice, selected = "murder_manslaughter_rate")
 
-# radioButtons widget
-radioButtons("year_choice", label = h3("Select Year"),
+# radioButtons widget for crime year choice
+radioButtons("year_choice", label = h3("Select Year (Crime)"),
              choices = year_choice, selected = 2016)
+
+# selectInput widget for drug choice
+selectInput("drug_choice", label = h3("Select Drug"),
+            choices = drug_choice, selected = "marijuana")
+
+# radioButtons widget for drug year choice
+radioButtons("year_choice_drug", label = h3("Select Year (Drug)"),
+             choices = year_choice_drug, selected = "2014")
+
+# radioButtons widget for age group
+radioButtons("age_choice", label = h3("Choose Age Group"),
+             choices = age_choice, selected = "26")
 ```
 
 Column {data-width=650}
@@ -161,18 +183,36 @@ renderPlotly({
 })
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
+
 
 ### Chart B
 
 ```{r }
-
+renderPlotly({
+  l <- list(color = toRGB("white"), width = 2)
+  g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+  
+  drug_with_abb %>%
+    filter(year == input$year_choice_drug,
+           drug == input$drug_choice,
+           age == input$age_choice) %>%
+    select(abb, state, value) %>%
+    plot_geo(locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~value, text = ~paste(state, '<br>'), locations = ~abb,
+    color = ~value, colors = 'Purples'
+  ) %>%
+  colorbar(title = "Drug Use Rate") %>%
+  layout(
+    title = 'Drug Use Rate Distribution',
+    geo = g
+  )
+})
 ```
 
-### Chart C
-
-```{r}
-
-```
 
