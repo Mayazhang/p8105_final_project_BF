@@ -1,0 +1,12 @@
+name: Shiny_Map_Displaying
+title: Shiny_Map_Displaying
+username:
+account: p8105-finalproject-team34-crime-drug
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 603586
+bundleId: 1740218
+url: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/
+when: 1543953663.09873
+asMultiple: FALSE
+asStatic: FALSE
