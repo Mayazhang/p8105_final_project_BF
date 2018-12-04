@@ -15,14 +15,16 @@ library(viridis)
 library(plotly)
 ```
 
+Do some cleaning with the original data
 
 ```{r data_cleaning}
-# Do some cleaning with the data
+# Read in the data from the original website
 drug_raw =
   read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 
-drug_data = 
+# Select useful data and clean it into a tidy dataset
+drug_clean = 
   drug_raw %>%
   select(year, state,
          rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
@@ -32,17 +34,15 @@ drug_data =
   gather(key, value, -state, -year) %>% 
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
-  mutate(rate = str_replace(rate, "^rates_", "")) %>% 
-#already a tidy dataset up to now, but for later use, we choose to spread it
-  spread(rate, value)
+  mutate(rate = str_replace(rate, "^rates_", "")) 
 
+# Extract the population data for future regression use
 population_data = 
   drug_raw %>% 
   select(x12_17, x18_25:x26, year, state) %>% 
   gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
   mutate(age = str_replace(age, "x", ""))
 
-drug_clean = left_join(drug_data, population_data)
 ```
 
 
@@ -85,11 +85,11 @@ renderPlotly({
 x = list(title = "Year")
 y = list(title = "Rate (in thousands)")
   drug_clean %>% 
-  filter(state == input$state_choice) %>%
-  select(state, year, starts_with(input$drug_choice), -contains("perceptions")) %>% 
-  gather(key = "degree", value = "rate", -year, -state) %>% 
-  mutate(text_label = str_c("Degree: ", degree)) %>%   
-    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree, text = ~text_label) %>%  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
+  filter(state == input$state_choice,
+         str_detect(rate, input$drug_choice),
+         !str_detect(rate, 'perceptions')) %>%
+  plot_ly(x = ~year, y = ~value, type = "bar", color = ~rate) %>%  
+    layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
 })
 ```
 
@@ -104,11 +104,10 @@ x = list(title = "Year")
 y = list(title = "Rate for Perception of Risk (in thousands)")  
 drug_clean$age = recode(drug_clean$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
 drug_clean %>% 
-  filter(state == input$state_choice) %>%
-  select(starts_with(input$drug_choice), year, age) %>% 
-  select(year, age, contains("perceptions")) %>% 
-  gather(-year, -age, key = "drug", value = "perception_risk") %>% 
-  plot_ly(x = ~year, y = ~perception_risk, type = "bar", color = ~age) %>% 
+  filter(state == input$state_choice,
+         str_detect(rate, input$drug_choice),
+         str_detect(rate, 'perceptions')) %>% 
+  plot_ly(x = ~year, y = ~value, type = "bar", color = ~age) %>% 
   layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
 })
 ```
@@ -121,12 +120,12 @@ x = list(title = "Year")
 y = list(title = "Rate (in thousands)")  
 drug_clean$age = recode(drug_clean$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
 drug_clean %>% 
-  filter(state == input$state_choice, age == input$age_choice) %>%
-  select(state, year, starts_with(input$drug_choice), 
-         -contains("perceptions")) %>% 
-  gather(key = "degree", value = "rate", -year, -state) %>% 
-  mutate(text_label = str_c("Degree: ", degree)) %>%   
-    plot_ly(x = ~year, y = ~rate, type = "bar", color = ~degree, text = ~text_label) %>%  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
+  filter(state == input$state_choice, 
+         age == input$age_choice,
+         str_detect(rate, input$drug_choice),
+         !str_detect(rate, 'perceptions')) %>%
+    plot_ly(x = ~year, y = ~value, type = "bar", color = ~rate) %>%  
+  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y)
 })
 ```
 
