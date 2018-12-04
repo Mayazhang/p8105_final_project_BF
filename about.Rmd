@@ -150,9 +150,15 @@ drug_mean_rate = drug_clean %>%
   summarize(drug_average = mean(value)) %>% 
   group_by(state, rate) %>% 
   summarize(drug_sum = sum(drug_average)) %>% 
-  filter(!str_detect(rate, 'perceptions')) %>% 
-# up to here, it's already a tidy dataset, but for regression we need to define each degree in each drug as a variable, so we choose to spread "rate" column
-  spread(key = rate, value = drug_sum)
+  filter(!str_detect(rate, 'perceptions'),
+         str_detect(rate, 'past_year')) %>% 
+  mutate(rate = str_replace_all(rate, c("alcohol_" = "alcohol:", "illicit_drugs_" = "illicit_drugs:", "marijuana_" = "marijuana:"))) %>% 
+  separate(rate, into = c("drug", "degree"), sep = ":", extra = "merge") %>% 
+  select(-degree) %>% 
+  group_by(state, drug) %>% 
+  summarize(use_past_year = sum(drug_sum)) %>% 
+# up to here, it's already a tidy dataset, but for regression we need to define each drug as a variable, so we choose to spread "drug" column
+  spread(key = drug, value = use_past_year)
 
 head(drug_mean_rate)
 
@@ -181,14 +187,15 @@ regression_model =
   group_by(crime_type) %>%
   nest() %>%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest()
 
 # Filter the model that has p-value is less than 0.1
 regression_model %>% 
-  filter(p.value < 0.1)
+  filter(p.value < 0.1,
+         term != "(Intercept)")
 ```
 
 * Put "population" into the model
@@ -208,20 +215,22 @@ new_reg_data = left_join(regression_data_raw, population_data)
 # Construct new regression models
 new_reg_data %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  mutate(crime_type = str_replace(crime_type, "_rate", "")) %>% 
   group_by(crime_type) %>%
   nest() %>%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest() %>% 
-  filter(p.value < 0.1)
+  filter(p.value < 0.1,
+         term != "(Intercept)")
 ```
 From the result we could see that, only burglary has significant estimated coefficients for all three variables. So we would look into the model assumptions.
 
 Check the diagnostics of the models.
 ```{r diagnostics for each models}
-model1 = lm(burglary_rate ~ illicit_sum + alcohol_sum + marijuana_sum, data = regression_data_raw)
+model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana, data = regression_data_raw)
 par(mfrow = c(2,2))
 plot(model1)
 ```
@@ -238,7 +247,7 @@ new_reg_data %>%
   filter(crime_type == "burglary_rate") %>% 
   modelr::bootstrap(n = 100) %>% 
   mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_sum + alcohol_sum + marijuana_sum   + total_pop_thousands, data = .x)),
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
     results = map(linear_model, broom::tidy)) %>% 
   select(results) %>%
   unnest()
