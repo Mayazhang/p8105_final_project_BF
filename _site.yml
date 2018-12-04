@@ -10,7 +10,7 @@ navbar:
     - text: "Shiny(Drug Displaying)"
       href: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/
     - text: "Shiny(Map Displaying)"
-      href: 
+      href: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/
     - icon: fa-youtube-square
       href: https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s
     - icon: fa-envelope fa-lg
