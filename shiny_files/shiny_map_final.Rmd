@@ -15,8 +15,8 @@ library(plotly)
 library(gsheet)
 ```
 
-```{r data_cleaning}
-crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096')
+```{r crime_data}
+crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') #read in data
 crime_raw = crime_raw[3:201,]
 
 crime = 
@@ -43,7 +43,7 @@ crime =
           larceny_theft_rate = names(.)[21],
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
-  mutate(area = as.factor(area))
+  mutate(area = as.factor(area)) #clean column names
 
 # Remove comma and convert to numeric
 crime[,3:23] <- as.numeric(gsub(",","",unlist(crime[,3:23])))
@@ -62,19 +62,20 @@ for (i in 0:65) {
 #clean data
 crime_clean_rate =
   crime %>%
-  filter(year != "NA") %>% 
+  filter(year != "Percent change") %>% 
   rename(state = area) %>% 
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>% 
   select(-rape_legacy_rate, -contains("number"), -population) %>%
   gather(key = crime_type, value = rate, -state, -year)
 
+# make a table with state and state.abb 
 state_abb =
   tibble(state = state.name) %>%
   bind_cols(tibble(abb = state.abb)) %>% 
   bind_rows(tibble(state = "District of Columbia", abb = "DC"))
 
+# add state.abb into crime_clean_rate
 crime_with_abb = left_join(crime_clean_rate, state_abb, by = "state")
-
 ```
 
 ```{r drug_data}
@@ -93,9 +94,7 @@ drug_data =
   gather(key, value, -state, -year) %>% 
   mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
-  mutate(rate = str_replace(rate, "^rates_", "")) %>% 
-#already a tidy dataset up to now, but for later use, we choose to spread it
-  spread(rate, value)
+  mutate(rate = str_replace(rate, "^rates_", ""))
 
 population_data = 
   drug_raw %>% 
