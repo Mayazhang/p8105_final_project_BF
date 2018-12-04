@@ -8,7 +8,7 @@ navbar:
     - text: "Regression Analysis"
       href: about.html
     - text: "Shiny(Drug Displaying)"
-      href: 
+      href: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/
     - text: "Shiny(Map Displaying)"
       href: 
     - icon: fa-youtube-square
