@@ -34,7 +34,6 @@ Data cleaning(crime dataset): the crime dataset was loaded from the [google shee
  
  * Remove 'rape_legacy' related columns as it has overlapping information with 'rape_revise' columns
  
- *
  
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
