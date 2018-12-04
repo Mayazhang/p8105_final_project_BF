@@ -224,6 +224,7 @@ $(document).ready(function () {
 <div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
 <h4>load crime and drug data and do some clean up!</h4>
 <pre class="r"><code>library(tidyverse)</code></pre>
+<<<<<<< HEAD
 <pre><code>## -- Attaching packages ------------------------------------------------------------------------------------- tidyverse 1.2.1 --</code></pre>
 <pre><code>## v ggplot2 3.1.0     v purrr   0.2.5
 ## v tibble  1.4.2     v dplyr   0.7.7
@@ -251,6 +252,17 @@ library(PerformanceAnalytics)</code></pre>
 <pre><code>## The following object is masked from &#39;package:graphics&#39;:
 ## 
 ##     legend</code></pre>
+=======
+<pre><code>## ── Attaching packages ─────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(readxl)</code></pre>
+>>>>>>> 6e77de166a9fe4b2eed380af1f7d20ef0eb8f8dc
 <p>Load crime data and some primary clean up</p>
 <pre class="r"><code># load data and clean up column names
 # not to omit NAs
@@ -547,6 +559,7 @@ new_reg_data %&gt;%
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
+<<<<<<< HEAD
 ##    term                estimate    std.error statistic  p.value
 ##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 ##  1 (Intercept)         -5.55e+0 7.54            -0.736 0.466   
@@ -559,6 +572,20 @@ new_reg_data %&gt;%
 ##  8 alcohol_sum         -3.90e-2 0.0104          -3.76  0.000475
 ##  9 marijuana_sum        7.70e-2 0.0442           1.74  0.0880  
 ## 10 total_pop_thousands -4.06e-8 0.0000000382    -1.06  0.294   
+=======
+##    term                estimate    std.error statistic   p.value
+##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 (Intercept)          2.03e+0 6.53             0.311 0.757    
+##  2 illicit_sum         -6.26e-2 0.0274          -2.28  0.0273   
+##  3 alcohol_sum         -3.17e-2 0.00816         -3.88  0.000329 
+##  4 marijuana_sum        1.05e-1 0.0355           2.96  0.00492  
+##  5 total_pop_thousands  1.02e-8 0.0000000198     0.517 0.607    
+##  6 (Intercept)          1.47e+1 7.28             2.02  0.0494   
+##  7 illicit_sum         -6.05e-2 0.0356          -1.70  0.0957   
+##  8 alcohol_sum         -5.48e-2 0.0125          -4.38  0.0000672
+##  9 marijuana_sum        8.56e-2 0.0391           2.19  0.0339   
+## 10 total_pop_thousands -7.21e-8 0.0000000459    -1.57  0.123    
+>>>>>>> 6e77de166a9fe4b2eed380af1f7d20ef0eb8f8dc
 ## # ... with 490 more rows</code></pre>
 </div>
 <div id="some-graphs" class="section level4">
