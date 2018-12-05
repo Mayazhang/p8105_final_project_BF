@@ -3,16 +3,16 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "About"
+    - text: "Project Overall Description"
       href: Website-About-Page.html
-    - text: "Project Report"
-      href: p8105_Team34_Final_Project_Report.html
     - text: "Drug Dataset Explore"
       href: Drug_code.html
-    - text: "Regression Analysis"
+    - text: "Statistical Analysis"
       href: about.html
-    - text: "Shiny Graphical Display"
+    - text: "Shiny - Explore the data!"
       href: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/
+    - text: "Project Report"
+      href: p8105_Team34_Final_Project_Report.html
     - icon: fa-youtube-square
       href: https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s
     - icon: fa-envelope fa-lg
