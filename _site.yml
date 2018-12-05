@@ -3,6 +3,8 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
+    - text: "About"
+      href: Website-About-Page.html
     - text: "Drug Dataset Explore"
       href: Drug_code.html
     - text: "Regression Analysis"
