@@ -247,11 +247,357 @@ $(document).ready(function () {
 
 <div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
 <h4>load crime and drug data and do some clean up!</h4>
+<<<<<<< HEAD
 </div>
 <div id="some-graphs" class="section level4">
 <h4>Some Graphs</h4>
 <p><img src="crime_data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p><img src="crime_data_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+=======
+<pre class="r"><code>library(tidyverse)
+library(readxl)
+library(PerformanceAnalytics)
+library(rvest)
+library(httr)
+library(gridExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     combine</code></pre>
+<pre class="r"><code>library(flexdashboard)
+library(viridis)</code></pre>
+<pre><code>## Loading required package: viridisLite</code></pre>
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:httr&#39;:
+## 
+##     config</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(gsheet)</code></pre>
+<p>Load crime data and some primary clean up</p>
+<pre class="r"><code># load data and clean up column names
+# not to omit NAs
+crime_raw = gsheet2tbl(&#39;https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096&#39;) </code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X5&#39; [5], &#39;X7&#39; [7], &#39;X9&#39; [9],
+## &#39;X11&#39; [11], &#39;X13&#39; [13], &#39;X15&#39; [15], &#39;X17&#39; [17], &#39;X19&#39; [19], &#39;X21&#39; [21],
+## &#39;X23&#39; [23]</code></pre>
+<pre><code>## Warning: 2 parsing failures.
+## row # A tibble: 2 x 5 col     row col   expected   actual   file                                     expected   &lt;int&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;                                    actual 1     1 &lt;NA&gt;  23 columns 1 colum… &#39;https://docs.google.com/spreadsheets/e… file 2     2 &lt;NA&gt;  23 columns 20 colu… &#39;https://docs.google.com/spreadsheets/e…</code></pre>
+<pre class="r"><code>crime_raw = crime_raw[3:201,]
+
+crime = crime_raw %&gt;% 
+  janitor::clean_names() %&gt;% 
+    rename_(population = names(.)[3],
+          violent_crime_number = names(.)[4],
+          violent_crime_rate = names(.)[5],
+          murder_manslaughter_number = names(.)[6],
+          murder_manslaughter_rate = names(.)[7],
+          rape_revise_number = names(.)[8],
+          rape_revise_rate = names(.)[9],
+          rape_legacy_number = names(.)[10],
+          rape_legacy_rate = names(.)[11],
+          robbery_number = names(.)[12],
+          robbery_rate = names(.)[13],
+          aggravated_assault_number = names(.)[14],
+          aggravated_assault_rate = names(.)[15],
+          property_crime_number = names(.)[16],
+          property_crime_rate = names(.)[17],
+          burglary_number = names(.)[18],
+          burglary_rate = names(.)[19],
+          larceny_theft_number = names(.)[20],
+          larceny_theft_rate = names(.)[21],
+          motor_vehicle_theft_number = names(.)[22],
+          motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
+  mutate(area = as.factor(area)) 
+
+# Remove comma and convert to numeric
+crime[,3:23] &lt;- as.numeric(gsub(&quot;,&quot;,&quot;&quot;,unlist(crime[,3:23])))</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code># fill up area name
+i = 1
+for (i in 0:65) {
+  n = 3 * i + 1
+  crime$area[n + 1] = paste0(crime$area[n]) 
+  crime$area[n + 2] = paste0(crime$area[n])
+  i = i + 1
+}
+
+crime  &lt;- crime %&gt;% 
+  na.omit()
+
+crime$year = as.factor(crime$year)
+
+
+index_ne &lt;- which(crime$area == &quot;Northeast&quot;)
+idnex_mw &lt;- which(crime$area == &quot;Midwest&quot;)
+idnex_s &lt;- which(crime$area == &quot;South&quot;)
+idnex_w &lt;- which(crime$area == &quot;West&quot;)
+
+index &lt;- c(1:length(crime$area))
+crime$region &lt;- c(rep(0, length(crime$area)))
+
+index_ne_state &lt;- which(index &gt; max(index_ne) &amp; index &lt; min(idnex_mw))
+crime$region[index_ne_state] &lt;- 1
+
+index_ne_state &lt;- which(index &gt; max(idnex_mw) &amp; index &lt; min(idnex_s))
+crime$region[index_ne_state] &lt;- 2
+
+index_ne_state &lt;- which(index &gt; max(idnex_s) &amp; index &lt; min(idnex_w))
+crime$region[index_ne_state] &lt;- 3
+
+index_ne_state &lt;- which(index &gt; max(idnex_w) &amp; index &lt; 133)
+crime$region[index_ne_state] &lt;- 4
+
+crime[,4:23] &lt;- crime[,4:23]/100</code></pre>
+<p>some further clean up on crime data</p>
+<pre class="r"><code># Filter out &quot;percent change&quot; in &quot;year&quot; variable
+crime_clean = 
+  crime %&gt;%
+  filter(year != &quot;NA&quot;)
+
+# Create a new dataframe to store the data of different large areas
+crime_largearea = 
+  crime_clean %&gt;%
+  filter(area %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;))
+
+# Create subtotal for each big areas
+crime_northeast = 
+  crime_clean %&gt;%
+  filter(area %in% c(&quot;New England&quot;, &quot;Middle Atlantic&quot;))
+
+crime_midwest = 
+  crime_clean %&gt;%
+  filter(area %in% c(&quot;East North Central&quot;, &quot;West North Central&quot;))
+
+crime_south = 
+  crime_clean %&gt;%
+  filter(area %in% c(&quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;))
+
+crime_west = 
+  crime_clean %&gt;%
+  filter(area %in% c(&quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))
+
+
+# Filter out these areas in the tidied dataset
+crime_clean = 
+  crime_clean %&gt;%
+  filter(!area %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;, &quot;New England&quot;, &quot;Middle Atlantic&quot;, &quot;East North Central&quot;, &quot;West North Central&quot;, &quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;, &quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))</code></pre>
+</div>
+<div id="some-graphs" class="section level4">
+<h4>Some Graphs</h4>
+<p>Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories.</p>
+<pre class="r"><code># rank areas by average violent crime rate from 2015 to 2016
+crime_plot &lt;- crime %&gt;% 
+  filter(!area %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;, &quot;New England&quot;, &quot;Middle Atlantic&quot;, &quot;East North Central&quot;, &quot;West North Central&quot;, &quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;, &quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;)) %&gt;%  
+  filter(year != &quot;Percent change&quot;) %&gt;%
+  group_by(area) %&gt;%
+  summarise_each(funs(mean))</code></pre>
+<pre><code>## `summarise_each()` is deprecated.
+## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
+## To map `funs` over all variables, use `summarise_all()`</code></pre>
+<pre><code>## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA</code></pre>
+<pre class="r"><code>crime_plot$region &lt;- as.character(crime_plot$region)
+index_1 &lt;- which(crime_plot$region == &quot;1&quot;)
+crime_plot$region[index_1] = &quot;Northeast&quot;
+index_2 &lt;- which(crime_plot$region == &quot;2&quot;)
+crime_plot$region[index_2] = &quot;Midwest&quot;
+index_3 &lt;- which(crime_plot$region == &quot;3&quot;)
+crime_plot$region[index_3] = &quot;South&quot;
+index_4 &lt;- which(crime_plot$region == &quot;4&quot;)
+crime_plot$region[index_4] = &quot;West&quot;
+crime_plot$region &lt;- as.factor(crime_plot$region)
+
+crime_plot_violent_about &lt;- crime_plot %&gt;% 
+  mutate(area = fct_reorder(area, violent_crime_rate)) %&gt;% 
+  ggplot(aes(x = area, y = violent_crime_rate, fill = region)) +
+  geom_bar(stat = &quot;identity&quot;, width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 10),
+        title = element_text(size = 14)) +
+  labs(
+    x = &quot;State&quot;,
+    y = &quot;Violent crime rate (Per 1000)&quot;
+  )
+
+ggsave(filename = &quot;violent_crime_rate_overall_plot.png&quot;, plot = crime_plot_violent_about, width = 30, height = 20, units = &quot;cm&quot;)
+
+crime_plot_property_about &lt;- crime_plot %&gt;% 
+  mutate(area = fct_reorder(area, property_crime_number)) %&gt;% 
+  ggplot(aes(x = area, y = property_crime_number, fill = region)) +
+  geom_bar(stat = &quot;identity&quot;, width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 10),
+        title = element_text(size = 14)) +
+  labs(
+    x = &quot;State&quot;,
+    y = &quot;Property crime rate (Per 1000)&quot;
+  )
+
+ggsave(filename = &quot;property_crime_rate_overall_plot.png&quot;, plot = crime_plot_property_about, width = 30, height = 20, units = &quot;cm&quot;)</code></pre>
+>>>>>>> a2d4b04ad0c9a61046664df579e865cb12b5ff79
 </div>
 
 
