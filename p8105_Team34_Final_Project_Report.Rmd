@@ -121,8 +121,6 @@ drug_mean_rate = drug_clean %>%
 # up to here, it's already a tidy dataset, but for regression we need to define each drug as a variable, so we choose to spread "drug" column
   spread(key = drug, value = use_past_year)
 
-head(drug_mean_rate)
-
 # read data for race proportion
 race_data_raw = read_csv("./data/race_data.csv") %>% janitor::clean_names() %>%
   select(state, white)
@@ -164,7 +162,8 @@ result_withoutoutliers =
     linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
-  unnest()
+  unnest() %>%
+  mutate_if(is.numeric, round, 2)
 ```
 
 ```{r linear regression, include=FALSE, warning=FALSE, message=FALSE}
