@@ -259,7 +259,7 @@ The dataset can be accessed through its [original website](https://think.cs.vt.e
 In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.
 
 *
-```{r ,include=FALSE, message=FALSE, warning=FALSE}
+```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
 drug_raw %>%
   select(year, state,
