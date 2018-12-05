@@ -104,6 +104,7 @@ education_data = education %>%
   mutate(percent_high_school_graduate = str_replace(percent_high_school_graduate, "%", "")) %>% 
   mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
 
+regression_data_all = left_join(regression_data_raw, education_data)
 ```
 
 
@@ -118,59 +119,11 @@ regression_data_all %>%
 ```
 
 
-Make models for MLR of crime types and drug uses. 
+Make models for MLR of crime types and drug uses, as well as race and education. 
+
+
 ```{r linear regression}
-# Make linear models for each crime type in each state
-regression_model = 
-  regression_data_raw %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  group_by(crime_type) %>%
-  nest() %>%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %>%
-  select(-data) %>%
-  unnest()
-
-# Filter the model that has p-value is less than 0.1
-regression_model %>% 
-  filter(p.value < 0.05,
-         term != "(Intercept)")
-```
-
-* Put "population" into the model
-
-Set the significant level at 0.5
-
-```{r}
-# Clean up the population data to get the average in each state
-population_data = population_data %>% 
-  group_by(state, age) %>% 
-  summarize(mean_pop = mean(popul_in_thousands)) %>% 
-  group_by(state) %>% 
-  summarize(total_pop_thousands = sum(mean_pop))
-
-new_reg_data = left_join(regression_data_raw, population_data)
-
-# Construct new regression models
-new_reg_data %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  mutate(crime_type = str_replace(crime_type, "_rate", "")) %>% 
-  group_by(crime_type) %>%
-  nest() %>%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + total_pop_thousands, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %>%
-  select(-data) %>%
-  unnest() %>% 
-  filter(p.value < 0.05,
-         term != "(Intercept)")
-```
-
-* Explore model with education data
-
-```{r}
-regression_data_all = left_join(regression_data_raw, education_data)
+# MLR linear regression using list columns
 regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   group_by(crime_type) %>%
@@ -182,26 +135,27 @@ regression_data_all %>%
   unnest() %>% 
   filter(p.value < 0.05,
          term != "(Intercept)")
-
-model = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
-summary(model)
-plot(model)
 ```
+
+From the result we could see that, both murder/manslaughter and robbery rate are positively related to marijuana use. In addition, murder/manslaughter rate is also related to illicit drugs. So, we would look into murder/manslaughter and robbery MLR models.
 
 Check the diagnostics of the model.
 
-```{r diagnostics for each models}
+```{r model diagnostics}
 # Fit models and then check the assumption
-burglary_model = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands + white, data = new_reg_data)
-summary(burglary_model)
+model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
+summary(model1)
+par(mfrow = c(2,2))
+plot(model1)
+
+model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
+summary(model2)
+par(mfrow = c(2,2))
+plot(model2)
 ```
 
-From the diagnostics, this models meets the model assumptions.
-From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association
+From the diagnostics, these two models meet the model assumptions.
 
-From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions
-
-From the diagnostics, the simple linear model of murder rate and alcohol use has a relatively better residual distribution, and there is no heavy tails in the QQ plot. However, the redisuals vs fitted plot of the model of burglary rate and alcohol, has a skewed line. Therefore, it may not meet the assumption.
 
 * Try bootstrap of the model of burglary rate
 
