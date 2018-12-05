@@ -268,7 +268,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for (i in 0:65) {
@@ -285,14 +285,14 @@ crime$year = as.factor(crime$year)
 # check head
 head(crime)</code></pre>
 <pre><code>## # A tibble: 6 x 23
-##   area  year  population violent_crime_n~ violent_crime_r~ murder_manslaug~
+##   area  year  population violent_crime_n… violent_crime_r… murder_manslaug…
 ##   &lt;fct&gt; &lt;fct&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Unit~ 2015   320896618          1234183             385.            15883
-## 2 Unit~ 2016   323127513          1283058             397.            17250
-## 3 Nort~ 2015    56184737           180474             321.             1967
-## 4 Nort~ 2016    56209510           178244             317.             1955
-## 5 New ~ 2015    14710229            42121             286.              326
-## 6 New ~ 2016    14735525            41598             282.              292
+## 1 Unit… 2015   320896618          1234183             385.            15883
+## 2 Unit… 2016   323127513          1283058             397.            17250
+## 3 Nort… 2015    56184737           180474             321.             1967
+## 4 Nort… 2016    56209510           178244             317.             1955
+## 5 New … 2015    14710229            42121             286.              326
+## 6 New … 2016    14735525            41598             282.              292
 ## # ... with 17 more variables: murder_manslaughter_rate &lt;dbl&gt;,
 ## #   rape_revise_number &lt;dbl&gt;, rape_revise_rate &lt;dbl&gt;,
 ## #   rape_legacy_number &lt;dbl&gt;, rape_legacy_rate &lt;dbl&gt;,

@@ -58,6 +58,36 @@ crime  <- crime %>%
 crime$year = as.factor(crime$year)
 # check head
 head(crime)
+
+unique(crime$area)
+"Northeast, Midwest, South, West"
+
+
+index_ne <- which(crime$area == "Northeast")
+idnex_mw <- which(crime$area == "Midwest")
+idnex_s <- which(crime$area == "South")
+idnex_w <- which(crime$area == "West")
+
+index <- c(1:length(crime$area))
+crime$region <- c(rep("a", 132))
+
+index_ne_state <- which(index > max(index_ne) & index < min(idnex_mw))
+crime$region[index_ne_state] <- "Northeast"
+
+index_ne_state <- which(index > max(idnex_mw) & index < min(idnex_s))
+crime$region[index_ne_state] <- "Midwest"
+
+index_ne_state <- which(index > max(idnex_s) & index < min(idnex_w))
+crime$region[index_ne_state] <- "South"
+
+index_ne_state <- which(index > max(idnex_w) & index < 133)
+crime$region[index_ne_state] <- "West"
+
+crime %>% 
+  select(area, region)
+
+
+
 ```
 
 some further clean up on crime data 
@@ -131,7 +161,8 @@ ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = year)) + geom
   )
 
 # At area level
-ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+area = 
+  ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -141,7 +172,8 @@ ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + g
   ) 
 
 # In the midwest area
-ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+mid_west = 
+  ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -151,7 +183,8 @@ ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geo
   ) 
 
 # In the northeast area
-ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+north_east = 
+  ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -161,7 +194,8 @@ ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + g
   ) 
 
 # In the south area
-ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+south =
+  ggplot(crime_south, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -171,7 +205,8 @@ ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_
   ) 
 
 # In the west area
-ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+west = 
+  ggplot(crime_west, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(

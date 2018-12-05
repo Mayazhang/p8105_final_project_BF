@@ -6,7 +6,11 @@ navbar:
     - text: "Project Overall Description"
       href: Website-About-Page.html
     - text: "Dataset Exploration"
-      href: Drug_code.html
+      menu:
+      - text: "Crime Dataset"
+        href: code.html
+      - text: "Drug Dataset"
+        href: Drug_code.html
     - text: "Statistical Analysis"
       href: about.html
     - text: "Shiny"
