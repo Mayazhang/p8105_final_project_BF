@@ -9,6 +9,8 @@ title: "About This Project"
 library(tidyverse)
 library(readxl)
 library(PerformanceAnalytics)
+library(rvest)
+library(httr)
 ```
 
 Load crime data and some primary clean up
@@ -230,7 +232,8 @@ head(crime_mean_rate)
 
 X: 51 states, each with mean drug rate (3 types of drugs)
 
-```{r}
+```{r prepare the outcome and predictors}
+# clean drug data
 drug_mean_rate = drug_clean %>% 
   group_by(state, rate, age) %>% 
   summarize(drug_average = mean(value)) %>% 
@@ -248,10 +251,15 @@ drug_mean_rate = drug_clean %>%
 
 head(drug_mean_rate)
 
+# read data for race proportion
+race_data_raw = read_csv("./data/race_data.csv") %>% janitor::clean_names() %>%
+  select(state, white)
+
 # Combine X and Y into one data frame
 regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %>% 
   select(-rape_legacy_rate)
 
+regression_data_raw = left_join(regression_data_raw, race_data_raw)
 ```
 
 #### Linear Regression
@@ -273,20 +281,20 @@ regression_model =
   group_by(crime_type) %>%
   nest() %>%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest()
 
 # Filter the model that has p-value is less than 0.1
 regression_model %>% 
-  filter(p.value < 0.1,
+  filter(p.value < 0.05,
          term != "(Intercept)")
 ```
 
 * Put "population" into the model
 
-Set the significant level at 0.1
+Set the significant level at 0.5
 
 ```{r}
 # Clean up the population data to get the average in each state
@@ -305,38 +313,26 @@ new_reg_data %>%
   group_by(crime_type) %>%
   nest() %>%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + total_pop_thousands, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest() %>% 
-  filter(p.value < 0.1,
+  filter(p.value < 0.05,
          term != "(Intercept)")
 ```
+
+From the result, we could see that only burglary contains estimated coefficient of drug use variable with low p-value. So we pick this type of crime as our final outcome.
 
 Check the diagnostics of the model.
 
 ```{r diagnostics for each models}
-model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
-par(mfrow = c(2,2))
-plot(model1)
-model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
-par(mfrow = c(2,2))
-plot(model2)
-model3 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
-par(mfrow = c(2,2))
-plot(model3)
+# Fit models and then check the assumption
+burglary_model = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands + white, data = new_reg_data)
+summary(burglary_model)
 ```
 
 From the diagnostics, these three models all meet the model assumptions.
 From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association
-
-* Each simple linear regression
-
-```{r}
-lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data) %>% summary()
-lm(burglary_rate ~ alcohol, data = new_reg_data) %>% summary()
-lm(robbery_rate ~ marijuana, data = new_reg_data) %>% summary()
-```
 
 From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions
 
@@ -365,9 +361,37 @@ new_reg_data %>%
   unnest()
 ```
 
+```{r}
+url = "https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment"
+education = read_html(url)
 
+education_data = education %>% 
+  html_nodes(css = "table") %>%
+  .[[1]] %>% 
+  html_table(fill = TRUE) %>% 
+  janitor::clean_names() %>% 
+  select(state, percent_high_school_graduate) %>% 
+  filter(state != "United States") %>% 
+  mutate(percent_high_school_graduate = str_replace(percent_high_school_graduate, "%", "")) %>% 
+  mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
 
+```
 
+* Explore model with education data
 
+```{r}
+regression_data_all = left_join(regression_data_raw, education_data)
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest() %>% 
+  filter(p.value < 0.05,
+         term != "(Intercept)")
+```
 
 
