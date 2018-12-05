@@ -131,7 +131,8 @@ ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = year)) + geom
   )
 
 # At area level
-ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+area = 
+  ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -141,7 +142,8 @@ ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + g
   ) 
 
 # In the midwest area
-ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+mid_west = 
+  ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -151,7 +153,8 @@ ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geo
   ) 
 
 # In the northeast area
-ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+north_east = 
+  ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -161,7 +164,8 @@ ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + g
   ) 
 
 # In the south area
-ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+south =
+  ggplot(crime_south, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -171,7 +175,8 @@ ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_
   ) 
 
 # In the west area
-ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+west = 
+  ggplot(crime_west, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
