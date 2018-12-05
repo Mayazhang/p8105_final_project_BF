@@ -166,7 +166,8 @@ radioButtons("year_choice", label = h3("Select Year (Crime)"),
              choices = year_choice, selected = 2016)
 ```
 
-Column {.tabset}
+
+Column {data-width=600}
 -----------------------------------------------------------------------
 
 ### Distributions of ten types of crime rates
@@ -198,6 +199,9 @@ renderPlotly({
 }) #Crime rate map
 ```
 
+Column {data-width=400}
+-----------------------------------------------------------------------
+
 ### Barplot of crime rates by State
 
 ```{r Barplot_crime_state}
@@ -205,8 +209,7 @@ renderPlotly({
   crime_with_abb %>% 
     filter(year == input$year_choice,
            crime_type == input$crime_choice) %>%
-    mutate(state = fct_reorder(state, rate),
-           text_label = str_c("Rate: ", rate, '\nState: ', state, ' Abb: ', abb, '\nYear: ', year)) %>% 
+    mutate(text_label = str_c("Rate: ", rate, '\nState: ', state, ' Abb: ', abb, '\nYear: ', year)) %>% 
     plot_ly(x = ~state, y = ~rate, text = ~text_label,
     marker = list(size = 10,
                        color = 'rgba(255, 182, 193, .9)',
