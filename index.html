@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -169,6 +172,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -187,15 +285,20 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="Website-About-Page.html">About</a>
+</li>
+<li>
+  <a href="p8105_Team34_Final_Project_Report.html">Project Report</a>
+</li>
+<li>
   <a href="Drug_code.html">Drug Dataset Explore</a>
 </li>
 <li>
   <a href="about.html">Regression Analysis</a>
 </li>
 <li>
-  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/">Shiny(Drug Displaying)</a>
+  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/">Shiny Graphical Display</a>
 </li>
-<li class="dropdown-header">Shiny(Map Displaying)</li>
 <li>
   <a href="https://www.youtube.com/watch?v=nEqlPeCH6QE&amp;list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&amp;index=3&amp;t=0s">
     <span class="fa fa-youtube-square"></span>
@@ -228,30 +331,38 @@ $(document).ready(function () {
 </div>
 
 
-<div id="a-brief-introductory-landing-page" class="section level2">
-<h2>A brief introductory landing page</h2>
-<ul>
-<li><strong>Group members</strong></li>
-</ul>
-<p>Bingyu Sun (bs3142), Hongyao Xie (hx2264), Jieqi Tu (jt3098), Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)</p>
-<ul>
-<li><strong>The tentative project title</strong></li>
-</ul>
+<div id="a-brief-introductory-landing-page" class="section level1">
+<h1>A brief introductory landing page</h1>
+<div id="group-members" class="section level2">
+<h2>Group members</h2>
+<div id="bingyu-sun-bs3142-hongyao-xie-hx2264-jieqi-tu-jt3098-mengran-ma-mm5354-xiaoyue-zhang-xz2788" class="section level3">
+<h3><em>Bingyu Sun (bs3142), Hongyao Xie (hx2264), Jieqi Tu (jt3098), Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)</em></h3>
+</div>
+</div>
+<div id="the-tentative-project-title" class="section level2">
+<h2>The tentative project title</h2>
 <p>Ecologic study of association between crime rate and drug use in U.S.</p>
+</div>
+<div id="the-motivation-for-this-project" class="section level2">
+<h2>The motivation for this project</h2>
 <ul>
-<li><strong>The motivation for this project</strong></li>
 <li>Explore the association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level.</li>
 <li>Study distributions of crimes and drug use in each state and conclude which pair of crime and drug use is highly related in each state</li>
 <li>Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use as well as to make predictions.</li>
-<li><p>Draw a map across U.S. about detailed data of crime rate and drug use in each state</p></li>
-<li><p><strong>The anticipated data sources</strong></p></li>
+<li>Draw a map across U.S. about detailed data of crime rate and drug use in each state</li>
 </ul>
+</div>
+<div id="the-anticipated-data-sources" class="section level2">
+<h2>The anticipated data sources</h2>
 <p>For this project we will use two datasets: one dataset(“crime-data-2016.xls”) recorded crime rates in the United States in 2016; the other dataset(“drugs.csv”) contains information of drug use among different age groups across states.</p>
 <p>The crime dataset was derived from the Uniform Crime Reporting(UCR) program by FBI. The program collects real-world data for crime rate and law enforcement, and generates annual report. Here we will use the data from 2015 to 2016. The dataset for drug use was obtained from the National Survey on Drug Use and Health(NSDUH), which provides up-to-date survey results on alcohol, tabacco, drug use, etc.</p>
+</div>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 

@@ -1,25 +1,43 @@
 ---
 title: "Team34 Data Science Final Project Home Page"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
 ---
 
 
-## A brief introductory landing page
+# A brief introductory landing page
 
-* **Group members**
 
-Bingyu Sun (bs3142), Hongyao Xie (hx2264), Jieqi Tu (jt3098), Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)
 
-* **The tentative project title**
+##Group members
+
+###*Bingyu Sun (bs3142), Hongyao Xie (hx2264), Jieqi Tu (jt3098), Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)* 
+
+
+
+
+
+
+##The tentative project title
 
 Ecologic study of association between crime rate and drug use in U.S. 
 
-* **The motivation for this project**
+
+
+
+
+##The motivation for this project
  * Explore the association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level.
  * Study distributions of crimes and drug use in each state and conclude which pair of crime and drug use is highly related in each state
  * Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use as well as to make predictions.
  * Draw a map across U.S. about detailed data of crime rate and drug use in each state 
 
-* **The anticipated data sources**
+
+
+
+##The anticipated data sources
 
 For this project we will use two datasets: one dataset("crime-data-2016.xls") recorded crime rates in the United States in 2016; the other dataset("drugs.csv") contains information of drug use among different age groups across states.
 

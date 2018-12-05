@@ -5,6 +5,8 @@ navbar:
   right:
     - text: "About"
       href: Website-About-Page.html
+    - text: "Project Report"
+      href: p8105_Team34_Final_Project_Report.html
     - text: "Drug Dataset Explore"
       href: Drug_code.html
     - text: "Regression Analysis"
