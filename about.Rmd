@@ -1,5 +1,9 @@
 ---
 title: "About This Project"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
 ---
 
 ```{r}
@@ -190,7 +194,7 @@ regression_data_all %>%
 We remove two outliers and fit the model again
 
 
-```{r linear regression}
+```{r linear regression_another}
 # MLR linear regression using list columns
 regression_data_no2states <- regression_data_all %>% 
   filter(state != "District of Columbia" &
@@ -212,7 +216,7 @@ regression_data_no2states %>%
 
 Check the diagnostics of the model.
 
-```{r model diagnostics}
+```{r model diagnostics_another}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
 summary(model1)
