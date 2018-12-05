@@ -15,7 +15,7 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -105,34 +105,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 60px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 </style>
 
@@ -268,7 +268,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for (i in 0:65) {
@@ -285,14 +285,14 @@ crime$year = as.factor(crime$year)
 # check head
 head(crime)</code></pre>
 <pre><code>## # A tibble: 6 x 23
-##   area  year  population violent_crime_n~ violent_crime_r~ murder_manslaug~
+##   area  year  population violent_crime_n… violent_crime_r… murder_manslaug…
 ##   &lt;fct&gt; &lt;fct&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Unit~ 2015   320896618          1234183             385.            15883
-## 2 Unit~ 2016   323127513          1283058             397.            17250
-## 3 Nort~ 2015    56184737           180474             321.             1967
-## 4 Nort~ 2016    56209510           178244             317.             1955
-## 5 New ~ 2015    14710229            42121             286.              326
-## 6 New ~ 2016    14735525            41598             282.              292
+## 1 Unit… 2015   320896618          1234183             385.            15883
+## 2 Unit… 2016   323127513          1283058             397.            17250
+## 3 Nort… 2015    56184737           180474             321.             1967
+## 4 Nort… 2016    56209510           178244             317.             1955
+## 5 New … 2015    14710229            42121             286.              326
+## 6 New … 2016    14735525            41598             282.              292
 ## # ... with 17 more variables: murder_manslaughter_rate &lt;dbl&gt;,
 ## #   rape_revise_number &lt;dbl&gt;, rape_revise_rate &lt;dbl&gt;,
 ## #   rape_legacy_number &lt;dbl&gt;, rape_legacy_rate &lt;dbl&gt;,

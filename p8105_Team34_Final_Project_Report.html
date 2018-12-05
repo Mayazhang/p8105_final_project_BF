@@ -16,7 +16,7 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -106,34 +106,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 60px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 </style>
 
@@ -306,11 +306,13 @@ $(document).ready(function () {
 <p>We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients. The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.</p>
 <p>We checked the overal distribution of outcomes and variables using package “PerformanceAnalytics”. Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.</p>
 <p>After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook’s distance &gt; 0.5). These two influential points are from state “Hawaii” and “District of Columbia”.</p>
-<p>We try to remove these two outliers, and then fit models again. The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become not siginficent.</p>
+<p>We try to remove these two outliers, and then fit models again. The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become unsiginficent (p-value &gt; 0.05).</p>
 <p>In conlusion, with data from Hawaii and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).</p>
 </div>
 <div id="discussion-what-were-your-findings-are-they-what-you-expect-what-insights-into-the-data-can-you-make" class="section level2">
 <h2>Discussion: What were your findings? Are they what you expect? What insights into the data can you make?</h2>
+<p>Our finding are that, in general, the crime rate is highly related to alcohol, marijuana or illicit drug use. It is more associated to the race proportion of whites and the percentage of high school graduation.</p>
+<p>These result are not we initially expect, as the crime rate is not highly significantly associated with these drug use.</p>
 </div>
 
 
