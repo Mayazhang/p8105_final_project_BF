@@ -192,15 +192,13 @@ result_withoutliers =
   unnest() %>% 
   mutate_if(is.numeric, round, 2)
 ```
-##Motivation: Provide an overview of the project goals and motivation.
 
+##Background
 
+Substance abuse is characterized by the repeated use of addictive drugs that changes neuroadaptations in the neural system, resulting in the withdrawal syndrome after the drug effects diminish (White, 2004). A study of arrestees in Maricopa County, Arizona suggests that diverted medical marijuana users were more likely to commit property crime, violent crime, Driving Under the Influence (DUI), and drug selling than nonusers (Katz et al., 2018). Therefore, not only substance abuse represents a significant public health problem, but alcohol and illicit drug use are also associated with criminal activities in the United States (Jaegers et al., 2018). For example, the United States Drug Enforcement Administration (DEA) reports a majority of drug related crimes are committed by drug users (Resignato, 2000), and the evidence of high rates of drug misuse among criminal samples suggests an association between crime and illegal drug use (Rolfe et al., 2000). Furthermore, studies have shown more crime-related activity during periods of addiction than non-addiction periods (Rolfe et al., 2000). Substance use disorders (SUDs) as defined by the Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV) for alcohol, marijuana, and pain relievers are associated with violence (Grant et al., 2018). Motivation for committing property crimes can be attributed to economic problems. For instance, many heroin addicts finance their habits through committing property crimes, especially theft. (Rolfe et al., 2000). For violent crimes, the majority of murders linked to drug addicts are associated to the drug trade (Harrison & Gfroerer, 1992). 
 
-##Related work: Anything that inspired you, such as a paper, a web site, or something we discussed in class.
+There is a substantial decline in both the violent crime rate and property crime rate since 1993 (“5 facts about crime in the U.S”, 2018). However, the FBI reported a 7% increase in the violent crime rate between 2014 and 2016, with a 20% increase in the murder rate (“5 facts about crime in the U.S”, 2018). Consistent with the decrease in crime rates, past year cocaine use has fallen since 2002 (“Nationwide Trends”, 2015). Both marijuana and illicit drugs use increased slightly after 2008 (“Nationwide Trends”, 2015). Although the relationship between drug use and crime has been studied in detail these years, it is not clear whether the drug use pattern can be used to inform or even predict different types of crimes. The main purpose of the study is to build a predictive model using regression to predict future crime trend from drug use information. 
 
-
-
-##Initial questions: What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
 
 
 ##Data: Source, scraping method, cleaning, etc.
@@ -323,18 +321,18 @@ The rates of various crime types are considered to be the outcome, and the amoun
 We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.
 
 
-We fit the models and obtain the results for each regression.
+We fitted the models and obtain the results for each regression.
 `r datatable(result_withoutliers, options = list(pageLength = 10))`
 
 
-We filter the estimated coefficients with p-value less than 0.05. We found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook's distance > 0.5). These two influential points are from state "Hawaii" and "District of Columbia".
+We filtered the estimated coefficients with p-value less than 0.05. We found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook's distance > 0.5). These two influential points are from state "Hawaii" and "District of Columbia".
 
-We try to remove these two outliers, and then fit models again. 
+We tried to remove these two outliers, and then fitted models again. 
 `r datatable(result_withoutoutliers, options = list(pageLength = 10))`
 
-The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become unsiginficent (p-value > 0.05).
+The R-squared and adjusted R-squared increased by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use became unsiginficent (p-value > 0.05).
 
-After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. They are all good with model assumptions.
+After we fitted the models and obtain the results for each regression, we filtered the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we ran the diagnostics for these two multivariable linear regression models. They were all good with model assumptions.
 
 In conlusion, with data from Hawaii and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).
 
