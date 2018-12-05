@@ -280,6 +280,7 @@ drug_clean %>%
   layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y,
          title = 'Perception Risk in Different Age Group')
 })
+
 ```
 
 ### Drug Use by Age Groups
