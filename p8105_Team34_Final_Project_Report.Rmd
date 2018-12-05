@@ -190,7 +190,8 @@ result_withoutliers =
     linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
-  unnest()
+  unnest() %>% 
+  mutate_if(is.numeric, round, 2)
 ```
 ##Motivation: Provide an overview of the project goals and motivation.
 
