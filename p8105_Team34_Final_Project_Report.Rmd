@@ -207,37 +207,11 @@ There is a substantial decline in both the violent crime rate and property crime
 
 1.1 Data description
 
-The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants. Detailed description of columns were as follow:
-
- * state: state names
- 
- * year: year the offense recorded
- 
- * population: total population of the state
- 
- * violent_crime_number/rate: violent crime involved force or threat of force against the victims. It included four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. 
- 
- * columns containing murder manslaughter, rape, robbery, and aggravated assault were subdivision of violent crime
- 
- * property_crime_number/rate: property crime indicated offenses involving property lost without force or threat of force. It included three types of offenses: burglary, larceny-theft, motor vehicle theft.
- 
- * columns containing burglary, larceny-theft, and motor vehicle theft were subdivision of property crime
+The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants.
 
 1.2 Data cleaning 
 
-The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
-
- * Clean up column names using 'janitor' packages and manually delete the subscripts of text
- 
- * Convert column 'area' from character to factor
- 
- * Remove comma in columns containing numbers and rates, followed by transformation from character to numeric
- 
- * Fill up area names where appropriate
- 
- * Remove 'rape_legacy' related columns as it has overlapping information with 'rape_revise' columns
- 
- * Remove NAs and create subsets by states, region, and geographic division
+The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow: column names were cleaned up using 'janitor' packages and the subscripts of text were manually deleted. Column 'area' was convert from character to factor. Commas were removed in columns containing numbers and rates, followed by transformation from character to numeric. Area names were filled where appropriate. 'rape_legacy' variable was deleted as it has overlapping information with 'rape_revise' columns. Additionally, NAs were removed. Also, subsets by states, region, and geographic division were created.
 
 2. Drug dataset
 
