@@ -386,11 +386,11 @@ regression_data_all %>%
   group_by(crime_type) %>%
   nest() %>%
   mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white, data = .x)),
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest() %>% 
-  filter(p.value < 0.1,
+  filter(p.value < 0.05,
          term != "(Intercept)")
 ```
 
