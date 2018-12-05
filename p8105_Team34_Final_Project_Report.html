@@ -190,8 +190,20 @@ $(document).ready(function () {
         <li>
   <a href="Website-About-Page.html">Project Overall Description</a>
 </li>
-<li>
-  <a href="Drug_code.html">Dataset Exploration</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Dataset Exploration
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="code.html">Crime Dataset</a>
+    </li>
+    <li>
+      <a href="Drug_code.html">Drug Dataset</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="about.html">Statistical Analysis</a>
@@ -292,6 +304,70 @@ $(document).ready(function () {
 <li>Scatter point plots of crime rate:</li>
 </ul>
 <p>In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.</p>
+<pre class="r"><code># Read in drug data
+drug_raw =
+  read_csv(&quot;https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv&quot;) %&gt;%
+  janitor::clean_names()</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_integer(),
+##   `Rates.Alcohol.Abuse Past Year.12-17` = col_double(),
+##   `Rates.Alcohol.Abuse Past Year.18-25` = col_double(),
+##   `Rates.Alcohol.Abuse Past Year.26+` = col_double(),
+##   `Rates.Alcohol.Binge Past Month.12-17` = col_double(),
+##   `Rates.Alcohol.Binge Past Month.18-25` = col_double(),
+##   `Rates.Alcohol.Binge Past Month.26+` = col_double(),
+##   `Rates.Alcohol.Dependence Past Year.12-17` = col_double(),
+##   `Rates.Alcohol.Dependence Past Year.18-25` = col_double(),
+##   `Rates.Alcohol.Dependence Past Year.26+` = col_double(),
+##   `Rates.Alcohol.In Minors.Abuse` = col_double(),
+##   `Rates.Alcohol.In Minors.Use` = col_double(),
+##   `Rates.Alcohol.Need Treatment Past Year.12-17` = col_double(),
+##   `Rates.Alcohol.Need Treatment Past Year.18-25` = col_double(),
+##   `Rates.Alcohol.Need Treatment Past Year.26+` = col_double(),
+##   `Rates.Alcohol.Perceptions of Risk.12-17` = col_double(),
+##   `Rates.Alcohol.Perceptions of Risk.18-25` = col_double(),
+##   `Rates.Alcohol.Perceptions of Risk.26+` = col_double(),
+##   `Rates.Alcohol.Use Past Month.12-17` = col_double(),
+##   `Rates.Alcohol.Use Past Month.18-25` = col_double(),
+##   `Rates.Alcohol.Use Past Month.26+` = col_double()
+##   # ... with 43 more columns
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code># Clean the dataset for plot
+drug_clean = 
+  drug_raw %&gt;%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %&gt;%
+  gather(key, value, -state, -year) %&gt;% 
+  mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
+  separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;%
+  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;))
+
+# Make a bar plot 
+drug_clean %&gt;% 
+  filter(!str_detect(rate, &quot;perceptions&quot;),
+         !str_detect(rate, &quot;past_month&quot;),
+         !str_detect(rate, &quot;new_user&quot;)) %&gt;% 
+  group_by(year, rate) %&gt;% 
+  summarize(average_rate = mean(value)) %&gt;% 
+  mutate(rate = str_replace(rate, &quot;alcohol_&quot;, &quot;alcohol:&quot;),
+         rate = str_replace(rate, &quot;illicit_drugs_&quot;, &quot;illicit_drugs:&quot;),
+         rate = str_replace(rate, &quot;marijuana_&quot;, &quot;marijuana:&quot;)) %&gt;% 
+  separate(rate, into = c(&quot;drug&quot;, &quot;other&quot;), by = &quot;:&quot;) %&gt;% 
+  select(-other) %&gt;% 
+  group_by(year, drug) %&gt;% 
+  summarize(average_rate = sum(average_rate)) %&gt;% 
+  ggplot(aes(x = as.factor(year), y = average_rate)) +
+  geom_bar(aes(fill = drug), stat = &quot;identity&quot;, width = 0.6) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0, 80))</code></pre>
+<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 91 rows [1, 2,
+## 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].</code></pre>
+<p><img src="p8105_Team34_Final_Project_Report_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <ul>
 <li>Process of building shiny for drug data:</li>
 </ul>
@@ -305,14 +381,11 @@ $(document).ready(function () {
 </ul>
 <p>We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients. The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.</p>
 <p>We checked the overal distribution of outcomes and variables using package “PerformanceAnalytics”. Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.</p>
-<p>After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook’s distance &gt; 0.5). These two influential points are from state “Hawaii” and “District of Columbia”.</p>
-<p>We try to remove these two outliers, and then fit models again. The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become unsiginficent (p-value &gt; 0.05).</p>
-<p>In conlusion, with data from Hawaii and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).</p>
+<p>After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. They are all good with model assumptions.</p>
+<p>In conlusion, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use.</p>
 </div>
 <div id="discussion-what-were-your-findings-are-they-what-you-expect-what-insights-into-the-data-can-you-make" class="section level2">
 <h2>Discussion: What were your findings? Are they what you expect? What insights into the data can you make?</h2>
-<p>Our finding are that, in general, the crime rate is highly related to alcohol, marijuana or illicit drug use. It is more associated to the race proportion of whites and the percentage of high school graduation.</p>
-<p>These result are not we initially expect, as the crime rate is not highly significantly associated with these drug use.</p>
 </div>
 
 
