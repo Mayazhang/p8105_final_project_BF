@@ -252,15 +252,7 @@ This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) 
 
 The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
  
- * Mainly focused on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so selected all related columns from the whole dataset (state, year and rate of different substance abuse in different age groups)
- 
- * Gathered all the columns except year and state
- 
- * Replaced the strings before the age number for later separating
- 
- * Separated the data into “age” and “rate” and obtained tidy dataset
- 
- * Extracted population data from corresponding columns (three age groups) and kept “state” and “year” variables for later regression use
+  Mainly focusing on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so firstly all related columns from the whole dataset were selected, including state, year and rate of different substance abuse in different age groups. Since the age groups and substance type were nested together in the column names, all the columns except year and state were gathered and then the strings were replaced before the age number for later separating. Finally, the data was separated into “age” and “rate” which resulted in a tidy dataset.
  
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
