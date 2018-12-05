@@ -6,6 +6,11 @@ output:
     toc_float: true
 ---
 
+# Source for our dataset
+
+For this project we will use two datasets: one dataset [Crime](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-2) recorded crime rates in the United States in 2016; the other dataset [Drug](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html) contains information of drug use among different age groups across states.
+
+The crime dataset was derived from the Uniform Crime Reporting(UCR) program by FBI. The program collects real-world data for crime rate and law enforcement, and generates annual report. Here we will use the data from 2015 to 2016. The dataset for drug use was obtained from the National Survey on Drug Use and Health(NSDUH), which provides up-to-date survey results on alcohol, tabacco, drug use, etc.
 
 
 
