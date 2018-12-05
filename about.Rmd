@@ -170,7 +170,6 @@ education_data = education %>%
   mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
 
 regression_data_all = left_join(regression_data_raw, education_data)
-
 ```
 
 
