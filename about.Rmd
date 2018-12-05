@@ -232,7 +232,8 @@ head(crime_mean_rate)
 
 X: 51 states, each with mean drug rate (3 types of drugs)
 
-```{r}
+```{r prepare the outcome and predictors}
+# clean drug data
 drug_mean_rate = drug_clean %>% 
   group_by(state, rate, age) %>% 
   summarize(drug_average = mean(value)) %>% 
@@ -250,138 +251,109 @@ drug_mean_rate = drug_clean %>%
 
 head(drug_mean_rate)
 
+# read data for race proportion
+race_data_raw = read_csv("./data/race_data.csv") %>% janitor::clean_names() %>%
+  select(state, white)
+
 # Combine X and Y into one data frame
 regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %>% 
   select(-rape_legacy_rate)
 
+regression_data_raw = left_join(regression_data_raw, race_data_raw)
 ```
 
-#### Linear Regression
-Check the distribution for variables.
-```{r distribution checking}
-# Check distributions 
-regression_data_raw %>%
-  select(-state) %>%
-  chart.Correlation()
-```
+Consider education as a new variable.
 
-
-Make models for MLR of crime types and drug uses. 
-```{r linear regression}
-# Make linear models for each crime type in each state
-regression_model = 
-  regression_data_raw %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  group_by(crime_type) %>%
-  nest() %>%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %>%
-  select(-data) %>%
-  unnest()
-
-# Filter the model that has p-value is less than 0.1
-regression_model %>% 
-  filter(p.value < 0.1,
-         term != "(Intercept)")
-```
-
-* Put "population" into the model
-
-Set the significant level at 0.1
-
-```{r}
-# Clean up the population data to get the average in each state
-population_data = population_data %>% 
-  group_by(state, age) %>% 
-  summarize(mean_pop = mean(popul_in_thousands)) %>% 
-  group_by(state) %>% 
-  summarize(total_pop_thousands = sum(mean_pop))
-
-new_reg_data = left_join(regression_data_raw, population_data)
-
-# Construct new regression models
-new_reg_data %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  mutate(crime_type = str_replace(crime_type, "_rate", "")) %>% 
-  group_by(crime_type) %>%
-  nest() %>%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %>%
-  select(-data) %>%
-  unnest() %>% 
-  filter(p.value < 0.1,
-         term != "(Intercept)")
-```
-
-Check the diagnostics of the model.
-
-```{r diagnostics for each models}
-model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
-par(mfrow = c(2,2))
-plot(model1)
-model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
-par(mfrow = c(2,2))
-plot(model2)
-model3 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
-par(mfrow = c(2,2))
-plot(model3)
-```
-
-From the diagnostics, these three models all meet the model assumptions.
-From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association
-
-* Each simple linear regression
-
-```{r}
-lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data) %>% summary()
-lm(burglary_rate ~ alcohol, data = new_reg_data) %>% summary()
-lm(robbery_rate ~ marijuana, data = new_reg_data) %>% summary()
-```
-
-From the results of regression model that includes "total_population" as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions
-
-```{r model assumptions check for SLR models}
-# Make models and see the diagnostic graphs
-SLR_murder_alcohol = lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data)
-plot(SLR_murder_alcohol)
-
-SLR_burglary_alcohol = lm(burglary_rate ~ alcohol, data = new_reg_data)
-plot(SLR_burglary_alcohol)
-```
-
-From the diagnostics, the simple linear model of murder rate and alcohol use has a relatively better residual distribution, and there is no heavy tails in the QQ plot. However, the redisuals vs fitted plot of the model of burglary rate and alcohol, has a skewed line. Therefore, it may not meet the assumption.
-
-* Try bootstrap of the model of burglary rate
-
-```{r}
-new_reg_data %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  filter(crime_type == "burglary_rate") %>% 
-  modelr::bootstrap(n = 100) %>% 
-  mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
-    results = map(linear_model, broom::tidy)) %>% 
-  select(results) %>%
-  unnest()
-```
-
-
-
-```{r}
+```{r read in new dataset}
+# Import dataset that contains education information
 url = "https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment"
 education = read_html(url)
 
+# tidy and clean
 education_data = education %>% 
   html_nodes(css = "table") %>%
   .[[1]] %>% 
   html_table(fill = TRUE) %>% 
   janitor::clean_names() %>% 
   select(state, percent_high_school_graduate) %>% 
-  filter(state != "United States")
+  filter(state != "United States") %>% 
+  mutate(percent_high_school_graduate = str_replace(percent_high_school_graduate, "%", "")) %>% 
+  mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
+
+regression_data_all = left_join(regression_data_raw, education_data)
 ```
 
 
+#### Linear Regression
 
+Check the distribution for variables.
+```{r distribution checking}
+# Check distributions 
+regression_data_all %>%
+  select(-state) %>%
+  chart.Correlation()
+```
+
+
+Make models for MLR of crime types and drug uses, as well as race and education. 
+
+
+```{r linear regression}
+# MLR linear regression using list columns
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest() %>% 
+  filter(p.value < 0.05,
+         term != "(Intercept)")
+```
+
+From the result we could see that, both murder/manslaughter and robbery rate are positively related to marijuana use. In addition, murder/manslaughter rate is also related to illicit drugs. So, we would look into murder/manslaughter and robbery MLR models.
+
+Check the diagnostics of the model.
+
+```{r model diagnostics}
+# Fit models and then check the assumption
+model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
+summary(model1)
+par(mfrow = c(2,2))
+plot(model1)
+
+model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
+summary(model2)
+par(mfrow = c(2,2))
+plot(model2)
+```
+
+From the diagnostics, these two models meet the model assumptions.
+
+
+* Try bootstrap of the model of burglary rate
+
+```{r}
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  filter(crime_type == "murder_manslaughter_rate") %>% 
+  modelr::bootstrap(n = 100) %>% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %>% 
+  select(results) %>%
+  unnest()
+
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  filter(crime_type == "robbery_rate") %>% 
+  modelr::bootstrap(n = 100) %>% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %>% 
+  select(results) %>%
+  unnest()
+```
 
