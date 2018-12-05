@@ -76,7 +76,7 @@ In chart A, we first filtered specific state and drug type been selected and the
 We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients.
 The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use are the initial predictors.
 
-We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal.
+We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal. We do not use transformation for the outcomes.
 
 After we fit the models and obtain the results for each regression, we notice that the p-values are relatively large. So we take population into consideration.
 
