@@ -16,9 +16,11 @@ library(gsheet)
 ```
 
 ```{r crime_data}
-crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') #read in data
+#Read in Crime data
+crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') 
 crime_raw = crime_raw[3:201,]
 
+#Clean column names
 crime = 
   crime_raw %>% 
   janitor::clean_names() %>% 
@@ -43,12 +45,10 @@ crime =
           larceny_theft_rate = names(.)[21],
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
-  mutate(area = as.factor(area)) #clean column names
+  mutate(area = as.factor(area)) 
 
 # Remove comma and convert to numeric
 crime[,3:23] <- as.numeric(gsub(",","",unlist(crime[,3:23])))
-
-
 
 # fill up area name
 i = 1
@@ -59,32 +59,33 @@ for (i in 0:65) {
   i = i + 1
 }
 
-#clean data
+#Select variables of interest and change to long format
 crime_clean_rate =
   crime %>%
   filter(year != "Percent change") %>% 
   rename(state = area) %>% 
   filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>% 
   select(-rape_legacy_rate, -contains("number"), -population) %>%
-  gather(key = crime_type, value = rate, -state, -year)
+  gather(key = crime_type, value = rate, -state, -year) %>% 
+  mutate(rate = rate / 100)
 
-# make a table with state and state.abb 
+#Make a table with state and state.abb 
 state_abb =
   tibble(state = state.name) %>%
   bind_cols(tibble(abb = state.abb)) %>% 
   bind_rows(tibble(state = "District of Columbia", abb = "DC"))
 
-# add state.abb into crime_clean_rate
+#Add state.abb into crime_clean_rate
 crime_with_abb = left_join(crime_clean_rate, state_abb, by = "state")
 ```
 
 ```{r drug_data}
-# Do some cleaning with the data
+#Read in drug data
 drug_raw =
   read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 
-# Tidy the drug data for mapping
+#Tidy the drug data for mapping
 drug_data_map = 
   drug_raw %>%
   select(year, state, contains("rates")) %>%
@@ -95,11 +96,16 @@ drug_data_map =
   mutate(rate = str_replace(rate, "^rates_", "")) %>% 
   filter(rate != "pain_relievers_abuse_past_year") %>% 
   mutate(rate = str_replace_all(rate, c("alcohol_" = "alcohol:", "illicit_drugs_" = "illicit_drugs:", "marijuana_" = "marijuana:"))) %>%
-  separate(rate, into = c("drug", "degree"), sep = ":", extra = "merge") %>% 
+  separate(rate, into = c("drug", "degree"), sep = ":", extra = "merge") %>%
   group_by(year, state, age, drug) %>%
-  summarize(value = sum(value))
+  summarize(value = sum(value)) %>% 
+  ungroup() %>% 
+  spread(age, value) %>% 
+  mutate(age_total = select(., "12_17":"26") %>% apply(1, sum, na.rm = TRUE)) %>%
+  gather(key = age, value = value, "12_17":"age_total")
 
-# Tidy the drug data for shiny bar plots
+
+#Tidy the drug data for shiny bar plots
 drug_clean = 
   drug_raw %>%
   select(year, state,
@@ -112,19 +118,21 @@ drug_clean =
   separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
   mutate(rate = str_replace(rate, "^rates_", "")) 
 
+#Drug population data
 population_data = 
   drug_raw %>% 
   select(x12_17, x18_25:x26, year, state) %>% 
   gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
   mutate(age = str_replace(age, "x", ""))
 
-drug_clean_map = left_join(drug_data_map, population_data)
-drug_with_abb = left_join(drug_clean_map, state_abb, by = "state")
+#Final drug data for mapping
+drug_clean_map = left_join(drug_data_map, population_data) #add population 
+drug_with_abb = left_join(drug_clean_map, state_abb, by = "state") #add state.abb
 ```
 
 
 ```{r variable_for_shiny}
-# variables for crime
+#Variables for crime
 crime_choice = 
   crime_with_abb %>% 
   distinct(crime_type) %>% 
@@ -132,23 +140,23 @@ crime_choice =
 
 year_choice = crime_with_abb %>% distinct(year) %>% pull()  
 
-# variables for drug
+#Variables for drug
 drug_choice = unique(drug_with_abb$drug) 
 
-age_choice = c("Age 12-17", "Age 18-25", "Age 26 or above")
+age_choice = c("Age 12-17", "Age 18-25", "Age 26 or above", "All age")
 
 state_choice = drug_clean %>% distinct(state) %>% pull() 
 
 year_choice_drug = unique(drug_with_abb$year)
 ```
 
-Distribution of Crime Rate
+Distributions of Crime Rates
 =============================
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-```{r creat_sidebars}
+```{r creat_sidebars_crime}
 # selectInput widget for crime choice
 selectInput("crime_choice", label = h3("Select Crime"),
             choices = crime_choice, selected = "murder_manslaughter_rate")
@@ -156,7 +164,6 @@ selectInput("crime_choice", label = h3("Select Crime"),
 # radioButtons widget for crime year choice
 radioButtons("year_choice", label = h3("Select Year (Crime)"),
              choices = year_choice, selected = 2016)
-
 ```
 
 Column 
@@ -164,7 +171,7 @@ Column
 
 ### Distributions of ten types of crime rates
 
-```{r}
+```{r, crime_rates_map}
 renderPlotly({
   l <- list(color = toRGB("white"), width = 2)
   g <- list(
@@ -183,21 +190,21 @@ renderPlotly({
     z = ~rate, text = ~paste(state, '<br>'), locations = ~abb,
     color = ~rate, colors = 'Greens'
   ) %>%
-  colorbar(title = "Crime Rate") %>%
+  colorbar(title = "Crime Rate (per 1,000)") %>%
   layout(
-    title = 'Crime Rate Distribution',
+    title = 'Distribution of Crime Rate',
     geo = g
   )
 })
 ```
 
-Distribution of Drug Use
+Distributions of Drugs Use
 ====================================
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-```{r}
+```{r, sidebars_drug}
 # selectInput widget for drug choice
 radioButtons("drug_choice", label = h3("Select Drug"),
             choices = drug_choice, selected = "marijuana")
@@ -218,9 +225,9 @@ selectInput("state_choice", label = h3("Select state"),
 Column {.tabset}
 -----------------------------------------------------------------------
 
-### Distribution of three types of drug
+### Distributions of three types of drugs
 
-```{r }
+```{r, Drug_distribution_map}
 renderPlotly({
   l <- list(color = toRGB("white"), width = 2)
   g <- list(
@@ -230,7 +237,7 @@ renderPlotly({
   lakecolor = toRGB('white')
 )
 
-drug_with_abb$age = recode(drug_with_abb$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
+drug_with_abb$age = recode(drug_with_abb$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above", "age_total" = "All age")
   drug_with_abb %>%
     filter(year == input$year_choice_drug,
            drug == input$drug_choice,
@@ -241,9 +248,9 @@ drug_with_abb$age = recode(drug_with_abb$age, "12_17" = "Age 12-17", "18_25" = "
     z = ~value, text = ~paste(state, '<br>'), locations = ~abb,
     color = ~value, colors = 'Blues'
   ) %>%
-  colorbar(title = "Drug Use Rate") %>%
+  colorbar(title = "Drug Use Rate (per 1,000)") %>%
   layout(
-    title = 'Drug Use Rate Distribution',
+    title = 'Distribution of Drug Use Rate',
     geo = g
   )
 })
