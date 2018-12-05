@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Data cleaning(crime dataset): the crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
 
- * Clean up column names using 'janitor' packages and manually
+ * Clean up column names using 'janitor' packages and manually delete the subscripts of text
  
  * Convert column 'area' from character to factor
  
@@ -33,6 +33,8 @@ Data cleaning(crime dataset): the crime dataset was loaded from the [google shee
  * Remove NAs and separate individual state observations and large district observations
  
  * Remove 'rape_legacy' related columns as it has overlapping information with 'rape_revise' columns
+ 
+ * Separate the full dataset into smaller ones based on geographic characteristics.
  
 Data cleaning(drug dataset): The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
  
@@ -52,6 +54,10 @@ Data cleaning(drug dataset): The dataset can be accessed through its [original w
 
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
+
+* Scatter point plots of crime rate:
+
+In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.
 
 * Process of building shiny for drug data:
 
