@@ -260,7 +260,8 @@ The dataset can be accessed through its [original website](https://think.cs.vt.e
 
 In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.
 
-```{r}
+*
+```{r ,include=FALSE, message=FALSE, warning=FALSE}
 # retidy the data for plot
 drug_raw %>%
   select(year, state,
@@ -302,11 +303,13 @@ drug_raw %>%
 
 * Process of building shiny for drug data:
 
-As we have 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degree in each drug (abuse, binge, dependence, need treatment, use). We wanted to analyze the distribution of degrees in each drug in each state through the years and also the distribution of degrees in each drug in each state and in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, so we further conducted analysis of the trend of perception risk in each age group and in each state for selected drug. Thus, we created three charts in total.
+As there were 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degrees in each drug (abuse, binge, dependence, need treatment, use). The main purpose was to analyze the distribution of degrees in each drug in each state through years and also the distribution of degrees of each drug in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, thus we  analysis of the trend of perception risk in each age group and in each state for selected drug were further conducted. Thus,three interactive charts in total were created for exploring.
 
-In chart A, we first filtered specific state and drug type been selected and then built an interactive bar chart with “year” as x axis, “rate” as y axis and different degree with different colors. In chart B, similarly we mainly focused on the change through years on what proportion of people in each state obtained perception of risk of a certain drug in different age groups. Thus, we filtered all perception risk rates and then assigned different color to each age group. In chart C, we attached the importance to the trend over years on different age groups in each drug type and in each state. As a result, we colored each degree to see the change in a certain group.
+In chart A, specific state and drug type been selected were firstly filtered and then an interactive bar chart with “year” as x axis, “rate” as y axis was built and different degrees with different colors. In chart B, similarly mainly focusing on the change through years about proportion of people in each state obtained perception of risk of a certain drug in different age groups. Thus, all perception risk rates were selected and then different colors were assigned to each age group. In chart C, attaching the importance to the trend over years on different age groups in each drug type and in each state. As a result, each degree was colored to show the change in a certain group.
 
+By showing all these three types of distribution, the reader could explore the every detailed information of the drug use in U.S. and across years.
 
+Finally, best to show the different rates in each drug use overall the whole country, a shiny map was made to explore the distribution of each drug use through U.S. and the shades of the color was related to the rates.
 
 
 
