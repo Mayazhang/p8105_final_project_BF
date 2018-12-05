@@ -254,9 +254,7 @@ The dataset can be accessed through its [original website](https://think.cs.vt.e
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
 
-* Scatter point plots of crime rate:
-
-In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.
+In order to visualize how the crime rate differs in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
 
 *
 ```{r ,echo=FALSE, warning=FALSE}
