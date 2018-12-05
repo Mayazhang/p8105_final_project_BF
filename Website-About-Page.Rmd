@@ -14,6 +14,8 @@ For this project we will use four datasets: *[Crime](https://ucr.fbi.gov/crime-i
 
 *[Education](https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment) summarized the percentage of high school education across states;
 
+*[Population Distribution by Race/Ethnicity](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D) are based on the analysis of the Census Bureau’s American Community Survey (ACS) and may differ from other population estimates published yearly by the Census Bureau. U.S. and state population data displayed on this site are restricted to the civilian, non-institutionalized population for whom ACS collects and reports poverty information.
+
 
 
 
