@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -169,6 +172,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -187,6 +285,12 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="Website-About-Page.html">About</a>
+</li>
+<li>
+  <a href="p8105_Team34_Final_Project_Report.html">Project Report</a>
+</li>
+<li>
   <a href="Drug_code.html">Drug Dataset Explore</a>
 </li>
 <li>
@@ -227,15 +331,13 @@ $(document).ready(function () {
 </div>
 
 
-<div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
-<h4>load crime and drug data and do some clean up!</h4>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
-## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
-## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+<pre><code>## ─ Attaching packages ───────────────── tidyverse 1.2.1 ─</code></pre>
+<pre><code>## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
+## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ─ Conflicts ────────────────── tidyverse_conflicts() ─
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)
@@ -296,7 +398,7 @@ crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quo
           motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
   mutate(area = as.factor(area)) 
 crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre><code>## Warning: 强制改变过程中产生了NA</code></pre>
 <pre class="r"><code># fill up area name
 i = 1
 for (i in 0:65) {
@@ -330,318 +432,14 @@ head(crime)</code></pre>
 ## #   burglary_number &lt;dbl&gt;, burglary_rate &lt;dbl&gt;,
 ## #   larceny_theft_number &lt;dbl&gt;, larceny_theft_rate &lt;dbl&gt;,
 ## #   motor_vehicle_theft_number &lt;dbl&gt;, motor_vehicle_theft_rate &lt;dbl&gt;</code></pre>
-<p>some further clean up on crime data</p>
 <pre class="r"><code># Filter out &quot;percent change&quot; in &quot;year&quot; variable
 crime_clean = 
   crime %&gt;%
   filter(year != &quot;NA&quot;)
 
-# Create a new dataframe to store the data of different large areas
-crime_largearea = 
-  crime_clean %&gt;%
-  filter(area %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;))
-
-# Create subtotal for each big areas
-crime_northeast = 
-  crime_clean %&gt;%
-  filter(area %in% c(&quot;New England&quot;, &quot;Middle Atlantic&quot;))
-
-crime_midwest = 
-  crime_clean %&gt;%
-  filter(area %in% c(&quot;East North Central&quot;, &quot;West North Central&quot;))
-
-crime_south = 
-  crime_clean %&gt;%
-  filter(area %in% c(&quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;))
-
-crime_west = 
-  crime_clean %&gt;%
-  filter(area %in% c(&quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))
 
 # Change the name of &quot;area&quot; to &quot;state&quot;
-colnames(crime_clean)[1] = &quot;state&quot;
-
-# Filter out these areas in the tidied dataset
-crime_clean = 
-  crime_clean %&gt;%
-  filter(!state %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;, &quot;New England&quot;, &quot;Middle Atlantic&quot;, &quot;East North Central&quot;, &quot;West North Central&quot;, &quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;, &quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))</code></pre>
-</div>
-<div id="some-graphs" class="section level4">
-<h4>Some Graphs</h4>
-<p>Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories.</p>
-<pre class="r"><code># rank areas by average violent crime rate from 2015 to 2016
-crime %&gt;% 
-  group_by(area) %&gt;% 
-  filter(year != &quot;Percent change&quot;) %&gt;%
-  summarise_each(funs(mean)) %&gt;%
-  mutate(area = fct_reorder(area, violent_crime_rate)) %&gt;% 
-  ggplot(aes(x = area, y = violent_crime_rate)) +
-  geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 8),
-        title = element_text(size = 6))</code></pre>
-<pre><code>## `summarise_each()` is deprecated.
-## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
-## To map `funs` over all variables, use `summarise_all()`</code></pre>
-<pre><code>## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA
-
-## Warning in mean.default(year): argument is not numeric or logical:
-## returning NA</code></pre>
-<p><img src="about_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Visualize the crime distribution at different geographic levels.</p>
-<pre class="r"><code># At state level
-ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 10)) +
-  labs(
-    title = &quot;Crime Rate in Each State&quot;,
-    x = &quot;State&quot;,
-    y = &quot;Crime Rate (Per 100000)&quot;
-  )</code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-1.png" width="672" /></p>
-<pre class="r"><code># At area level
-ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = &quot;Crime Rate in Each Area&quot;,
-    x = &quot;Area&quot;,
-    y = &quot;Crime Rate (Per 100000)&quot;
-  ) </code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-2.png" width="672" /></p>
-<pre class="r"><code># In the midwest area
-ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = &quot;Crime Rate in Midwest Area&quot;,
-    x = &quot;Regions&quot;,
-    y = &quot;Crime Rate (Per 100000)&quot;
-  ) </code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-3.png" width="672" /></p>
-<pre class="r"><code># In the northeast area
-ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = &quot;Crime Rate in Northeast Area&quot;,
-    x = &quot;Regions&quot;,
-    y = &quot;Crime Rate (Per 100000)&quot;
-  ) </code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-4.png" width="672" /></p>
-<pre class="r"><code># In the south area
-ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = &quot;Crime Rate in South Area&quot;,
-    x = &quot;Regions&quot;,
-    y = &quot;Crime Rate (Per 100000)&quot;
-  ) </code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-5.png" width="672" /></p>
-<pre class="r"><code># In the west area
-ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = &quot;Crime Rate in West Area&quot;,
-    x = &quot;Regions&quot;,
-    y = &quot;Crime Rate (Per 100000)&quot;
-  ) </code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-6.png" width="672" /></p>
+colnames(crime_clean)[1] = &quot;state&quot;</code></pre>
 <p>Load drug data and clean up</p>
 <pre class="r"><code># Remove the block later
 drug_raw =
@@ -690,7 +488,6 @@ population_data =
   select(x12_17, x18_25:x26, year, state) %&gt;% 
   gather(key = &quot;age&quot;, value = &quot;popul_in_thousands&quot;, -state, -year) %&gt;% 
   mutate(age = str_replace(age, &quot;x&quot;, &quot;&quot;))</code></pre>
-</div>
 <div id="get-y-and-x-for-regression" class="section level4">
 <h4>Get Y and X for regression</h4>
 <p>Y: 51 states, each with mean crime rates (10 types of crimes)</p>
@@ -704,7 +501,7 @@ population_data =
 
 # check dimension
 dim(crime_mean_rate) #right</code></pre>
-<pre><code>## [1] 51 11</code></pre>
+<pre><code>## [1] 66 11</code></pre>
 <pre class="r"><code>head(crime_mean_rate)</code></pre>
 <pre><code>## # A tibble: 6 x 11
 ##   state violent_crime_r… murder_manslaug… rape_revise_rate rape_legacy_rate
@@ -791,6 +588,7 @@ regression_data_all = left_join(regression_data_raw, education_data)</code></pre
 </div>
 <div id="linear-regression" class="section level4">
 <h4>Linear Regression</h4>
+<p>** model with District of Columbia and Hawaii**</p>
 <p>Check the distribution for variables.</p>
 <pre class="r"><code># Check distributions 
 regression_data_all %&gt;%
@@ -851,7 +649,7 @@ summary(model1)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.02838 on 44 degrees of freedom
-##   (1 observation deleted due to missingness)
+##   (16 observations deleted due to missingness)
 ## Multiple R-squared:  0.3497, Adjusted R-squared:  0.2759 
 ## F-statistic: 4.733 on 5 and 44 DF,  p-value: 0.001516</code></pre>
 <pre class="r"><code>par(mfrow = c(2,2))
@@ -880,7 +678,7 @@ summary(model2)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.6211 on 44 degrees of freedom
-##   (1 observation deleted due to missingness)
+##   (16 observations deleted due to missingness)
 ## Multiple R-squared:  0.4104, Adjusted R-squared:  0.3434 
 ## F-statistic: 6.124 on 5 and 44 DF,  p-value: 0.0002181</code></pre>
 <pre class="r"><code>par(mfrow = c(2,2))
@@ -900,18 +698,18 @@ plot(model2)</code></pre>
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                          estimate std.error statistic   p.value
-##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 (Intercept)                   0.478     0.130        3.68  0.000617 
-##  2 illicit_drugs                -0.00633   0.00249     -2.54  0.0146   
-##  3 alcohol                      -0.00127   0.000666    -1.91  0.0620   
-##  4 marijuana                     0.00305   0.00114      2.68  0.0102   
-##  5 percent_high_school_graduate -0.00365   0.00145     -2.51  0.0156   
-##  6 (Intercept)                   0.727     0.158        4.60  0.0000340
-##  7 illicit_drugs                -0.00669   0.00282     -2.38  0.0218   
-##  8 alcohol                      -0.000654  0.000786    -0.832 0.410    
-##  9 marijuana                     0.00237   0.00116      2.05  0.0466   
-## 10 percent_high_school_graduate -0.00633   0.00176     -3.60  0.000791 
+##    term                           estimate std.error statistic   p.value
+##    &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 (Intercept)                   0.884       0.201      4.39   0.0000809
+##  2 illicit_drugs                -0.00841     0.00310   -2.71   0.00976  
+##  3 alcohol                      -0.0000543   0.00117   -0.0463 0.963    
+##  4 marijuana                     0.00385     0.00149    2.58   0.0136   
+##  5 percent_high_school_graduate -0.00889     0.00253   -3.51   0.00112  
+##  6 (Intercept)                   0.694       0.199      3.48   0.00107  
+##  7 illicit_drugs                -0.0151      0.00348   -4.33   0.0000749
+##  8 alcohol                      -0.00222     0.00104   -2.13   0.0382   
+##  9 marijuana                     0.00713     0.00154    4.62   0.0000292
+## 10 percent_high_school_graduate -0.00487     0.00213   -2.29   0.0265   
 ## # ... with 490 more rows</code></pre>
 <pre class="r"><code>regression_data_all %&gt;%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
@@ -925,21 +723,162 @@ plot(model2)</code></pre>
 <pre><code>## # A tibble: 500 x 5
 ##    term                         estimate std.error statistic  p.value
 ##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)                   11.4      4.02        2.83  0.00701 
-##  2 illicit_drugs                 -0.181    0.0624     -2.90  0.00568 
-##  3 alcohol                       -0.0117   0.0204     -0.574 0.569   
-##  4 marijuana                      0.0950   0.0264      3.59  0.000802
-##  5 percent_high_school_graduate  -0.105    0.0468     -2.25  0.0294  
-##  6 (Intercept)                    5.62     1.70        3.31  0.00188 
-##  7 illicit_drugs                 -0.0273   0.0319     -0.854 0.398   
-##  8 alcohol                       -0.0282   0.00804    -3.50  0.00107 
-##  9 marijuana                      0.0167   0.0144      1.16  0.252   
-## 10 percent_high_school_graduate  -0.0344   0.0198     -1.74  0.0897  
+##  1 (Intercept)                   2.95      1.79       1.65   0.105   
+##  2 illicit_drugs                -0.00210   0.0284    -0.0740 0.941   
+##  3 alcohol                      -0.0265    0.00738   -3.59   0.000773
+##  4 marijuana                     0.0124    0.0117     1.06   0.293   
+##  5 percent_high_school_graduate -0.0120    0.0205    -0.586  0.561   
+##  6 (Intercept)                   7.24      3.60       2.01   0.0504  
+##  7 illicit_drugs                -0.114     0.0634    -1.81   0.0776  
+##  8 alcohol                      -0.0265    0.0185    -1.43   0.158   
+##  9 marijuana                     0.0735    0.0259     2.84   0.00679 
+## 10 percent_high_school_graduate -0.0581    0.0392    -1.48   0.146   
+## # ... with 490 more rows</code></pre>
+<p>** model without District of Columbia and Hawaii**</p>
+<p>We remove two outliers and fit the model again</p>
+<pre class="r"><code># MLR linear regression using list columns
+regression_data_no2states &lt;- regression_data_all %&gt;% 
+  filter(!state %in% c(&quot;District of Columbia&quot;, &quot;Hawaii&quot;))
+
+regression_data_no2states %&gt;%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
+  group_by(crime_type) %&gt;%
+  nest() %&gt;%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %&gt;%
+  select(-data) %&gt;%
+  unnest() %&gt;% 
+  filter(p.value &lt; 0.05,
+         term != &quot;(Intercept)&quot;)</code></pre>
+<pre><code>## # A tibble: 8 x 6
+##   crime_type        term            estimate std.error statistic   p.value
+##   &lt;chr&gt;             &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 violent_crime_ra… white           -5.40e+0  1.27         -4.24   1.21e-4
+## 2 murder_manslaugh… white           -5.00e-2  0.0181       -2.76   8.62e-3
+## 3 murder_manslaugh… percent_high_s… -2.71e-3  0.000880     -3.08   3.66e-3
+## 4 robbery_rate      white           -2.02e+0  0.308        -6.56   6.25e-8
+## 5 aggravated_assau… white           -3.07e+0  1.01         -3.04   4.01e-3
+## 6 property_crime_r… white           -1.43e+1  5.95         -2.41   2.06e-2
+## 7 burglary_rate     percent_high_s… -1.63e-1  0.0756       -2.16   3.64e-2
+## 8 motor_vehicle_th… white           -3.68e+0  1.00         -3.67   6.82e-4</code></pre>
+<p>After removing these two points, the estimated coefficients for drug use become not significant.</p>
+<p>We still check the diagnostics of the model mentioned above.</p>
+<pre class="r"><code># Fit models and then check the assumption
+model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
+summary(model1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = murder_manslaughter_rate ~ illicit_drugs + alcohol + 
+##     marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.029528 -0.011921  0.001162  0.006981  0.041230 
+## 
+## Coefficients:
+##                                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                   0.4115731  0.0789263   5.215 5.29e-06 ***
+## illicit_drugs                -0.0027013  0.0013813  -1.956  0.05718 .  
+## alcohol                      -0.0007047  0.0003663  -1.924  0.06118 .  
+## marijuana                     0.0006851  0.0006022   1.138  0.26167    
+## white                        -0.0500129  0.0181464  -2.756  0.00862 ** 
+## percent_high_school_graduate -0.0027090  0.0008800  -3.079  0.00366 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.01626 on 42 degrees of freedom
+##   (16 observations deleted due to missingness)
+## Multiple R-squared:  0.5307, Adjusted R-squared:  0.4748 
+## F-statistic: 9.498 on 5 and 42 DF,  p-value: 4.085e-06</code></pre>
+<pre class="r"><code>par(mfrow = c(2,2))
+plot(model1)</code></pre>
+<p><img src="about_files/figure-html/model%20diagnostics_another-1.png" width="672" /></p>
+<pre class="r"><code>model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
+summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = robbery_rate ~ illicit_drugs + alcohol + marijuana + 
+##     white + percent_high_school_graduate, data = regression_data_no2states)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.43989 -0.14398 -0.07249  0.09322  0.93273 
+## 
+## Coefficients:
+##                               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                   4.337468   1.338549   3.240  0.00234 ** 
+## illicit_drugs                -0.022347   0.023426  -0.954  0.34556    
+## alcohol                      -0.010564   0.006212  -1.700  0.09644 .  
+## marijuana                     0.012388   0.010213   1.213  0.23193    
+## white                        -2.018335   0.307754  -6.558 6.25e-08 ***
+## percent_high_school_graduate -0.016192   0.014924  -1.085  0.28411    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2757 on 42 degrees of freedom
+##   (16 observations deleted due to missingness)
+## Multiple R-squared:  0.6276, Adjusted R-squared:  0.5833 
+## F-statistic: 14.16 on 5 and 42 DF,  p-value: 3.998e-08</code></pre>
+<pre class="r"><code>par(mfrow = c(2,2))
+plot(model2)</code></pre>
+<p><img src="about_files/figure-html/model%20diagnostics_another-2.png" width="672" /></p>
+<p>The R-squiared and adjusted R-squared increased, and these two models still meet the model assumptions.</p>
+<ul>
+<li>Try bootstrap of the model of burglary rate</li>
+</ul>
+<pre class="r"><code>regression_data_no2states %&gt;%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
+  filter(crime_type == &quot;murder_manslaughter_rate&quot;) %&gt;% 
+  modelr::bootstrap(n = 100) %&gt;% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %&gt;% 
+  select(results) %&gt;%
+  unnest()</code></pre>
+<pre><code>## # A tibble: 500 x 5
+##    term                          estimate std.error statistic      p.value
+##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+##  1 (Intercept)                   0.574     0.0826       6.94  0.0000000100
+##  2 illicit_drugs                -0.00196   0.00153     -1.28  0.208       
+##  3 alcohol                      -0.000993  0.000462    -2.15  0.0366      
+##  4 marijuana                     0.000587  0.000685     0.858 0.396       
+##  5 percent_high_school_graduate -0.00497   0.000892    -5.57  0.00000118  
+##  6 (Intercept)                   0.420     0.0695       6.04  0.000000319 
+##  7 illicit_drugs                -0.00580   0.00141     -4.11  0.000175    
+##  8 alcohol                      -0.00143   0.000360    -3.97  0.000268    
+##  9 marijuana                     0.00182   0.000566     3.21  0.00252     
+## 10 percent_high_school_graduate -0.00230   0.000765    -3.01  0.00434     
+## # ... with 490 more rows</code></pre>
+<pre class="r"><code>regression_data_no2states %&gt;%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
+  filter(crime_type == &quot;robbery_rate&quot;) %&gt;% 
+  modelr::bootstrap(n = 100) %&gt;% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %&gt;% 
+  select(results) %&gt;%
+  unnest()</code></pre>
+<pre><code>## # A tibble: 500 x 5
+##    term                         estimate std.error statistic    p.value
+##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 (Intercept)                   3.55      1.72        2.07  0.0449    
+##  2 illicit_drugs                 0.0199    0.0331      0.603 0.550     
+##  3 alcohol                      -0.0246    0.00746    -3.30  0.00199   
+##  4 marijuana                    -0.00625   0.0145     -0.430 0.670     
+##  5 percent_high_school_graduate -0.0158    0.0196     -0.810 0.423     
+##  6 (Intercept)                   5.58      1.43        3.90  0.000369  
+##  7 illicit_drugs                 0.00538   0.0241      0.224 0.824     
+##  8 alcohol                      -0.0320    0.00587    -5.45  0.00000302
+##  9 marijuana                    -0.00219   0.0103     -0.214 0.832     
+## 10 percent_high_school_graduate -0.0296    0.0153     -1.94  0.0597    
 ## # ... with 490 more rows</code></pre>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
