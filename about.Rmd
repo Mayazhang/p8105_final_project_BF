@@ -314,22 +314,3 @@ regression_data_no2states %>%
   select(results) %>%
   unnest()
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
