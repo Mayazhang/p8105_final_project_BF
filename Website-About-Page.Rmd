@@ -8,7 +8,9 @@ output:
 
 # Source for our dataset
 
-For this project we will use four datasets: *[Crime](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-2) recorded crime rates in the United States in 2016; 
+For this project we will use four datasets: 
+
+*[Crime](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-2) recorded crime rates in the United States in 2016; 
 
 *[Drug](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html) contains information of drug use among different age groups across states;
 

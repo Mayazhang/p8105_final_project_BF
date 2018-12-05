@@ -1,5 +1,5 @@
 ---
-title: "Team34 Data Science Final Project Home Page"
+title: "Team34 Data Science Project Home Page"
 output:
   html_document: 
     toc: true
@@ -10,6 +10,11 @@ output:
 ## A brief introductory landing page
 
 
+### *Screencast for overview*
+This screencast illustrates our project, emphasizing our motivation, questions, and results.
+
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+  
 
 
 
