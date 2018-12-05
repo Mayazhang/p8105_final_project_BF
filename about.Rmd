@@ -12,7 +12,6 @@ library(readxl)
 library(PerformanceAnalytics)
 library(rvest)
 library(httr)
-library(DT)
 ```
 
 Load crime data and some primary clean up
@@ -170,6 +169,7 @@ education_data = education %>%
   mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
 
 regression_data_all = left_join(regression_data_raw, education_data)
+
 ```
 
 
@@ -202,18 +202,6 @@ regression_data_all %>%
   unnest() %>% 
   filter(p.value < 0.05,
          term != "(Intercept)")
-
-result_withoutliers = 
-  regression_data_all %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  group_by(crime_type) %>%
-  nest() %>%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %>%
-  select(-data) %>%
-  unnest()
-datatable(result_withoutliers, options = list(pageLength = 25))
 ```
 
 From the result we could see that, both murder/manslaughter and robbery rate are positively related to marijuana use. In addition, murder/manslaughter rate is also related to illicit drugs. So, we would look into murder/manslaughter and robbery MLR models.
@@ -282,18 +270,6 @@ regression_data_no2states %>%
   unnest() %>% 
   filter(p.value < 0.05,
          term != "(Intercept)")
-
-result_withoutoutliers = 
-  regression_data_no2states %>%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  group_by(crime_type) %>%
-  nest() %>%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %>%
-  select(-data) %>%
-  unnest()
-datatable(result_withoutoutliers, options = list(pageLength = 25))
 ```
 
 After removing these two points, the estimated coefficients for drug use become not significant.
