@@ -5,11 +5,11 @@ navbar:
   right:
     - text: "Project Overall Description"
       href: Website-About-Page.html
-    - text: "Drug Dataset Explore"
+    - text: "Dataset Exploration"
       href: Drug_code.html
     - text: "Statistical Analysis"
       href: about.html
-    - text: "Shiny - Explore the data!"
+    - text: "Shiny"
       href: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/
     - text: "Project Report"
       href: p8105_Team34_Final_Project_Report.html
