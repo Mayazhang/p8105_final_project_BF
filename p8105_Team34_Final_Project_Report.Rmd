@@ -80,5 +80,7 @@ We checked the overal distribution of outcomes and variables using package "Perf
 
 After we fit the models and obtain the results for each regression, we notice that the p-values are relatively large. So we take population into consideration, and add "population" as a confounder.
 
+Then, we filter the estimated coefficients with p-value less than 0.1, 
+
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
