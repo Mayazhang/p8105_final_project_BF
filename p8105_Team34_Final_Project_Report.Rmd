@@ -78,7 +78,7 @@ The rates of various crime types are considered to be the outcome, and the amoun
 
 We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal. We do not use transformation for the outcomes.
 
-After we fit the models and obtain the results for each regression, we notice that the p-values are relatively large. So we take population into consideration.
+After we fit the models and obtain the results for each regression, we notice that the p-values are relatively large. So we take population into consideration, and add "population" as a confounder.
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
