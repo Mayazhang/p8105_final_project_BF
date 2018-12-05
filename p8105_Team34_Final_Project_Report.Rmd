@@ -20,7 +20,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##Data: Source, scraping method, cleaning, etc.
 
-Data cleaning(crime dataset): the crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
+1. Crime dataset
+
+1.1 Data description
+
+The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants. Detailed description of columns were as follow:
+
+ * state: state names
+ 
+ * year: year the offense recorded
+ 
+ * population: total population of the state
+ 
+ * violent_crime_number/rate: violent crime involved force or threat of force against the victims. It included four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. 
+ 
+ * columns containing murder manslaughter, rape, robbery, and aggravated assault were subdivision of violent crime
+ 
+ * property_crime_number/rate: property crime indicated offenses involving property lost without force or threat of force. It included three types of offenses: burglary, larceny-theft, motor vehicle theft.
+ 
+ * columns containing burglary, larceny-theft, and motor vehicle theft were subdivision of property crime
+
+1.2 Data cleaning 
+
+The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
 
  * Clean up column names using 'janitor' packages and manually delete the subscripts of text
  
@@ -30,15 +52,19 @@ Data cleaning(crime dataset): the crime dataset was loaded from the [google shee
  
  * Fill up area names where appropriate
  
- * Remove NAs and separate individual state observations and large district observations
- 
  * Remove 'rape_legacy' related columns as it has overlapping information with 'rape_revise' columns
  
- * Separate the full dataset into smaller ones based on geographic characteristics.
- 
-Data cleaning(drug dataset): The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
- 
- * Data description: This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) among different age groups (12-17, 18-25, 26 or above) and states in United States from year 2002 to 2014. Data was collected from individual state as part of the NSDUH study. 
+ * Remove NAs and create subsets by states, region, and geographic division
+
+2. Drug dataset
+
+2.1 Data description
+
+This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) among different age groups (12-17, 18-25, 26 or above) and states in United States from year 2002 to 2014. Data was collected from individual state as part of the NSDUH study. 
+
+2.2 Data cleaning
+
+The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
  
  * Mainly focused on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so selected all related columns from the whole dataset (state, year and rate of different substance abuse in different age groups)
  
@@ -50,8 +76,6 @@ Data cleaning(drug dataset): The dataset can be accessed through its [original w
  
  * Extracted population data from corresponding columns (three age groups) and kept “state” and “year” variables for later regression use
  
-
-
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
 
@@ -89,4 +113,12 @@ We again checke the model assumptions for these two simple linear regression. Bo
 In conlusion, murder/manslaughter is negatively associated with alcohol, while burglary is positively associated with marijuana use.
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
+
+
+
+
+
+
+
+
 
