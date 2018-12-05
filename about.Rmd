@@ -160,12 +160,22 @@ From the diagnostics, these two models meet the model assumptions.
 * Try bootstrap of the model of burglary rate
 
 ```{r}
-new_reg_data %>%
+regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
-  filter(crime_type == "burglary_rate") %>% 
+  filter(crime_type == "murder_manslaughter_rate") %>% 
   modelr::bootstrap(n = 100) %>% 
   mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = .x)),
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %>% 
+  select(results) %>%
+  unnest()
+
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  filter(crime_type == "robbery_rate") %>% 
+  modelr::bootstrap(n = 100) %>% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
     results = map(linear_model, broom::tidy)) %>% 
   select(results) %>%
   unnest()
