@@ -260,6 +260,17 @@ library(PerformanceAnalytics)</code></pre>
 <pre><code>## The following object is masked from &#39;package:graphics&#39;:
 ## 
 ##     legend</code></pre>
+<pre class="r"><code>library(rvest)</code></pre>
+<pre><code>## Loading required package: xml2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rvest&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     pluck</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding</code></pre>
+<pre class="r"><code>library(httr)</code></pre>
 <p>Load crime data and some primary clean up</p>
 <pre class="r"><code># load data and clean up column names
 # not to omit NAs
@@ -301,17 +312,18 @@ for (i in 0:65) {
 crime  &lt;- crime %&gt;% 
   na.omit()
 
+crime$year = as.factor(crime$year)
 # check head
 head(crime)</code></pre>
 <pre><code>## # A tibble: 6 x 23
-##   area   year population violent_crime_n… violent_crime_r… murder_manslaug…
-##   &lt;fct&gt; &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Unit…  2015  320896618          1234183             385.            15883
-## 2 Unit…  2016  323127513          1283058             397.            17250
-## 3 Nort…  2015   56184737           180474             321.             1967
-## 4 Nort…  2016   56209510           178244             317.             1955
-## 5 New …  2015   14710229            42121             286.              326
-## 6 New …  2016   14735525            41598             282.              292
+##   area  year  population violent_crime_n… violent_crime_r… murder_manslaug…
+##   &lt;fct&gt; &lt;fct&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Unit… 2015   320896618          1234183             385.            15883
+## 2 Unit… 2016   323127513          1283058             397.            17250
+## 3 Nort… 2015    56184737           180474             321.             1967
+## 4 Nort… 2016    56209510           178244             317.             1955
+## 5 New … 2015    14710229            42121             286.              326
+## 6 New … 2016    14735525            41598             282.              292
 ## # ... with 17 more variables: murder_manslaughter_rate &lt;dbl&gt;,
 ## #   rape_revise_number &lt;dbl&gt;, rape_revise_rate &lt;dbl&gt;,
 ## #   rape_legacy_number &lt;dbl&gt;, rape_legacy_rate &lt;dbl&gt;,
@@ -356,6 +368,283 @@ colnames(crime_clean)[1] = &quot;state&quot;
 crime_clean = 
   crime_clean %&gt;%
   filter(!state %in% c(&quot;United States Total&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;, &quot;New England&quot;, &quot;Middle Atlantic&quot;, &quot;East North Central&quot;, &quot;West North Central&quot;, &quot;South Atlantic&quot;, &quot;East South Central&quot;, &quot;West South Central&quot;, &quot;Mountain&quot;, &quot;Pacific&quot;, &quot;Puerto Rico&quot;))</code></pre>
+</div>
+<div id="some-graphs" class="section level4">
+<h4>Some Graphs</h4>
+<p>Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories.</p>
+<pre class="r"><code># rank areas by average violent crime rate from 2015 to 2016
+crime %&gt;% 
+  group_by(area) %&gt;% 
+  filter(year != &quot;Percent change&quot;) %&gt;%
+  summarise_each(funs(mean)) %&gt;%
+  mutate(area = fct_reorder(area, violent_crime_rate)) %&gt;% 
+  ggplot(aes(x = area, y = violent_crime_rate)) +
+  geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 6))</code></pre>
+<pre><code>## `summarise_each()` is deprecated.
+## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
+## To map `funs` over all variables, use `summarise_all()`</code></pre>
+<pre><code>## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA
+
+## Warning in mean.default(year): argument is not numeric or logical:
+## returning NA</code></pre>
+<p><img src="about_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Visualize the crime distribution at different geographic levels.</p>
+<pre class="r"><code># At state level
+ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = year)) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 10)) +
+  labs(
+    title = &quot;Crime Rate in Each State&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Crime Rate (Per 100000)&quot;
+  )</code></pre>
+<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-1.png" width="672" /></p>
+<pre class="r"><code># At area level
+ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = &quot;Crime Rate in Each Area&quot;,
+    x = &quot;Area&quot;,
+    y = &quot;Crime Rate (Per 100000)&quot;
+  ) </code></pre>
+<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-2.png" width="672" /></p>
+<pre class="r"><code># In the midwest area
+ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = &quot;Crime Rate in Midwest Area&quot;,
+    x = &quot;Regions&quot;,
+    y = &quot;Crime Rate (Per 100000)&quot;
+  ) </code></pre>
+<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-3.png" width="672" /></p>
+<pre class="r"><code># In the northeast area
+ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = &quot;Crime Rate in Northeast Area&quot;,
+    x = &quot;Regions&quot;,
+    y = &quot;Crime Rate (Per 100000)&quot;
+  ) </code></pre>
+<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-4.png" width="672" /></p>
+<pre class="r"><code># In the south area
+ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = &quot;Crime Rate in South Area&quot;,
+    x = &quot;Regions&quot;,
+    y = &quot;Crime Rate (Per 100000)&quot;
+  ) </code></pre>
+<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-5.png" width="672" /></p>
+<pre class="r"><code># In the west area
+ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 10)) +
+  labs(
+    title = &quot;Crime Rate in West Area&quot;,
+    x = &quot;Regions&quot;,
+    y = &quot;Crime Rate (Per 100000)&quot;
+  ) </code></pre>
+<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate-6.png" width="672" /></p>
 <p>Load drug data and clean up</p>
 <pre class="r"><code># Remove the block later
 drug_raw =
@@ -536,7 +825,15 @@ new_reg_data %&gt;%
 par(mfrow = c(2,2))
 plot(model1)</code></pre>
 <p><img src="about_files/figure-html/diagnostics%20for%20each%20models-1.png" width="672" /></p>
-<p>From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association</p>
+<pre class="r"><code>model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
+par(mfrow = c(2,2))
+plot(model2)</code></pre>
+<p><img src="about_files/figure-html/diagnostics%20for%20each%20models-2.png" width="672" /></p>
+<pre class="r"><code>model3 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
+par(mfrow = c(2,2))
+plot(model3)</code></pre>
+<p><img src="about_files/figure-html/diagnostics%20for%20each%20models-3.png" width="672" /></p>
+<p>From the diagnostics, these three models all meet the model assumptions. From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association</p>
 <ul>
 <li>Each simple linear regression</li>
 </ul>
@@ -596,6 +893,14 @@ plot(model1)</code></pre>
 ## Multiple R-squared:  0.007438,   Adjusted R-squared:  -0.01282 
 ## F-statistic: 0.3672 on 1 and 49 DF,  p-value: 0.5473</code></pre>
 <p>From the results of regression model that includes “total_population” as variable, we can see that at the significant level of 0.1, both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use. So we would look into the model assumptions</p>
+<pre class="r"><code># Make models and see the diagnostic graphs
+SLR_murder_alcohol = lm(murder_manslaughter_rate ~ alcohol, data = new_reg_data)
+plot(SLR_murder_alcohol)</code></pre>
+<p><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-1.png" width="672" /><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-2.png" width="672" /><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-3.png" width="672" /><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-4.png" width="672" /></p>
+<pre class="r"><code>SLR_burglary_alcohol = lm(burglary_rate ~ alcohol, data = new_reg_data)
+plot(SLR_burglary_alcohol)</code></pre>
+<p><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-5.png" width="672" /><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-6.png" width="672" /><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-7.png" width="672" /><img src="about_files/figure-html/model%20assumptions%20check%20for%20SLR%20models-8.png" width="672" /></p>
+<p>From the diagnostics, the simple linear model of murder rate and alcohol use has a relatively better residual distribution, and there is no heavy tails in the QQ plot. However, the redisuals vs fitted plot of the model of burglary rate and alcohol, has a skewed line. Therefore, it may not meet the assumption.</p>
 <ul>
 <li>Try bootstrap of the model of burglary rate</li>
 </ul>
@@ -609,43 +914,29 @@ plot(model1)</code></pre>
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                estimate    std.error statistic     p.value
-##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1 (Intercept)          1.25e+1 2.22             5.61  0.00000111 
-##  2 illicit_drugs        2.91e-2 0.102            0.284 0.777      
-##  3 alcohol             -8.75e-2 0.0299          -2.93  0.00532    
-##  4 marijuana           -4.70e-2 0.0418          -1.12  0.266      
-##  5 total_pop_thousands -3.77e-8 0.0000000371    -1.02  0.315      
-##  6 (Intercept)          1.46e+1 2.53             5.75  0.000000696
-##  7 illicit_drugs        1.25e-1 0.114            1.10  0.277      
-##  8 alcohol             -1.44e-1 0.0333          -4.33  0.0000810  
-##  9 marijuana           -6.64e-2 0.0492          -1.35  0.183      
-## 10 total_pop_thousands -1.21e-7 0.0000000414    -2.93  0.00528    
+##    term                estimate    std.error statistic  p.value
+##    &lt;chr&gt;                  &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)          1.52e+1 1.97             7.72  7.72e-10
+##  2 illicit_drugs        2.09e-1 0.0836           2.50  1.60e- 2
+##  3 alcohol             -1.23e-1 0.0313          -3.93  2.87e- 4
+##  4 marijuana           -1.47e-1 0.0381          -3.86  3.55e- 4
+##  5 total_pop_thousands -1.58e-7 0.0000000510    -3.09  3.35e- 3
+##  6 (Intercept)          7.28e+0 2.46             2.96  4.85e- 3
+##  7 illicit_drugs        2.10e-1 0.124            1.69  9.81e- 2
+##  8 alcohol             -3.61e-2 0.0392          -0.922 3.61e- 1
+##  9 marijuana           -1.14e-1 0.0563          -2.03  4.87e- 2
+## 10 total_pop_thousands -2.06e-8 0.0000000483    -0.427 6.72e- 1
 ## # ... with 490 more rows</code></pre>
-</div>
-<div id="some-graphs" class="section level4">
-<h4>some graphs</h4>
-<p>Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)</p>
-<p>Change anything if you want (HX)</p>
-<pre class="r"><code># rank areas by average violent crime rate from 2015 to 2016
-crime %&gt;% 
-  group_by(area) %&gt;% 
-  filter(year != &quot;Percent change&quot;) %&gt;%
-  summarise_each(funs(mean)) %&gt;%
-  mutate(area = fct_reorder(area, violent_crime_rate)) %&gt;% 
-  ggplot(aes(x = area, y = violent_crime_rate)) +
-  geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 8),
-        title = element_text(size = 6))</code></pre>
-<pre><code>## `summarise_each()` is deprecated.
-## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
-## To map `funs` over all variables, use `summarise_all()`</code></pre>
-<p><img src="about_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<pre class="r"><code>ggplot(crime_clean, aes(x = violent_crime_rate)) + geom_histogram() +
-  theme_bw()</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="about_files/figure-html/distribution%20of%20violent%20crime%20rate%20for%20each%20state-1.png" width="672" /></p>
+<pre class="r"><code>url = &quot;https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment&quot;
+education = read_html(url)
+
+education_data = education %&gt;% 
+  html_nodes(css = &quot;table&quot;) %&gt;%
+  .[[1]] %&gt;% 
+  html_table(fill = TRUE) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  select(state, percent_high_school_graduate) %&gt;% 
+  filter(state != &quot;United States&quot;)</code></pre>
 </div>
 
 

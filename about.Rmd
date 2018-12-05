@@ -9,6 +9,8 @@ title: "About This Project"
 library(tidyverse)
 library(readxl)
 library(PerformanceAnalytics)
+library(rvest)
+library(httr)
 ```
 
 Load crime data and some primary clean up
@@ -367,6 +369,18 @@ new_reg_data %>%
 
 
 
+```{r}
+url = "https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment"
+education = read_html(url)
+
+education_data = education %>% 
+  html_nodes(css = "table") %>%
+  .[[1]] %>% 
+  html_table(fill = TRUE) %>% 
+  janitor::clean_names() %>% 
+  select(state, percent_high_school_graduate) %>% 
+  filter(state != "United States")
+```
 
 
 
