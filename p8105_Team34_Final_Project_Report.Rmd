@@ -112,7 +112,9 @@ In conlusion, with data from Hawaii and District of Columbia, at 0.05 significan
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
+Our finding are that, in general, the crime rate is highly related to alcohol, marijuana or illicit drug use. It is more associated to the race proportion of whites and the percentage of high school graduation.
 
+These result are not we initially expect, as the crime rate is not highly significantly associated with these drug use.
 
 
 
