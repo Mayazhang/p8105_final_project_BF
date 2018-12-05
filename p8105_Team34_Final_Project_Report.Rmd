@@ -106,7 +106,7 @@ We checked the overal distribution of outcomes and variables using package "Perf
 
 After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook's distance > 0.5). These two influential points are from state "Hawaii" and "District of Columbia".
 
-We try to remove these two outliers, and then fit models again. The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become not siginficent.
+We try to remove these two outliers, and then fit models again. The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become unsiginficent (p-value > 0.05).
 
 In conlusion, with data from Hawaii and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).
 
