@@ -11,7 +11,7 @@
 
 
 
-<title>Crime Code</title>
+<title>Crime dataset</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -240,13 +240,20 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Crime Code</h1>
+<h1 class="title toc-ignore">Crime dataset</h1>
 
 </div>
 
 
 <div id="load-crime-and-drug-data-and-do-some-clean-up" class="section level4">
 <h4>load crime and drug data and do some clean up!</h4>
+<<<<<<< HEAD
+</div>
+<div id="some-graphs" class="section level4">
+<h4>Some Graphs</h4>
+<p><img src="crime_data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="crime_data_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+=======
 <pre class="r"><code>library(tidyverse)
 library(readxl)
 library(PerformanceAnalytics)
@@ -590,6 +597,7 @@ crime_plot_property_about &lt;- crime_plot %&gt;%
   )
 
 ggsave(filename = &quot;property_crime_rate_overall_plot.png&quot;, plot = crime_plot_property_about, width = 30, height = 20, units = &quot;cm&quot;)</code></pre>
+>>>>>>> a2d4b04ad0c9a61046664df579e865cb12b5ff79
 </div>
 
 

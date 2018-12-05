@@ -1,10 +1,10 @@
 ---
-title: "Crime Code"
+title: "Crime dataset"
 ---
 
 #### load crime and drug data and do some clean up!
 
-```{r}
+```{r, include = FALSE}
 library(tidyverse)
 library(readxl)
 library(PerformanceAnalytics)
@@ -17,9 +17,10 @@ library(plotly)
 library(gsheet)
 ```
 
-Load crime data and some primary clean up
 
-```{r}
+
+```{r, include = FALSE}
+options( warn = -1 )
 # load data and clean up column names
 # not to omit NAs
 crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') 
@@ -94,9 +95,11 @@ crime[,4:23] <- crime[,4:23]/100
 
 ```
 
-some further clean up on crime data 
 
-```{r data cleaning on crime dataset}
+
+```{r data cleaning on crime dataset, include = FALSE}
+options( warn = -1 )
+# Some further clean up on crime data 
 # Filter out "percent change" in "year" variable
 crime_clean = 
   crime %>%
@@ -136,15 +139,17 @@ crime_clean =
 
 #### Some Graphs
 
-Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories.
 
-```{r}
-# rank areas by average violent crime rate from 2015 to 2016
+
+```{r, echo=FALSE}
+options( warn = -1 )
+# Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories
+# Rank areas by average violent crime rate from 2015 to 2016
 crime_plot <- crime %>% 
   filter(!area %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>%  
   filter(year != "Percent change") %>%
   group_by(area) %>%
-  summarise_each(funs(mean))
+  summarise_all(funs(mean))
 
 crime_plot$region <- as.character(crime_plot$region)
 index_1 <- which(crime_plot$region == "1")
@@ -162,27 +167,43 @@ crime_plot_violent_about <- crime_plot %>%
   ggplot(aes(x = area, y = violent_crime_rate, fill = region)) +
   geom_bar(stat = "identity", width = 0.5) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 10),
+  theme(axis.text.x = element_text(angle = 90, size = 8),
         title = element_text(size = 14)) +
   labs(
     x = "State",
     y = "Violent crime rate (Per 1000)"
   )
-
+crime_plot_violent_about
 ggsave(filename = "violent_crime_rate_overall_plot.png", plot = crime_plot_violent_about, width = 30, height = 20, units = "cm")
+
+
+```
+
+```{r, echo=FALSE}
+options( warn = -1 )
 
 crime_plot_property_about <- crime_plot %>% 
   mutate(area = fct_reorder(area, property_crime_number)) %>% 
   ggplot(aes(x = area, y = property_crime_number, fill = region)) +
   geom_bar(stat = "identity", width = 0.5) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 10),
+  theme(axis.text.x = element_text(angle = 90, size = 8),
         title = element_text(size = 14)) +
   labs(
     x = "State",
     y = "Property crime rate (Per 1000)"
   )
-
+crime_plot_property_about
 ggsave(filename = "property_crime_rate_overall_plot.png", plot = crime_plot_property_about, width = 30, height = 20, units = "cm")
 ```
+
+
+
+
+
+
+
+
+
+
 
