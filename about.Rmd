@@ -319,8 +319,15 @@ Check the diagnostics of the model.
 model1 = lm(burglary_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
 par(mfrow = c(2,2))
 plot(model1)
+model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
+par(mfrow = c(2,2))
+plot(model2)
+model3 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + total_pop_thousands, data = new_reg_data)
+par(mfrow = c(2,2))
+plot(model3)
 ```
 
+From the diagnostics, these three models all meet the model assumptions.
 From the result we could see that, both murder/manslaughter and burglary rate are inversely related to alcohol use while robbery rate is positively related to marijuana use. Thus, now we look into simple linear models for each association
 
 * Each simple linear regression
