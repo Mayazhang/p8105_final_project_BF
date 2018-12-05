@@ -98,19 +98,13 @@ In chart A, we first filtered specific state and drug type been selected and the
 * Linear Regression:
 
 We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients.
-The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use are the initial predictors.
+The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.
 
-We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal. We do not use transformation for the outcomes.
+We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.
 
-After we fit the models and obtain the results for each regression, we notice that the p-values are relatively large. So we take population into consideration, and add "population" as a confounder.
+After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes are significantly related to drug use. Then we run the diagnostics for these two multivariable linear regression models. They are all good with model assumptions.
 
-Then, we filter the estimated coefficients with p-value less than 0.1, we found that there are three estimated coefficients with low p-value. Then we run the diagnostics for these three multivariable linear regression models. They are all good with model assumptions.
-
-Then we extract the individual estimated coefficients with low p-value and their corresponding outcomes. Both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use.
-
-We again checke the model assumptions for these two simple linear regression. Both of them meet the assumptions.
-
-In conlusion, murder/manslaughter is negatively associated with alcohol, while burglary is positively associated with marijuana use.
+In conlusion, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while burglary and murder/manslaughter are positively associated with marijuana use.
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
