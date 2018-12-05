@@ -166,7 +166,7 @@ radioButtons("year_choice", label = h3("Select Year (Crime)"),
              choices = year_choice, selected = 2016)
 ```
 
-Column 
+Column {.tabset}
 -----------------------------------------------------------------------
 
 ### Distributions of ten types of crime rates
@@ -184,10 +184,10 @@ renderPlotly({
   crime_with_abb %>%
     filter(year == input$year_choice,
            crime_type == input$crime_choice) %>%
-    select(abb, state, rate) %>%
+    mutate(text_label = str_c("Rate: ", rate, '\nState: ', state, ' Abb: ', abb, '\nYear: ', year)) %>% 
     plot_geo(locationmode = 'USA-states') %>%
   add_trace(
-    z = ~rate, text = ~paste(state, '<br>'), locations = ~abb,
+    z = ~rate, text = ~text_label, locations = ~abb,
     color = ~rate, colors = 'Greens'
   ) %>%
   colorbar(title = "Crime Rate (per 1,000)") %>%
@@ -195,7 +195,27 @@ renderPlotly({
     title = 'Distribution of Crime Rate',
     geo = g
   )
-})
+}) #Crime rate map
+```
+
+### Barplot of crime rates by State
+
+```{r Barplot_crime_state}
+renderPlotly({
+  crime_with_abb %>% 
+    filter(year == input$year_choice,
+           crime_type == input$crime_choice) %>%
+    mutate(state = fct_reorder(state, rate),
+           text_label = str_c("Rate: ", rate, '\nState: ', state, ' Abb: ', abb, '\nYear: ', year)) %>% 
+    plot_ly(x = ~state, y = ~rate, text = ~text_label,
+    marker = list(size = 10,
+                       color = 'rgba(255, 182, 193, .9)',
+                       line = list(color = 'rgba(152, 0, 0, .8)',
+                                   width = 2))) %>%
+  layout(title = 'Distribution of Crime Rate by State',
+         yaxis = list(zeroline = FALSE),
+         xaxis = list(zeroline = FALSE))
+}) #Crime rate by state (barplot)
 ```
 
 Distributions of Drugs Use
@@ -242,10 +262,10 @@ drug_with_abb$age = recode(drug_with_abb$age, "12_17" = "Age 12-17", "18_25" = "
     filter(year == input$year_choice_drug,
            drug == input$drug_choice,
            age == input$age_choice) %>%
-    select(abb, state, value) %>%
+    mutate(text_label = str_c("Rate: ", value, '\nState: ', state, ' Abb: ', abb, '\nYear: ', year, '\nDrug: ', drug, '\nAge group: ', age, '\nPopulation (in thousands): ', popul_in_thousands)) %>% 
     plot_geo(locationmode = 'USA-states') %>%
   add_trace(
-    z = ~value, text = ~paste(state, '<br>'), locations = ~abb,
+    z = ~value, text = ~text_label, locations = ~abb,
     color = ~value, colors = 'Blues'
   ) %>%
   colorbar(title = "Drug Use Rate (per 1,000)") %>%
@@ -253,7 +273,7 @@ drug_with_abb$age = recode(drug_with_abb$age, "12_17" = "Age 12-17", "18_25" = "
     title = 'Distribution of Drug Use Rate',
     geo = g
   )
-})
+}) #Drug use rate map
 ```
 
 ### Drug Use in whole Population
