@@ -15,7 +15,7 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -108,34 +108,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 60px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 </style>
 
@@ -700,16 +700,16 @@ plot(model2)</code></pre>
 <pre><code>## # A tibble: 500 x 5
 ##    term                          estimate std.error statistic  p.value
 ##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)                   0.460     0.125        3.67  0.000588
-##  2 illicit_drugs                -0.00459   0.00210     -2.18  0.0338  
-##  3 alcohol                      -0.00115   0.000648    -1.77  0.0830  
-##  4 marijuana                     0.00175   0.000870     2.01  0.0502  
-##  5 percent_high_school_graduate -0.00331   0.00126     -2.63  0.0111  
-##  6 (Intercept)                   0.739     0.196        3.77  0.000503
-##  7 illicit_drugs                -0.00824   0.00307     -2.69  0.0103  
-##  8 alcohol                      -0.000551  0.000848    -0.651 0.519   
-##  9 marijuana                     0.00304   0.00127      2.39  0.0212  
-## 10 percent_high_school_graduate -0.00649   0.00214     -3.04  0.00411 
+##  1 (Intercept)                   0.343     0.101        3.41  0.00163 
+##  2 illicit_drugs                -0.00115   0.00182     -0.633 0.531   
+##  3 alcohol                      -0.00153   0.000520    -2.94  0.00565 
+##  4 marijuana                     0.000452  0.000785     0.575 0.569   
+##  5 percent_high_school_graduate -0.00213   0.00115     -1.86  0.0715  
+##  6 (Intercept)                   0.556     0.138        4.02  0.000222
+##  7 illicit_drugs                -0.00687   0.00249     -2.76  0.00834 
+##  8 alcohol                      -0.00140   0.000658    -2.13  0.0387  
+##  9 marijuana                     0.00313   0.00110      2.84  0.00683 
+## 10 percent_high_school_graduate -0.00428   0.00156     -2.75  0.00860 
 ## # ... with 490 more rows</code></pre>
 <pre class="r"><code>regression_data_all %&gt;%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
@@ -721,18 +721,18 @@ plot(model2)</code></pre>
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                         estimate std.error statistic    p.value
-##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1 (Intercept)                    6.13     1.21        5.08  0.00000564
-##  2 illicit_drugs                 -0.0184   0.0208     -0.885 0.380     
-##  3 alcohol                       -0.0274   0.00647    -4.24  0.0000969 
-##  4 marijuana                      0.0221   0.00936     2.36  0.0222    
-##  5 percent_high_school_graduate  -0.0476   0.0147     -3.23  0.00221   
-##  6 (Intercept)                    4.28     2.99        1.43  0.160     
-##  7 illicit_drugs                 -0.0971   0.0550     -1.77  0.0842    
-##  8 alcohol                       -0.0331   0.0148     -2.23  0.0308    
-##  9 marijuana                      0.0558   0.0234      2.38  0.0215    
-## 10 percent_high_school_graduate  -0.0149   0.0323     -0.462 0.646     
+##    term                         estimate std.error statistic  p.value
+##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)                   13.1      4.96         2.64 0.0114  
+##  2 illicit_drugs                 -0.210    0.0797      -2.64 0.0114  
+##  3 alcohol                       -0.0305   0.0194      -1.57 0.124   
+##  4 marijuana                      0.101    0.0345       2.93 0.00525 
+##  5 percent_high_school_graduate  -0.105    0.0513      -2.04 0.0474  
+##  6 (Intercept)                    5.38     1.34         4.03 0.000213
+##  7 illicit_drugs                 -0.0509   0.0233      -2.19 0.0339  
+##  8 alcohol                       -0.0213   0.00680     -3.13 0.00308 
+##  9 marijuana                      0.0280   0.0104       2.69 0.0101  
+## 10 percent_high_school_graduate  -0.0364   0.0139      -2.62 0.0119  
 ## # ... with 490 more rows</code></pre>
 <p>** model without District of Columbia and Hawaii**</p>
 <p>We remove two outliers and fit the model again</p>
@@ -837,18 +837,18 @@ plot(model2)</code></pre>
   select(results) %&gt;%
   unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                          estimate std.error statistic       p.value
-##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
-##  1 (Intercept)                   0.580     0.0746       7.78  0.00000000114
-##  2 illicit_drugs                -0.00484   0.00121     -3.98  0.000266     
-##  3 alcohol                      -0.00141   0.000404    -3.48  0.00117      
-##  4 marijuana                     0.00228   0.000593     3.85  0.000393     
-##  5 percent_high_school_graduate -0.00478   0.000831    -5.75  0.000000895  
-##  6 (Intercept)                   0.465     0.0960       4.84  0.0000229    
-##  7 illicit_drugs                -0.00230   0.00158     -1.45  0.154        
-##  8 alcohol                      -0.000790  0.000402    -1.97  0.0569       
-##  9 marijuana                     0.000626  0.000666     0.941 0.353        
-## 10 percent_high_school_graduate -0.00376   0.000944    -3.99  0.000304     
+##    term                          estimate std.error statistic     p.value
+##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 (Intercept)                   0.465     0.0758       6.13  0.000000168
+##  2 illicit_drugs                 0.000916  0.00125      0.734 0.466      
+##  3 alcohol                      -0.00114   0.000326    -3.50  0.00103    
+##  4 marijuana                    -0.000853  0.000598    -1.43  0.161      
+##  5 percent_high_school_graduate -0.00369   0.000843    -4.38  0.0000670  
+##  6 (Intercept)                   0.398     0.0673       5.91  0.000000302
+##  7 illicit_drugs                -0.00352   0.00130     -2.70  0.00938    
+##  8 alcohol                      -0.00137   0.000335    -4.08  0.000162   
+##  9 marijuana                     0.00129   0.000556     2.32  0.0246     
+## 10 percent_high_school_graduate -0.00256   0.000708    -3.62  0.000695   
 ## # ... with 490 more rows</code></pre>
 <pre class="r"><code>regression_data_no2states %&gt;%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
@@ -862,16 +862,16 @@ plot(model2)</code></pre>
 <pre><code>## # A tibble: 500 x 5
 ##    term                         estimate std.error statistic  p.value
 ##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)                   4.56      1.95        2.34  0.0244  
-##  2 illicit_drugs                 0.0342    0.0292      1.17  0.249   
-##  3 alcohol                      -0.0274    0.00748    -3.66  0.000712
-##  4 marijuana                    -0.0106    0.0127     -0.838 0.407   
-##  5 percent_high_school_graduate -0.0268    0.0205     -1.31  0.198   
-##  6 (Intercept)                   7.36      2.08        3.54  0.000983
-##  7 illicit_drugs                 0.0158    0.0404      0.392 0.697   
-##  8 alcohol                      -0.0156    0.00937    -1.66  0.104   
-##  9 marijuana                    -0.00552   0.0185     -0.298 0.767   
-## 10 percent_high_school_graduate -0.0639    0.0222     -2.88  0.00623 
+##  1 (Intercept)                    5.68     1.63         3.48 0.00113 
+##  2 illicit_drugs                  0.0408   0.0315       1.29 0.202   
+##  3 alcohol                       -0.0232   0.00737     -3.15 0.00288 
+##  4 marijuana                     -0.0173   0.0141      -1.23 0.227   
+##  5 percent_high_school_graduate  -0.0416   0.0179      -2.32 0.0250  
+##  6 (Intercept)                    8.55     2.08         4.12 0.000184
+##  7 illicit_drugs                 -0.0622   0.0326      -1.91 0.0640  
+##  8 alcohol                       -0.0164   0.00857     -1.92 0.0624  
+##  9 marijuana                      0.0309   0.0142       2.18 0.0350  
+## 10 percent_high_school_graduate  -0.0740   0.0213      -3.48 0.00122 
 ## # ... with 490 more rows</code></pre>
 </div>
 
