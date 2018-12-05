@@ -6,9 +6,200 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+<<<<<<< HEAD
+knitr::opts_chunk$set(
+  echo = TRUE,
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = 0.6,
+  out.width = "90%")
+library(tidyverse)
+library(DT)
+library(rvest)
+library(httr)
+=======
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+>>>>>>> 3fd265d2023410a28c732f40d9d68d60d55f58db
 ```
 
+```{r data importion, include=FALSE, warning=FALSE, message=FALSE}
+# load data and clean up column names
+# not to omit NAs
+crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+  janitor::clean_names() %>% 
+    rename_(population = names(.)[3],
+          violent_crime_number = names(.)[4],
+          violent_crime_rate = names(.)[5],
+          murder_manslaughter_number = names(.)[6],
+          murder_manslaughter_rate = names(.)[7],
+          rape_revise_number = names(.)[8],
+          rape_revise_rate = names(.)[9],
+          rape_legacy_number = names(.)[10],
+          rape_legacy_rate = names(.)[11],
+          robbery_number = names(.)[12],
+          robbery_rate = names(.)[13],
+          aggravated_assault_number = names(.)[14],
+          aggravated_assault_rate = names(.)[15],
+          property_crime_number = names(.)[16],
+          property_crime_rate = names(.)[17],
+          burglary_number = names(.)[18],
+          burglary_rate = names(.)[19],
+          larceny_theft_number = names(.)[20],
+          larceny_theft_rate = names(.)[21],
+          motor_vehicle_theft_number = names(.)[22],
+          motor_vehicle_theft_rate = names(.)[23]) %>% 
+  mutate(area = as.factor(area)) 
+crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
+
+# fill up area name
+i = 1
+for (i in 0:65) {
+  n = 3 * i + 1
+  crime$area[n + 1] = paste0(crime$area[n]) 
+  crime$area[n + 2] = paste0(crime$area[n])
+  i = i + 1
+}
+
+crime  <- crime %>% 
+  na.omit()
+
+crime$year = as.factor(crime$year)
+
+
+# Filter out "percent change" in "year" variable
+crime_clean = 
+  crime %>%
+  filter(year != "NA")
+
+
+# Change the name of "area" to "state"
+colnames(crime_clean)[1] = "state"
+```
+
+```{r drug dataset load and clean up, include=FALSE, warning=FALSE, message=FALSE}
+# Remove the block later
+drug_raw =
+  read_csv("./data/drugs.csv") %>%
+  janitor::clean_names()
+
+drug_clean = 
+  drug_raw %>%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
+  gather(key, value, -state, -year) %>% 
+  mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
+  separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
+  mutate(rate = str_replace(rate, "^rates_", ""))
+
+population_data = 
+  drug_raw %>% 
+  select(x12_17, x18_25:x26, year, state) %>% 
+  gather(key = "age", value = "popul_in_thousands", -state, -year) %>% 
+  mutate(age = str_replace(age, "x", ""))
+```
+
+```{r unit conversion, include=FALSE, warning=FALSE, message=FALSE}
+# Unit convert for the crime rate
+crime_mean_rate <- 
+  crime_clean %>% 
+  group_by(state) %>% 
+  select(grep("rate",names(.))) %>% 
+  summarise_all(funs(mean))
+crime_mean_rate[,2:11] <- crime_mean_rate[,2:11]/100
+```
+
+```{r prepare the outcome and predictors, include=FALSE, warning=FALSE, message=FALSE}
+# clean drug data
+drug_mean_rate = drug_clean %>% 
+  group_by(state, rate, age) %>% 
+  summarize(drug_average = mean(value)) %>% 
+  group_by(state, rate) %>% 
+  summarize(drug_sum = sum(drug_average)) %>% 
+  filter(!str_detect(rate, 'perceptions'),
+         str_detect(rate, 'past_year')) %>% 
+  mutate(rate = str_replace_all(rate, c("alcohol_" = "alcohol:", "illicit_drugs_" = "illicit_drugs:", "marijuana_" = "marijuana:"))) %>% 
+  separate(rate, into = c("drug", "degree"), sep = ":", extra = "merge") %>% 
+  select(-degree) %>% 
+  group_by(state, drug) %>% 
+  summarize(use_past_year = sum(drug_sum)) %>% 
+# up to here, it's already a tidy dataset, but for regression we need to define each drug as a variable, so we choose to spread "drug" column
+  spread(key = drug, value = use_past_year)
+
+head(drug_mean_rate)
+
+# read data for race proportion
+race_data_raw = read_csv("./data/race_data.csv") %>% janitor::clean_names() %>%
+  select(state, white)
+
+# Combine X and Y into one data frame
+regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %>% 
+  select(-rape_legacy_rate)
+
+regression_data_raw = left_join(regression_data_raw, race_data_raw)
+```
+
+```{r read in new dataset, include=FALSE, warning=FALSE, message=FALSE}
+# Import dataset that contains education information
+url = "https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment"
+education = read_html(url)
+
+# tidy and clean
+education_data = education %>% 
+  html_nodes(css = "table") %>%
+  .[[1]] %>% 
+  html_table(fill = TRUE) %>% 
+  janitor::clean_names() %>% 
+  select(state, percent_high_school_graduate) %>% 
+  filter(state != "United States") %>% 
+  mutate(percent_high_school_graduate = str_replace(percent_high_school_graduate, "%", "")) %>% 
+  mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
+
+regression_data_all = left_join(regression_data_raw, education_data)
+
+regression_data_no2states <- regression_data_all %>% 
+  filter(!state %in% c("District of Columbia", "Hawaii"))
+
+result_withoutoutliers = 
+  regression_data_no2states %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest()
+```
+
+```{r linear regression, include=FALSE, warning=FALSE, message=FALSE}
+# MLR linear regression using list columns
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest() %>% 
+  filter(p.value < 0.05,
+         term != "(Intercept)")
+
+result_withoutliers = 
+  regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest()
+```
 ##Motivation: Provide an overview of the project goals and motivation.
 
 
@@ -85,6 +276,46 @@ The dataset can be accessed through its [original website](https://think.cs.vt.e
 
 In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.
 
+```{r}
+# Read in drug data
+drug_raw =
+  read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
+  janitor::clean_names()
+
+# Clean the dataset for plot
+drug_clean = 
+  drug_raw %>%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
+  gather(key, value, -state, -year) %>% 
+  mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
+  separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
+  mutate(rate = str_replace(rate, "^rates_", ""))
+
+# Make a bar plot 
+drug_clean %>% 
+  filter(!str_detect(rate, "perceptions"),
+         !str_detect(rate, "past_month"),
+         !str_detect(rate, "new_user")) %>% 
+  group_by(year, rate) %>% 
+  summarize(average_rate = mean(value)) %>% 
+  mutate(rate = str_replace(rate, "alcohol_", "alcohol:"),
+         rate = str_replace(rate, "illicit_drugs_", "illicit_drugs:"),
+         rate = str_replace(rate, "marijuana_", "marijuana:")) %>% 
+  separate(rate, into = c("drug", "other"), by = ":") %>% 
+  select(-other) %>% 
+  group_by(year, drug) %>% 
+  summarize(average_rate = sum(average_rate)) %>% 
+  ggplot(aes(x = as.factor(year), y = average_rate)) +
+  geom_bar(aes(fill = drug), stat = "identity", width = 0.6) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0, 80))
+```
+
+
 * Process of building shiny for drug data:
 
 As we have 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degree in each drug (abuse, binge, dependence, need treatment, use). We wanted to analyze the distribution of degrees in each drug in each state through the years and also the distribution of degrees in each drug in each state and in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, so we further conducted analysis of the trend of perception risk in each age group and in each state for selected drug. Thus, we created three charts in total.
@@ -104,17 +335,23 @@ The rates of various crime types are considered to be the outcome, and the amoun
 
 We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.
 
-After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook's distance > 0.5). These two influential points are from state "Hawaii" and "District of Columbia".
+<<<<<<< HEAD
+We fit the models and obtain the results for each regression.
+`r datatable(result_withoutliers, options = list(pageLength = 10))`
+
+
+We filter the estimated coefficients with p-value less than 0.05. We found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook's distance > 0.5). These two influential points are from state "Hawaii" and "District of Columbia".
 
 We try to remove these two outliers, and then fit models again. The R-squared and adjusted R-squared increase by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use become unsiginficent (p-value > 0.05).
+=======
+After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. They are all good with model assumptions.
+>>>>>>> 3fd265d2023410a28c732f40d9d68d60d55f58db
 
-In conlusion, with data from Hawaii and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).
+In conlusion, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use.
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
-Our finding are that, in general, the crime rate is highly related to alcohol, marijuana or illicit drug use. It is more associated to the race proportion of whites and the percentage of high school graduation.
 
-These result are not we initially expect, as the crime rate is not highly significantly associated with these drug use.
 
 
 
