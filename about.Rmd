@@ -54,6 +54,7 @@ for (i in 0:65) {
 crime  <- crime %>% 
   na.omit()
 
+crime$year = as.factor(crime$year)
 # check head
 head(crime)
 ```
@@ -99,9 +100,7 @@ crime_clean =
 
 #### Some Graphs
 
-Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories(e.g. Northeast can be divided into New England and Middle Atlantic), which is not explored at the moment(but could be later)
-
-Change anything if you want (HX)
+Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories.
 
 ```{r}
 # rank areas by average violent crime rate from 2015 to 2016
@@ -118,10 +117,10 @@ crime %>%
 ```
 
 
-See the crime distribution at different geographic levels.
+Visualize the crime distribution at different geographic levels.
 ```{r distribution of violent crime rate}
 # At state level
-ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = year)) + geom_point() +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, size = 10)) +
   labs(
@@ -131,7 +130,7 @@ ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = as.factor(yea
   )
 
 # At area level
-ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -141,7 +140,7 @@ ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, color = as.factor(
   ) 
 
 # In the midwest area
-ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -151,7 +150,7 @@ ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, color = as.factor(ye
   ) 
 
 # In the northeast area
-ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -161,7 +160,7 @@ ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, color = as.factor(
   ) 
 
 # In the south area
-ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
@@ -171,7 +170,7 @@ ggplot(crime_south, aes(x = area, y = violent_crime_rate, color = as.factor(year
   ) 
 
 # In the west area
-ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = as.factor(year))) + geom_point() +
+ggplot(crime_west, aes(x = area, y = violent_crime_rate, color = year)) + geom_point() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 10)) +
   labs(
