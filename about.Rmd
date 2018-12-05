@@ -13,6 +13,66 @@ library(PerformanceAnalytics)
 library(rvest)
 library(httr)
 ```
+
+Load crime data and some primary clean up
+
+```{r}
+# load data and clean up column names
+# not to omit NAs
+crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+  janitor::clean_names() %>% 
+    rename_(population = names(.)[3],
+          violent_crime_number = names(.)[4],
+          violent_crime_rate = names(.)[5],
+          murder_manslaughter_number = names(.)[6],
+          murder_manslaughter_rate = names(.)[7],
+          rape_revise_number = names(.)[8],
+          rape_revise_rate = names(.)[9],
+          rape_legacy_number = names(.)[10],
+          rape_legacy_rate = names(.)[11],
+          robbery_number = names(.)[12],
+          robbery_rate = names(.)[13],
+          aggravated_assault_number = names(.)[14],
+          aggravated_assault_rate = names(.)[15],
+          property_crime_number = names(.)[16],
+          property_crime_rate = names(.)[17],
+          burglary_number = names(.)[18],
+          burglary_rate = names(.)[19],
+          larceny_theft_number = names(.)[20],
+          larceny_theft_rate = names(.)[21],
+          motor_vehicle_theft_number = names(.)[22],
+          motor_vehicle_theft_rate = names(.)[23]) %>% 
+  mutate(area = as.factor(area)) 
+crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
+
+# fill up area name
+i = 1
+for (i in 0:65) {
+  n = 3 * i + 1
+  crime$area[n + 1] = paste0(crime$area[n]) 
+  crime$area[n + 2] = paste0(crime$area[n])
+  i = i + 1
+}
+
+crime  <- crime %>% 
+  na.omit()
+
+crime$year = as.factor(crime$year)
+# check head
+head(crime)
+
+# Filter out "percent change" in "year" variable
+crime_clean = 
+  crime %>%
+  filter(year != "NA")
+
+
+# Change the name of "area" to "state"
+colnames(crime_clean)[1] = "state"
+```
+
+
+
 Load drug data and clean up
 
 ```{r drug dataset load and clean up}
@@ -197,8 +257,7 @@ We remove two outliers and fit the model again
 ```{r linear regression_another}
 # MLR linear regression using list columns
 regression_data_no2states <- regression_data_all %>% 
-  filter(state != "District of Columbia" &
-           state != "Hawaii")
+  filter(!state %in% c("District of Columbia", "Hawaii"))
 
 regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
@@ -213,8 +272,9 @@ regression_data_no2states %>%
          term != "(Intercept)")
 ```
 
+After removing these two points, the estimated coefficients for drug use become not significant.
 
-Check the diagnostics of the model.
+We still check the diagnostics of the model mentioned above.
 
 ```{r model diagnostics_another}
 # Fit models and then check the assumption
@@ -229,6 +289,7 @@ par(mfrow = c(2,2))
 plot(model2)
 ```
 
+The R-squiared and adjusted R-squared increased, and these two models still meet the model assumptions.
 
 * Try bootstrap of the model of burglary rate
 
