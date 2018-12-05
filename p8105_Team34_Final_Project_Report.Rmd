@@ -102,9 +102,9 @@ The rates of various crime types are considered to be the outcome, and the amoun
 
 We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.
 
-After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes are significantly related to drug use. Then we run the diagnostics for these two multivariable linear regression models. They are all good with model assumptions.
+After we fit the models and obtain the results for each regression, we filter the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. They are all good with model assumptions.
 
-In conlusion, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while burglary and murder/manslaughter are positively associated with marijuana use.
+In conlusion, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use.
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
