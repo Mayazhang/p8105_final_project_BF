@@ -377,6 +377,21 @@ education_data = education %>%
 
 ```
 
+* Explore model with education data
 
+```{r}
+regression_data_all = left_join(regression_data_raw, education_data)
+regression_data_all %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest() %>% 
+  filter(p.value < 0.1,
+         term != "(Intercept)")
+```
 
 
