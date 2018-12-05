@@ -84,6 +84,7 @@ drug_raw =
   read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 
+# Tidy the drug data for mapping
 drug_data_map = 
   drug_raw %>%
   select(year, state, contains("rates")) %>%
@@ -97,6 +98,19 @@ drug_data_map =
   separate(rate, into = c("drug", "degree"), sep = ":", extra = "merge") %>% 
   group_by(year, state, age, drug) %>%
   summarize(value = sum(value))
+
+# Tidy the drug data for shiny bar plots
+drug_clean = 
+  drug_raw %>%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
+  gather(key, value, -state, -year) %>% 
+  mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
+  separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
+  mutate(rate = str_replace(rate, "^rates_", "")) 
 
 population_data = 
   drug_raw %>% 
@@ -121,10 +135,15 @@ year_choice = crime_with_abb %>% distinct(year) %>% pull()
 # variables for drug
 drug_choice = unique(drug_with_abb$drug) 
 
-age_choice = unique(drug_with_abb$age)
+age_choice = c("Age 12-17", "Age 18-25", "Age 26 or above")
+
+state_choice = drug_clean %>% distinct(state) %>% pull() 
 
 year_choice_drug = unique(drug_with_abb$year)
 ```
+
+Distribution of Crime Rate
+=============================
 
 Column {.sidebar}
 -----------------------------------------------------------------------
@@ -138,20 +157,9 @@ selectInput("crime_choice", label = h3("Select Crime"),
 radioButtons("year_choice", label = h3("Select Year (Crime)"),
              choices = year_choice, selected = 2016)
 
-# selectInput widget for drug choice
-selectInput("drug_choice", label = h3("Select Drug"),
-            choices = drug_choice, selected = "marijuana")
-
-# radioButtons widget for drug year choice
-radioButtons("year_choice_drug", label = h3("Select Year (Drug)"),
-             choices = year_choice_drug, selected = "2014")
-
-# radioButtons widget for age group
-radioButtons("age_choice", label = h3("Choose Age Group"),
-             choices = age_choice, selected = "26")
 ```
 
-Column {.tabset}
+Column 
 -----------------------------------------------------------------------
 
 ### Distributions of ten types of crime rates
@@ -183,6 +191,32 @@ renderPlotly({
 })
 ```
 
+Distribution of Drug Use
+====================================
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+# selectInput widget for drug choice
+radioButtons("drug_choice", label = h3("Select Drug"),
+            choices = drug_choice, selected = "marijuana")
+
+# radioButtons widget for drug year choice
+selectInput("year_choice_drug", label = h3("Select Year (Drug)"),
+             choices = year_choice_drug, selected = "2014")
+
+# radioButtons widget for age group
+radioButtons("age_choice", label = h3("Choose Age Group"),
+             choices = age_choice, selected = "Age 12-17")
+
+# selectInput widget
+selectInput("state_choice", label = h3("Select state"),
+            choices = state_choice, selected = "New York")
+```
+
+Column {.tabset}
+-----------------------------------------------------------------------
 
 ### Distribution of three types of drug
 
@@ -195,7 +229,8 @@ renderPlotly({
   showlakes = TRUE,
   lakecolor = toRGB('white')
 )
-  
+
+drug_with_abb$age = recode(drug_with_abb$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
   drug_with_abb %>%
     filter(year == input$year_choice_drug,
            drug == input$drug_choice,
@@ -213,5 +248,59 @@ renderPlotly({
   )
 })
 ```
+
+### Drug Use in whole Population
+
+```{r}
+renderPlotly({
+x = list(title = "Year")
+y = list(title = "Rate (in thousands)")
+  drug_clean %>% 
+  filter(state == input$state_choice,
+         str_detect(rate, input$drug_choice),
+         !str_detect(rate, 'perceptions')) %>%
+  plot_ly(x = ~year, y = ~value, type = "bar", color = ~rate) %>%  
+    layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y,
+           title = 'Drug Use in Whole Population in States Through Years')
+})
+```
+
+### Perception Risk 
+
+```{r perception_risk}
+renderPlotly({
+x = list(title = "Year")
+y = list(title = "Rate for Perception of Risk (in thousands)")  
+drug_clean$age = recode(drug_clean$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
+drug_clean %>% 
+  filter(state == input$state_choice,
+         str_detect(rate, input$drug_choice),
+         str_detect(rate, 'perceptions')) %>% 
+  plot_ly(x = ~year, y = ~value, type = "bar", color = ~age) %>% 
+  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y,
+         title = 'Perception Risk in Different Age Group')
+})
+
+```
+
+### Drug Use by Age Groups
+
+```{r}
+renderPlotly({
+x = list(title = "Year")
+y = list(title = "Rate (in thousands)")  
+drug_clean$age = recode(drug_clean$age, "12_17" = "Age 12-17", "18_25" = "Age 18-25", "26" = "Age 26 or above")
+drug_clean %>% 
+  filter(state == input$state_choice, 
+         age == input$age_choice,
+         str_detect(rate, input$drug_choice),
+         !str_detect(rate, 'perceptions')) %>%
+    plot_ly(x = ~year, y = ~value, type = "bar", color = ~rate) %>%  
+  layout(legend = list(orientation = 'h'), xaxis = x, yaxis = y,
+         title = 'Drug Use in States through Year by Age Groups')
+})
+```
+
+
 
 
