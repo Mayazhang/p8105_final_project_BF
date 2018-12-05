@@ -151,7 +151,7 @@ radioButtons("age_choice", label = h3("Choose Age Group"),
              choices = age_choice, selected = "26")
 ```
 
-Column {data-width=650}
+Column {.tabset}
 -----------------------------------------------------------------------
 
 ### Distributions of ten types of crime rates
@@ -184,8 +184,7 @@ renderPlotly({
 ```
 
 
-
-### Chart B
+### Distribution of three types of drug
 
 ```{r }
 renderPlotly({
