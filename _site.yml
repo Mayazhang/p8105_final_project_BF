@@ -21,6 +21,6 @@ navbar:
       href: https://github.com/Mayazhang/p8105_final_project_crime_drug.git
 output:
   html_document:
-    theme: slate
+    theme: flatly
   
   
