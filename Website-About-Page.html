@@ -287,8 +287,20 @@ div.tocify {
         <li>
   <a href="Website-About-Page.html">Project Overall Description</a>
 </li>
-<li>
-  <a href="Drug_code.html">Dataset Exploration</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Dataset Exploration
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="code.html">Crime Dataset</a>
+    </li>
+    <li>
+      <a href="Drug_code.html">Drug Dataset</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="about.html">Statistical Analysis</a>
@@ -333,7 +345,8 @@ div.tocify {
 
 <div id="source-for-our-dataset" class="section level1">
 <h1>Source for our dataset</h1>
-<p>For this project we will use four datasets: *<a href="https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-2">Crime</a> recorded crime rates in the United States in 2016;</p>
+<p>For this project we will use four datasets:</p>
+<p>*<a href="https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-2">Crime</a> recorded crime rates in the United States in 2016;</p>
 <p>*<a href="https://think.cs.vt.edu/corgis/csv/drugs/drugs.html">Drug</a> contains information of drug use among different age groups across states;</p>
 <p>*<a href="https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment">Education</a> summarized the percentage of high school education across states;</p>
 <p>*<a href="https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&amp;sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D">Population Distribution by Race/Ethnicity</a> are based on the analysis of the Census Bureau’s American Community Survey (ACS) and may differ from other population estimates published yearly by the Census Bureau. U.S. and state population data displayed on this site are restricted to the civilian, non-institutionalized population for whom ACS collects and reports poverty information.</p>
