@@ -194,10 +194,7 @@ $(document).ready(function () {
   <a href="about.html">Regression Analysis</a>
 </li>
 <li>
-  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Drug_Exploration/">Shiny(Drug Displaying)</a>
-</li>
-<li>
-  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/">Shiny(Map Displaying)</a>
+  <a href="https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/">Shiny Graphical Display</a>
 </li>
 <li>
   <a href="https://www.youtube.com/watch?v=nEqlPeCH6QE&amp;list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&amp;index=3&amp;t=0s">
@@ -244,18 +241,38 @@ $(document).ready(function () {
 </div>
 <div id="data-source-scraping-method-cleaning-etc." class="section level2">
 <h2>Data: Source, scraping method, cleaning, etc.</h2>
-<p>Data cleaning(crime dataset): the crime dataset was loaded from the <a href="https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096">google sheet</a>, detailed data cleaning steps were as follow:</p>
+<ol style="list-style-type: decimal">
+<li>Crime dataset</li>
+</ol>
+<p>1.1 Data description</p>
+<p>The data was collected by FBI’s Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants. Detailed description of columns were as follow:</p>
 <ul>
-<li><p>Clean up column names using ‘janitor’ packages and manually</p></li>
+<li><p>state: state names</p></li>
+<li><p>year: year the offense recorded</p></li>
+<li><p>population: total population of the state</p></li>
+<li><p>violent_crime_number/rate: violent crime involved force or threat of force against the victims. It included four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault.</p></li>
+<li><p>columns containing murder manslaughter, rape, robbery, and aggravated assault were subdivision of violent crime</p></li>
+<li><p>property_crime_number/rate: property crime indicated offenses involving property lost without force or threat of force. It included three types of offenses: burglary, larceny-theft, motor vehicle theft.</p></li>
+<li><p>columns containing burglary, larceny-theft, and motor vehicle theft were subdivision of property crime</p></li>
+</ul>
+<p>1.2 Data cleaning</p>
+<p>The crime dataset was loaded from the <a href="https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096">google sheet</a>, detailed data cleaning steps were as follow:</p>
+<ul>
+<li><p>Clean up column names using ‘janitor’ packages and manually delete the subscripts of text</p></li>
 <li><p>Convert column ‘area’ from character to factor</p></li>
 <li><p>Remove comma in columns containing numbers and rates, followed by transformation from character to numeric</p></li>
 <li><p>Fill up area names where appropriate</p></li>
-<li><p>Remove NAs and separate individual state observations and large district observations</p></li>
 <li><p>Remove ‘rape_legacy’ related columns as it has overlapping information with ‘rape_revise’ columns</p></li>
+<li><p>Remove NAs and create subsets by states, region, and geographic division</p></li>
 </ul>
-<p>Data cleaning(drug dataset): The dataset can be accessed through its <a href="https://think.cs.vt.edu/corgis/csv/drugs/drugs.html">original website</a>, detailed data cleaning steps were as follows:</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Drug dataset</li>
+</ol>
+<p>2.1 Data description</p>
+<p>This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) among different age groups (12-17, 18-25, 26 or above) and states in United States from year 2002 to 2014. Data was collected from individual state as part of the NSDUH study.</p>
+<p>2.2 Data cleaning</p>
+<p>The dataset can be accessed through its <a href="https://think.cs.vt.edu/corgis/csv/drugs/drugs.html">original website</a>, detailed data cleaning steps were as follows:</p>
 <ul>
-<li><p>Data description: This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) among different age groups (12-17, 18-25, 26 or above) and states in United States from year 2002 to 2014. Data was collected from individual state as part of the NSDUH study.</p></li>
 <li><p>Mainly focused on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so selected all related columns from the whole dataset (state, year and rate of different substance abuse in different age groups)</p></li>
 <li><p>Gathered all the columns except year and state</p></li>
 <li><p>Replaced the strings before the age number for later separating</p></li>
@@ -266,6 +283,10 @@ $(document).ready(function () {
 <div id="exploratory-analysis-visualizations-summaries-and-exploratory-statistical-analyses.-justify-the-steps-you-took-and-show-any-major-changes-to-your-ideas." class="section level2">
 <h2>Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.</h2>
 <ul>
+<li>Scatter point plots of crime rate:</li>
+</ul>
+<p>In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.</p>
+<ul>
 <li>Process of building shiny for drug data:</li>
 </ul>
 <p>As we have 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degree in each drug (abuse, binge, dependence, need treatment, use). We wanted to analyze the distribution of degrees in each drug in each state through the years and also the distribution of degrees in each drug in each state and in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, so we further conducted analysis of the trend of perception risk in each age group and in each state for selected drug. Thus, we created three charts in total.</p>
@@ -273,6 +294,16 @@ $(document).ready(function () {
 </div>
 <div id="additional-analysis-if-you-undertake-formal-statistical-analyses-describe-these-in-detail" class="section level2">
 <h2>Additional analysis: If you undertake formal statistical analyses, describe these in detail</h2>
+<ul>
+<li>Linear Regression:</li>
+</ul>
+<p>We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients. The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use are the initial predictors.</p>
+<p>We checked the overal distribution of outcomes and variables using package “PerformanceAnalytics”. Because of the relatively small sample size, the distributions could not be exactly normal. We do not use transformation for the outcomes.</p>
+<p>After we fit the models and obtain the results for each regression, we notice that the p-values are relatively large. So we take population into consideration, and add “population” as a confounder.</p>
+<p>Then, we filter the estimated coefficients with p-value less than 0.1, we found that there are three estimated coefficients with low p-value. Then we run the diagnostics for these three multivariable linear regression models. They are all good with model assumptions.</p>
+<p>Then we extract the individual estimated coefficients with low p-value and their corresponding outcomes. Both murder/manslaughter and burglary rates are inversely related to alcohol use while robbery rate is positively associated to marijuana use.</p>
+<p>We again checke the model assumptions for these two simple linear regression. Both of them meet the assumptions.</p>
+<p>In conlusion, murder/manslaughter is negatively associated with alcohol, while burglary is positively associated with marijuana use.</p>
 </div>
 <div id="discussion-what-were-your-findings-are-they-what-you-expect-what-insights-into-the-data-can-you-make" class="section level2">
 <h2>Discussion: What were your findings? Are they what you expect? What insights into the data can you make?</h2>
