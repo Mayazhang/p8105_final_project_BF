@@ -105,10 +105,13 @@ education_data = education %>%
   mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
 
 regression_data_all = left_join(regression_data_raw, education_data)
+
 ```
 
 
 #### Linear Regression
+
+** model with District of Columbia and Hawaii**
 
 Check the distribution for variables.
 ```{r distribution checking}
@@ -180,4 +183,88 @@ regression_data_all %>%
   select(results) %>%
   unnest()
 ```
+
+
+** model without District of Columbia and Hawaii**
+
+We remove two outliers and fit the model again
+
+
+```{r linear regression}
+# MLR linear regression using list columns
+regression_data_no2states <- regression_data_all %>% 
+  filter(state != "District of Columbia" &
+           state != "Hawaii")
+
+regression_data_no2states %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  group_by(crime_type) %>%
+  nest() %>%
+  mutate(
+    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
+    linear_model = map(linear_model, broom::tidy)) %>%
+  select(-data) %>%
+  unnest() %>% 
+  filter(p.value < 0.05,
+         term != "(Intercept)")
+```
+
+
+Check the diagnostics of the model.
+
+```{r model diagnostics}
+# Fit models and then check the assumption
+model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
+summary(model1)
+par(mfrow = c(2,2))
+plot(model1)
+
+model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
+summary(model2)
+par(mfrow = c(2,2))
+plot(model2)
+```
+
+
+* Try bootstrap of the model of burglary rate
+
+```{r}
+regression_data_no2states %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  filter(crime_type == "murder_manslaughter_rate") %>% 
+  modelr::bootstrap(n = 100) %>% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %>% 
+  select(results) %>%
+  unnest()
+
+regression_data_no2states %>%
+  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
+  filter(crime_type == "robbery_rate") %>% 
+  modelr::bootstrap(n = 100) %>% 
+  mutate(
+    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
+    results = map(linear_model, broom::tidy)) %>% 
+  select(results) %>%
+  unnest()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
