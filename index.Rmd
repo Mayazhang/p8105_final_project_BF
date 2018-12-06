@@ -24,7 +24,7 @@ library(htmltools)
 This screencast illustrates our project, emphasizing our motivation, questions, and results.
 
 ```{r echo=FALSE}
-embed_url("https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s")
+embed_url("https://youtu.be/Dh7Lih78qDg")
 ```
 
 ### *The motivation for this project*
