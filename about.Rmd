@@ -1,5 +1,5 @@
 ---
-title: "About This Project"
+title: "Linear Regression"
 output:
   html_document: 
     toc: true
@@ -15,9 +15,8 @@ library(httr)
 library(DT)
 ```
 
-Load crime data and some primary clean up
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, include=FALSE, warning=FALSE, message=FALSE}
 # load data and clean up column names
 # not to omit NAs
 crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
@@ -72,9 +71,7 @@ colnames(crime_clean)[1] = "state"
 
 
 
-Load drug data and clean up
-
-```{r drug dataset load and clean up, echo=FALSE, warning=FALSE}
+```{r drug dataset load and clean up, include=FALSE, warning=FALSE, message=FALSE}
 # Remove the block later
 drug_raw =
   read_csv("./data/drugs.csv") %>%
@@ -104,7 +101,7 @@ population_data =
 
 Y: 51 states, each with mean crime rates (10 types of crimes)
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, include=FALSE, warning=FALSE, message=FALSE}
 crime_mean_rate <- 
   crime_clean %>% 
   group_by(state) %>% 
@@ -115,7 +112,7 @@ crime_mean_rate[,2:11] <- crime_mean_rate[,2:11]/100
 
 X: 51 states, each with mean drug rate (3 types of drugs)
 
-```{r prepare the outcome and predictors, echo=FALSE, warning=FALSE}
+```{r prepare the outcome and predictors, include=FALSE, warning=FALSE, message=FALSE}
 # clean drug data
 drug_mean_rate = drug_clean %>% 
   group_by(state, rate, age) %>% 
@@ -145,7 +142,7 @@ regression_data_raw = left_join(regression_data_raw, race_data_raw)
 
 Consider education as a new variable.
 
-```{r read in new dataset, echo=FALSE, warning=FALSE}
+```{r read in new dataset, include=FALSE, warning=FALSE, message=FALSE}
 # Import dataset that contains education information
 url = "https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment"
 education = read_html(url)
@@ -168,10 +165,10 @@ regression_data_all = left_join(regression_data_raw, education_data)
 
 #### Linear Regression
 
-** model with District of Columbia and Hawaii**
+* model with District of Columbia and Hawaii
 
 Check the distribution for variables.
-```{r distribution checking, echo=FALSE, warning=FALSE}
+```{r distribution checking, echo = FALSE, warning=FALSE}
 # Check distributions 
 regression_data_all %>%
   select(-state) %>%
@@ -182,7 +179,7 @@ regression_data_all %>%
 Make models for MLR of crime types and drug uses, as well as race and education. 
 
 
-```{r linear regression, echo=FALSE, warning=FALSE}
+```{r linear regression, include=FALSE, warning=FALSE, message=FALSE}
 # MLR linear regression using list columns
 regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
@@ -215,7 +212,7 @@ From the result we could see that, both murder/manslaughter and robbery rate are
 
 Check the diagnostics of the model.
 
-```{r model diagnostics, echo=FALSE, warning=FALSE}
+```{r model diagnostics, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
 summary(model1)
@@ -233,7 +230,7 @@ From the diagnostics, these two models meet the model assumptions.
 
 * Try bootstrap of the model of burglary rate
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   filter(crime_type == "murder_manslaughter_rate") %>% 
@@ -261,7 +258,7 @@ regression_data_all %>%
 We remove two outliers and fit the model again
 
 
-```{r linear regression_another, echo=FALSE, warning=FALSE}
+```{r linear regression_another, echo=FALSE, warning=FALSE, message=FALSE}
 # MLR linear regression using list columns
 regression_data_no2states <- regression_data_all %>% 
   filter(!state %in% c("District of Columbia", "Hawaii"))
@@ -297,7 +294,7 @@ After removing these two points, the estimated coefficients for drug use become 
 
 We still check the diagnostics of the model mentioned above.
 
-```{r model diagnostics_another, echo=FALSE, warning=FALSE}
+```{r model diagnostics_another, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
 summary(model1)
@@ -314,7 +311,7 @@ The R-squiared and adjusted R-squared increased, and these two models still meet
 
 * Try bootstrap of the model of burglary rate
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   filter(crime_type == "murder_manslaughter_rate") %>% 
