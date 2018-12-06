@@ -71,11 +71,8 @@ crime$year = as.factor(crime$year)
 # Filter out "percent change" in "year" variable
 crime_clean = 
   crime %>%
-  filter(year != "NA")
-
-
-# Change the name of "area" to "state"
-colnames(crime_clean)[1] = "state"
+  filter(year != "NA") %>% 
+  rename(state = area) #Change the name of "area" to "state"
 ```
 
 
@@ -144,7 +141,7 @@ drug_mean_rate = drug_clean %>%
   spread(key = drug, value = use_past_year)
 
 # read data for race proportion
-race_data_raw = read_csv("./data/race_data.csv") %>% janitor::clean_names() %>%
+race_data_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1Xw2v4feQPLEVql-aTEyYCv4cQ_dOFB1qclt-6dGlGxU/edit?usp=sharing') %>% janitor::clean_names() %>%
   select(state, white)
 
 # Combine X and Y into one data frame

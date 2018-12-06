@@ -31,7 +31,7 @@ embed_url("https://youtu.be/Dh7Lih78qDg")
  * Explore the association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level.
  * Study distributions of crimes and drug use in each state and conclude which pair of crime and drug use is highly related in each state
  * Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use.
- * Draw a map across U.S. about detailed data of crime rate and drug use in each state 
+ * Draw maps across U.S. about detailed data of crime rate and drug use in each state 
  
 
 ### *Source for our dataset*
