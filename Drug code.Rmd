@@ -98,7 +98,7 @@ The highest rates of alcohol, illicit drugs, and marijuana were among people age
 
 ## Explore alcohol use with different degree by state and year
 
-*Alcohol use by state
+* **Alcohol use by state**
 
 ```{r alcohol_use_state,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
@@ -188,7 +188,7 @@ drug_clean %>%
   theme(legend.position = "bottom")
 ```
 
-* Alcohol use by year
+* **Alcohol use by year**
 
 ```{r alcohol_use_year,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
@@ -213,7 +213,7 @@ drug_clean %>%
 
 ## Explore other drugs
 
-**Cocaine**
+* **Cocaine**
 
 * Illicit drug use by year
 
