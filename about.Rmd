@@ -97,9 +97,8 @@ population_data =
 ```
 
 
-## Fitting Linear regression
 
-#### Distribution check and diagnosis
+## Variable Distribution Check
 
 We first checked whether each columns (including both outcomes and predictors) were normally distribted.
 
@@ -177,6 +176,8 @@ regression_data_all %>%
 
 All columns were approximately normal distributed, which could be used for downstream analysis without transformation.
 
+## Estimated Coefficients with Leverages
+
 Fit multiple linear regression for all crime types and drug uses, as well as race and education. Check diagnostics plots to find possible outliers and influential points.
 
 ```{r linear regression, echo=FALSE, warning=FALSE, message=FALSE}
@@ -211,6 +212,7 @@ result_with =
 datatable(result_with, options = list(pageLength = 5))
 ```
 
+## Diagnostics for Models with Leverages
 
 ```{r model diagnostics, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
@@ -253,7 +255,7 @@ robbery_rate_bt <- regression_data_all %>%
 ```
 
 
-** model without District of Columbia and Hawaii**
+## Estimated Coefficients without Leverages
 
 Then two outliers were removed and the model was fitted again
 
@@ -292,6 +294,9 @@ datatable(result_with, options = list(pageLength = 5))
 
 By removing these two observations, the estimated coefficients for drug use become not significant.
 
+
+## Diagnostics for Models without Leverages
+
 Check the diagnostics plots for MLR without two outliers/influential points.
 
 ```{r model diagnostics_another, echo=FALSE, warning=FALSE, message=FALSE}
@@ -308,6 +313,8 @@ plot(model2)
 ```
 
 The adjusted R-squared increased by removing outliers.
+
+## Bootstrap
 
 Use bootstrap to check the SE of two models
 
