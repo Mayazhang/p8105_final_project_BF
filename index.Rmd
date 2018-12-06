@@ -1,10 +1,14 @@
 ---
-title: "Team34 Data Science Project Home Page"
+title: "Ecologic study of association between crime rate and drug use in U.S."
 output:
   html_document: 
     toc: true
     toc_float: true
 ---
+```{r ,include=FALSE}
+library(vembedr)
+library(htmltools)
+```
 
 
 ## A brief introductory landing page
@@ -16,20 +20,32 @@ output:
 **Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)**
   
 
-### *The tentative project title*
-
-Ecologic study of association between crime rate and drug use in U.S. 
-
 ### *Screencast for overview*
 This screencast illustrates our project, emphasizing our motivation, questions, and results.
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+```{r echo=FALSE}
+embed_url("https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s")
+```
 
 ### *The motivation for this project*
  * Explore the association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level.
  * Study distributions of crimes and drug use in each state and conclude which pair of crime and drug use is highly related in each state
  * Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use as well as to make predictions.
  * Draw a map across U.S. about detailed data of crime rate and drug use in each state 
+ 
+
+### *Source for our dataset*
+
+For this project we will use four datasets: 
+
+*[Crime](https://ucr.fbi.gov/crime-in-the-u.s/2016/crime-in-the-u.s.-2016/tables/table-2) recorded crime rates in the United States in 2016; The crime dataset was derived from the Uniform Crime Reporting(UCR) program by FBI. The program collects real-world data for crime rate and law enforcement, and generates annual report. Here we will use the data from 2015 to 2016. 
+
+*[Drug](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html) contains information of drug use among different age groups across states; The dataset for drug use was obtained from the National Survey on Drug Use and Health(NSDUH), which provides up-to-date survey results on alcohol, tabacco, drug use, etc.
+
+*[Education](https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment) summarized the percentage of high school education across states;
+
+*[Population Distribution by Race/Ethnicity](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D) are based on the analysis of the Census Bureau’s American Community Survey (ACS) and may differ from other population estimates published yearly by the Census Bureau. U.S. and state population data displayed on this site are restricted to the civilian, non-institutionalized population for whom ACS collects and reports poverty information.
+
 
 ### *Additional Exploration and Code*
 

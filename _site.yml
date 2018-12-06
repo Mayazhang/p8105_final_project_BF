@@ -3,14 +3,8 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Project Overall Description"
-      href: Website-About-Page.html
-    - text: Data Manipulation
-      menu:
-      - text: Crime dataset
-        href: crime_data.html
-      - text: Drug dataset
-        href: Drug_code.html
+    - text: "Crime Dataset Exploration"
+      href: crime_data.html
     - text: "Statistical Analysis"
       href: about.html
     - text: "Shiny"
