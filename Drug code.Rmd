@@ -2,24 +2,34 @@
 title: "Drug Code"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Overall description
 
+The drug data was collected by The National Survey on Drug Use and Health (NSDUH), an annual survey conducted in all 50 states and the District of Columbia. There were approximately 70,000 participants and questions on tobacco, alcohol, and drug use, mental health and other health-related issues were asked. Our study focued on substance abuse (alcohol, marijuana, cocaine, and illicit drugs).
+
+
+
+```{r setup, include=FALSE}
 library(tidyverse)
+library(readxl)
+library(PerformanceAnalytics)
+library(rvest)
+library(httr)
+library(gridExtra)
+library(flexdashboard)
+library(viridis)
 library(plotly)
+library(gsheet)
 ```
 
-## Data Import
 
-```{r read_data, echo=FALSE}
+```{r read_data, echo=FALSE, message=FALSE}
 drug_raw =
   read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 ```
 
-## Data Cleaning
 
-```{r clean_data, echo=FALSE}
+```{r clean_data,echo=FALSE,warning=FALSE,message=FALSE}
 drug_data = 
   drug_raw %>%
   select(year, state,
@@ -42,11 +52,55 @@ population_data =
 drug_clean = left_join(drug_data, population_data)
 ```
 
+## Trend of drug use by age
+
+
+```{r, echo = FALSE, warning = FALSE}
+drug_raw %>%
+  select(year, state,
+         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
+         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
+         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
+         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %>%
+  gather(key, value, -state, -year) %>% 
+  mutate(key = str_replace_all(key, c("year_" = "year:", "month_" = "month:", "risk_" = "risk:", "users_" = "users:"))) %>%
+  separate(key, into = c("rate", "age"), sep = ":", extra = "merge") %>%
+  mutate(rate = str_replace(rate, "^rates_", "")) %>% 
+# Make a line plot 
+    filter(!str_detect(rate, "perceptions"),
+         !str_detect(rate, "past_month"),
+         !str_detect(rate, "new_user")) %>%
+  mutate(rate = str_replace(rate, "alcohol_", "alcohol:"),
+         rate = str_replace(rate, "illicit_drugs_", "illicit_drugs:"),
+         rate = str_replace(rate, "marijuana_", "marijuana:")) %>% 
+  separate(rate, into = c("drug", "other"), by = ":") %>% 
+  select(-other) %>%
+  group_by(year, drug, age) %>% 
+  summarize(rate = sum(value)) %>% 
+  ggplot(aes(x = year, y = rate, 
+             color = drug, 
+             group = interaction(age, drug))) +
+  geom_line() +
+  geom_point(aes(shape = age)) +
+  theme_bw() +
+  labs(
+    title = "Drug use in 2002-2014 by age group",
+    x = "Year",
+    y = "Rate of drug use (in thousands)",
+    caption = "Data from the drug dataset"
+  ) +
+   theme(legend.position = "bottom") +
+  scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010, 2012, 2014))
+```
+
+The highest rates of alcohol, illicit drugs, and marijuana were among people aged 18 to 25. There was a decreasing trend in alcohol abuse among people aged 12 to 25. The rates of both illicit drugs--cocaine and marijuana, in general, remained constant throughout years.
+
+
 ## Explore alcohol use with different degree by state and year
 
 *Alcohol use by state
 
-```{r alcohol_use_state}
+```{r alcohol_use_state,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
   group_by(state) %>% 
   summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
@@ -68,7 +122,7 @@ drug_clean %>%
 ```
 
 
-```{r alcohol_use}
+```{r alcohol_use,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
   group_by(state, age) %>% 
   summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
@@ -136,7 +190,7 @@ drug_clean %>%
 
 * Alcohol use by year
 
-```{r alcohol_use_year}
+```{r alcohol_use_year,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
   group_by(year) %>% 
   summarize(mean_alcohol_abuse = mean(alcohol_abuse_past_year),
@@ -163,7 +217,7 @@ drug_clean %>%
 
 * Illicit drug use by year
 
-```{r illicit_use_year}
+```{r illicit_use_year,echo=FALSE,warning=FALSE,message=FALSE}
   drug_clean %>% 
   select(year, contains("illicit")) %>%
   group_by(year) %>%
@@ -186,7 +240,7 @@ drug_clean %>%
 
 ```
 
-```{r drug_cocaine_state}
+```{r drug_cocaine_state,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
   select(year, state, age, contains("cocaine")) %>%
   group_by(state) %>%
@@ -198,7 +252,7 @@ drug_clean %>%
 
 * Illicit drug use by state
 
-```{r illicit_state}
+```{r illicit_state,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>% 
   group_by(state) %>% 
   summarize(mean_cocaine_use = mean(illicit_drugs_cocaine_used_past_year),
@@ -221,7 +275,7 @@ drug_clean %>%
 
 * Marijuana
 
-```{r}
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>%
   group_by(year, age) %>% 
   summarize(mean_marijuana_year = mean(marijuana_used_past_year)) %>% 
@@ -238,7 +292,7 @@ drug_clean %>%
   scale_x_continuous(breaks = c(2002:2014))
 ```
 
-```{r}
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
 drug_clean %>%
   group_by(state, age) %>% 
   summarize(mean_marijuana_year = mean(marijuana_used_past_year)) %>% 
