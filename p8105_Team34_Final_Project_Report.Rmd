@@ -322,7 +322,7 @@ crime_plot_property_about
 
 Both crime rates exhibit state differences. District of Columbia and California have the highest violent crime rate and property crime rate respectively. In general, the property crime rate is dramatically higher than violent crime rate.
 
-**Spaghetti plots showing the trend of drug use across years**
+**Spaghetti plots showing the trend of drug use by age group**
 
 ```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
