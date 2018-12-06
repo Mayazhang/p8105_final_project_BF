@@ -156,6 +156,8 @@ crime_clean =
 
 ```
 
+
+
 ## Violent Crime Rate 
 
 
@@ -196,3 +198,31 @@ ggsave(filename = "violent_crime_rate_overall_plot.png", plot = crime_plot_viole
 
 
 ```
+
+The highest violent crime rate was observed in District of Columbia, with 12 victims per 1000 people in one year. This rate was 2 to 3 times the violent crime rate of most states, indicating the potential insecurity regarding violent offences in District of Columbia. Moreover, states in the south region tended to have higher violent crime rates compare to other regions.
+
+
+## Property crime
+
+```{r, echo = FALSE, warning = FALSE}
+crime_plot_property_about <- crime_plot %>% 
+  mutate(area = fct_reorder(area, property_crime_number)) %>% 
+  ggplot(aes(x = area, y = property_crime_number, fill = region)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 14)) +
+  labs(
+    x = "State",
+    y = "Property crime rate (Per 1000)"
+  )
+crime_plot_property_about
+```
+
+The highest property crime rates were seen in Florida, Texas, and California, which doubled or tripled the crime rate of other states. The possible reasons could be large population and huge influx to tourist draw during vacations.
+
+On the other hand, District of Columbia, which was notorious for the high violent crime rate, had a very low property crime rate. Therefore, it could be reasonable to conclude that wealthier states tended to have higher property crime rates.
+
+
+
+
