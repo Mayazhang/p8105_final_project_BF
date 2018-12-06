@@ -1,8 +1,27 @@
 ---
 title: "Crime dataset"
 ---
+## Overall description
 
-#### load crime and drug data and do some clean up!
+The crime data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, and geographic divisions. All offenses were classified to two main categories:
+
+* **Violent crime**
+
+The violent crime involved force or threat of force against the victims. Here it was divided into four subtypes of offenses:
+
+ * Murder and nonnegligent manslaughter
+ * Rape
+ * Robbery
+ * Aggravated assault
+
+* **Property crime**
+
+The property crime indicated offenses with property lost and without force or threat of force. Here it included three subtypes:
+
+ * Burglary
+ * Larceny-theft
+ * Motor vehicle theft
+
 
 ```{r, include = FALSE}
 library(tidyverse)
@@ -137,8 +156,7 @@ crime_clean =
 
 ```
 
-#### Some Graphs
-
+## Violent Crime Rate 
 
 
 ```{r, echo=FALSE}
@@ -178,32 +196,3 @@ ggsave(filename = "violent_crime_rate_overall_plot.png", plot = crime_plot_viole
 
 
 ```
-
-```{r, echo=FALSE}
-options( warn = -1 )
-
-crime_plot_property_about <- crime_plot %>% 
-  mutate(area = fct_reorder(area, property_crime_number)) %>% 
-  ggplot(aes(x = area, y = property_crime_number, fill = region)) +
-  geom_bar(stat = "identity", width = 0.5) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 8),
-        title = element_text(size = 14)) +
-  labs(
-    x = "State",
-    y = "Property crime rate (Per 1000)"
-  )
-crime_plot_property_about
-ggsave(filename = "property_crime_rate_overall_plot.png", plot = crime_plot_property_about, width = 30, height = 20, units = "cm")
-```
-
-
-
-
-
-
-
-
-
-
-
