@@ -368,11 +368,13 @@ In chart A, specific state and drug type have been selected, and then an interac
 
 By showing all these three types of distributions, the reader could explore the detailed information of the drug use in U.S. and its pattern across years.
 
-Finally, to show the different rates in each drug use overall the whole country, a shiny map was made to explore the distribution of each drug use in the U.S. in 2015 and 2016 respectively, and the color gradient corresponds to drug rate.
+Finally, a shiny map of the United States was made to explore the distribution of each drug use in 2015 and 2016 respectively, and the color gradient corresponds to drug rate.
 
 Surprisingly, the rate of perception risk of marijuana was reduced over years in all age groups, whereas alcohol rate remained constant over years. The trend indicates the public awareness for marijuana as harmful decreases with time. We expected higher education to be negatively correlated to marijuana use.
 
 * Process of building shiny for crime data
+
+The crime data consists of a total of ten types of crimes (violent, murder and manslaughter, rape, robbery, aggravated assult, proporty, burglary, larceny and theft, motor vehicle theft) and two year points (2015 and 2016).
 
 Twenty barplots were created to exhibit the distributions of ten types of crime rates across states in 2015 and 2016 respectively, corresponding maps were made to represent information in the barplots.
 
@@ -381,6 +383,7 @@ Twenty barplots were created to exhibit the distributions of ten types of crime 
 Linear Regression:
 
 We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients.
+
 The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.
 
 We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.
