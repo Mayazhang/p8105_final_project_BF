@@ -47,7 +47,3 @@ For this project we will use four datasets:
 *[Population Distribution by Race/Ethnicity](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D) are based on the analysis of the Census Bureau’s American Community Survey (ACS) and may differ from other population estimates published yearly by the Census Bureau. U.S. and state population data displayed on this site are restricted to the civilian, non-institutionalized population for whom ACS collects and reports poverty information.
 
 
-### *Additional Exploration and Code*
-
-We explored our datasets around throughout whole process of working on the analyses. Here are some additional [efforts/graphics](Drug_code.html) we made regarding exploring certain distributions of our datasets.
-
