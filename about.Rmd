@@ -252,7 +252,7 @@ robbery_rate_bt <- regression_data_all %>%
 
 ** model without District of Columbia and Hawaii**
 
-Then We remove two outliers and fit the model again
+Then two outliers were removed and the model was fitted again
 
 ```{r linear regression_another, echo=FALSE, warning=FALSE, message=FALSE}
 # MLR linear regression using list columns
@@ -288,7 +288,7 @@ datatable(result_with, options = list(pageLength = 5))
 
 By removing these two observations, the estimated coefficients for drug use become not significant.
 
-We still check the diagnostics of the model mentioned above.
+Check the diagnostics plots for MLR without two outliers/influential points.
 
 ```{r model diagnostics_another, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
@@ -303,12 +303,11 @@ par(mfrow = c(2,2))
 plot(model2)
 ```
 
-The R-squiared and adjusted R-squared increased, and these two models still meet the model assumptions.
+The adjusted R-squared increased by removing outliers.
 
-* Try bootstrap of the model of burglary rate
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-regression_data_no2states %>%
+bt2 <- regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   filter(crime_type == "murder_manslaughter_rate") %>% 
   modelr::bootstrap(n = 100) %>% 
@@ -318,7 +317,7 @@ regression_data_no2states %>%
   select(results) %>%
   unnest()
 
-regression_data_no2states %>%
+bt3 <- regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   filter(crime_type == "robbery_rate") %>% 
   modelr::bootstrap(n = 100) %>% 
