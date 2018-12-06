@@ -322,7 +322,7 @@ crime_plot_property_about
 
 Both crime rates exhibit state differences. District of Columbia and California have the highest violent crime rate and property crime rate respectively. In general, the property crime rate is dramatically higher than violent crime rate.
 
-**Spaghetti plots showing the trend of drug use by age group**
+**The trend of different drug uses in 2002-2014 by age groups**
 
 ```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
@@ -354,7 +354,7 @@ drug_raw %>%
   geom_point(aes(shape = age)) +
   theme_bw() +
   labs(
-    title = "Drug use in 2002-2014 by age group",
+    title = "Different drug uses in 2002-2014 by age groups",
     x = "Year",
     y = "Rate of drug use (in thousands)",
     caption = "Data from the drug dataset"
