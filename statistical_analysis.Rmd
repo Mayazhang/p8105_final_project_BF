@@ -340,6 +340,7 @@ regression_data_no2states %>%
 **Murder rate with Hawaii and District of Columbia**
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(1)
 # Try bootstrap with the model that has outliers in murder rate
 regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
@@ -357,6 +358,7 @@ regression_data_all %>%
 **Robbery rate without Hawaii and District of Columbia**
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(1)
 # Try bootstrap with the model that has no outliers in robbery rate
 regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
@@ -374,6 +376,7 @@ regression_data_no2states %>%
 **Robbery rate with Hawaii and District of Columbia**
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(1)
 # Try bootstrap with the model that has outliers in robbery rate
 regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
