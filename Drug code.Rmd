@@ -184,12 +184,6 @@ drug_clean %>%
   theme(legend.position = "bottom") +
   scale_x_continuous(breaks = c(2002, 2006, 2010, 2014))
 
- 
-#fit_cocaine = fitted(loess(drug_cocaine$mean_past_year_cocaine ~ drug_cocaine$year))
- 
-#drug_cocaine %>%
-  #plot_ly(x = ~year, y = ~mean_past_year_cocaine, type = "bar", showlegend = FALSE, marker = list(color = ~year, showscale = FALSE)) %>% 
-  #add_lines(y = fit_cocaine, showlegend = FALSE, color = 'black')
 ```
 
 ```{r drug_cocaine_state}
