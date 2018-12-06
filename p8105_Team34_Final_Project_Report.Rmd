@@ -207,7 +207,11 @@ There is a substantial decline in both the violent crime rate and property crime
 
 1.1 Data description
 
-The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants.
+The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants. There are two major categories of crimes: (1) violent_crime_number/rate: violent crime involved force or threat of force against the victims. It included four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. Columns containing murder manslaughter, rape, robbery, and aggravated assault were subdivision of violent crime. (2) Property_crime_number/rate: property crime indicated offenses involving property lost without force or threat of force. It included three types of offenses: burglary, larceny-theft, motor vehicle theft. Columns containing burglary, larceny-theft, and motor vehicle theft were subdivision of property crime
+ 
+
+    
+
 
 1.2 Data cleaning 
 
@@ -320,7 +324,7 @@ In conlusion, with data from Hawaii and District of Columbia, at 0.05 significan
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
-Our finding are that, in general, the crime rate is highly related to alcohol, marijuana or illicit drug use. It is more associated to the race proportion of whites and the percentage of high school graduation.
+Our finding are that, in general, the crime rate is not highly related to alcohol, marijuana nor illicit drug use. It is associated to the race proportion of whites and the percentage of high school graduation.
 
 These result are not we initially expect, as the crime rate is not highly significantly associated with these drug use.
 
