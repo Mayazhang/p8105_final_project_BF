@@ -6,7 +6,6 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(DT)
@@ -197,45 +196,45 @@ result_withoutliers =
 
 Substance abuse is characterized by the repeated use of addictive drugs that changes neuroadaptations in the neural system, resulting in the withdrawal syndrome after the drug effects diminish (White, 2004). A study of arrestees in Maricopa County, Arizona suggests that diverted medical marijuana users were more likely to commit property crime, violent crime, Driving Under the Influence (DUI), and drug selling than nonusers (Katz et al., 2018). Therefore, not only substance abuse represents a significant public health problem, but alcohol and illicit drug use are also associated with criminal activities in the United States (Jaegers et al., 2018). For example, the United States Drug Enforcement Administration (DEA) reports a majority of drug related crimes are committed by drug users (Resignato, 2000), and the evidence of high rates of drug misuse among criminal samples suggests an association between crime and illegal drug use (Rolfe et al., 2000). Furthermore, studies have shown more crime-related activity during periods of addiction than non-addiction periods (Rolfe et al., 2000). Substance use disorders (SUDs) as defined by the Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV) for alcohol, marijuana, and pain relievers are associated with violence (Grant et al., 2018). Motivation for committing property crimes can be attributed to economic problems. For instance, many heroin addicts finance their habits through committing property crimes, especially theft. (Rolfe et al., 2000). For violent crimes, the majority of murders linked to drug addicts are associated to the drug trade (Harrison & Gfroerer, 1992). 
 
-There is a substantial decline in both the violent crime rate and property crime rate since 1993 (“5 facts about crime in the U.S”, 2018). However, the FBI reported a 7% increase in the violent crime rate between 2014 and 2016, with a 20% increase in the murder rate (“5 facts about crime in the U.S”, 2018). Consistent with the decrease in crime rates, past year cocaine use has fallen since 2002 (“Nationwide Trends”, 2015). Both marijuana and illicit drugs use increased slightly after 2008 (“Nationwide Trends”, 2015). Although the relationship between drug use and crime has been studied in detail these years, it is not clear whether the drug use pattern can be used to inform or even predict different types of crimes. The main purpose of the study is to build a predictive model using regression to predict future crime trend from drug use information. 
+There is a substantial decline in both the violent crime rate and property crime rate since 1993 (“5 facts about crime in the U.S”, 2018). However, the FBI reported a 7% increase in the violent crime rate between 2014 and 2016, with a 20% increase in the murder rate (“5 facts about crime in the U.S”, 2018). Consistent with the decrease in crime rates, past year cocaine use has fallen since 2002 (“Nationwide Trends”, 2015). Both marijuana and illicit drugs use increased slightly after 2008 (“Nationwide Trends”, 2015), posing a question as whether the increase in murder is a consequence of marijuana and illicit drugs use. Although the relationship between drug use and crime has been studied in detail these years, the influence of drug use on different types of crime remains unclear. The main purpose of the study is to identify the contribution of drug use on various types of crime. 
 
 
 
-##Data: Source, scraping method, cleaning, etc.
+##Method
 
-1. Crime dataset
+**1. Crime dataset**
 
-1.1 Data description
+**1.1 Data description**
 
 The crime data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, and geographic divisions. Each column represents a type of crime and values are recored as rate per 100,000. There are two categories of crimes: (1) violent_crime_number/rate: violent crime involves force or threat of force against the victims. It includes four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. Columns containing murder and manslaughter, rape, robbery, and aggravated assault are subdivisions of violent crime. (2) Property_crime_number/rate: property crime indicates offenses involving property lost without force or threat of force. It includes three types of offenses: burglary, larceny-theft, and motor vehicle theft. Columns containing burglary, larceny-theft, and motor vehicle theft are subdivisions of property crime.
 
-1.2 Data cleaning 
+**1.2 Data cleaning**
 
 The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
 
 column names were cleaned up using 'janitor' package and the subscripts of text were manually deleted from the original dataset. Column 'area' was converted from character to factor. Commas were removed in columns containing numbers and rates, followed by transformation from character to numeric. Area names were filled where appropriate. 'rape_legacy' variable was deleted as it contains overlapping information with 'rape_revise' columns. Additionally, NAs were removed, and data subsets by states, region, and geographic division were created.
 
-2. Drug dataset
+**2. Drug dataset**
 
-2.1 Data description
+**2.1 Data description**
 
 The drug data is collected by The National Survey on Drug Use and Health (NSDUH), an annual survey conducted in all 50 states and the District of Columbia. There are approximately 70,000 participants and questions on tobacco, alcohol, and drug use, mental health and other health-related issues are asked (What is NSDUH, 2018). The data consists of three age groups, which are age 12 to 17, age 18 to 25, and age 26 and above. Our study focues on substance abuse (alcohol, marijuana, cocaine, and illicit drugs).
 
-2.2 Data cleaning
+**2.2 Data cleaning**
 
 The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
  
 Firstly, we selected variables of interest, which are substance abuse of marijuana, illicit drug (cocaine), and alcohol with state and year columns. Next the age information was extracted from the column name into a unique column by gathering all the columns except year and state, followed by using string_replace and separate function, resulting in two columns of age and rate respectively.
 
-3. Education data
+**3. Education data**
 
 In order to take education rate as a possible confounder in regression models, percentage of high school graduation in each state was extracted from a [wikipedia website](https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment) and added to drug data. 
  
-4. Race data
+**4. Race data**
 
 Taking the race proportion into consideration, we added the proportion of whites as a potential confounder. It was extracted from [Kaiser Family Foundation](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D) and added to drug data.
 
-##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
+##Exploratory analysis
 
 In order to visualize how the crime rates differ in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
 
@@ -268,6 +267,8 @@ crime$region[index_ne_state] <- 4
 
 crime[,4:23] <- crime[,4:23]/100
 ```
+
+**Violent Crime Rate Distribution across states**
 
 ```{r plot1, echo=FALSE, warning=FALSE}
 crime_plot <- crime %>% 
@@ -302,6 +303,8 @@ crime_plot_violent_about
 ggsave(filename = "violent_crime_rate_overall_plot.png", plot = crime_plot_violent_about, width = 30, height = 20, units = "cm")
 ```
 
+**Property Crime Rate Distribution across states**
+
 ```{r plot2, echo=FALSE, warning=FALSE}
 crime_plot_property_about <- crime_plot %>% 
   mutate(area = fct_reorder(area, property_crime_number)) %>% 
@@ -317,7 +320,9 @@ crime_plot_property_about <- crime_plot %>%
 crime_plot_property_about
 ```
 
-Spaghetti plots showing the trend of drug use across years
+Both crime rates exhibit state differences. District of Columbia and California have the highest violent crime rate and property crime rate respectively. In general, the property crime rate is dramatically higher than violent crime rate.
+
+**Spaghetti plots showing the trend of drug use across years**
 
 ```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
@@ -334,15 +339,15 @@ drug_raw %>%
 # Make a line plot 
     filter(!str_detect(rate, "perceptions"),
          !str_detect(rate, "past_month"),
-         !str_detect(rate, "new_user")) %>% 
+         !str_detect(rate, "new_user")) %>%
   mutate(rate = str_replace(rate, "alcohol_", "alcohol:"),
          rate = str_replace(rate, "illicit_drugs_", "illicit_drugs:"),
          rate = str_replace(rate, "marijuana_", "marijuana:")) %>% 
   separate(rate, into = c("drug", "other"), by = ":") %>% 
   select(-other) %>%
   group_by(year, drug, age) %>% 
-  summarize(average_rate = mean(value)) %>% 
-  ggplot(aes(x = year, y = average_rate, 
+  summarize(rate = sum(value)) %>% 
+  ggplot(aes(x = year, y = rate, 
              color = drug, 
              group = interaction(age, drug))) +
   geom_line() +
@@ -351,20 +356,20 @@ drug_raw %>%
   labs(
     title = "Drug use in 2002-2014 by age group",
     x = "Year",
-    y = "Average rate of drug use (in thousands)",
+    y = "Rate of drug use (in thousands)",
     caption = "Data from the drug dataset"
   ) +
    theme(legend.position = "bottom") +
   scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010, 2012, 2014))
 ```
 
-From the plots, marijuana rate among age 18-25 has the highest rate among all and there is a slight decrease in alcohol use in all age groups. The rates of both illicit drugs--cocaine and marijuana remain constant through years.
+From the plots, the highest rates of alcohol, illicit drugs, and marijuana are among people aged 18 to 25. There is a decreasing trend in alcohol abuse among people aged 12 to 25. The rates of both illicit drugs--cocaine and marijuana, in general, remain constant throughout years.
 
-* Process of building shiny for drug data:
+**Process of building shiny for drug data**
 
-There were 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degrees in each drug (abuse, binge, dependence, need treatment, use). The main purpose was to analyze the distribution of degrees in each drug in each state throughout years and the distribution of degrees of each drug stratified by age. Moreover, there were data for rate of perception risk in marijuana and alcohol use, thus we  analyzed the trend of perception risk in each age group and in each state for selected drugs. Thus, three interactive charts in total were created for exploratory purpose.
+There were 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degrees in each drug (abuse, binge, dependence, need treatment, use). The main purpose was to analyze the distribution of the degree of addiction in each drug in each state throughout years and the distribution of addiction degrees of each drug stratified by age. Moreover, there were data for rate of perception risk in marijuana and alcohol use, thus we analyzed the trend of perception risk in each age group and in each state for selected drugs. Three interactive charts in total were created for exploratory purpose.
 
-In chart A, specific state and drug type have been selected, and then an interactive bar chart with “year” as x axis, “rate” as y axis was built with different color representing the degree of drug addiction. In chart B, the distribution of perception of risk for alcohol and marijuana by three age groups were plotted across years. In chart C, the distributions of drug rates with degree of drug addiction across year were plotted for each drug type and for each group. As a result, each degree was colored to show the drug rate change in a certain group.
+In chart A, specific state and drug type have been selected, and then an interactive bar chart with “year” as x axis, “rate” as y axis was built with different color representing the degree of drug addiction. In chart B, the distribution of perception of risk for alcohol and marijuana by three age groups were plotted across years. In chart C, the distributions of drug rates with degrees of drug addiction across year were plotted for each drug type and for each age group, allowing investigation of the pattern of specific drug addiction level.
 
 By showing all these three types of distributions, the reader could explore the detailed information of the drug use in U.S. and its pattern across years.
 
@@ -372,15 +377,15 @@ Finally, a shiny map of the United States was made to explore the distribution o
 
 Surprisingly, the rate of perception risk of marijuana was reduced over years in all age groups, whereas alcohol rate remained constant over years. The trend indicates the public awareness for marijuana as harmful decreases with time. We expected higher education to be negatively correlated to marijuana use.
 
-* Process of building shiny for crime data
+**Process of building shiny for crime data**
 
-The crime data consists of a total of ten types of crimes (violent, murder and manslaughter, rape, robbery, aggravated assult, proporty, burglary, larceny and theft, motor vehicle theft) and two year points (2015 and 2016).
+The crime data consists of a total of nine types of crimes (violent, murder and manslaughter, rape, robbery, aggravated assult, proporty, burglary, larceny and theft, motor vehicle theft) and two year points (2015 and 2016). State abbreviation was added as a new column in the crime data.
 
-Twenty barplots were created to exhibit the distributions of ten types of crime rates across states in 2015 and 2016 respectively, corresponding maps were made to represent information in the barplots.
+Eighteen barplots were created to demonstrate the distributions of nine types of crime rates across states in 2015 and 2016 respectively, corresponding maps were made for visualization.
 
-##Additional analysis: If you undertake formal statistical analyses, describe these in detail
+##Statistical analysis
 
-Linear Regression:
+**Linear Regression**
 
 We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients.
 
