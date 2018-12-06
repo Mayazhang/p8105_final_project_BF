@@ -10,7 +10,7 @@ navbar:
       - text: Drug Dataset
         href: Drug_code.html
     - text: "Statistical Analysis"
-      href: about.html
+      href: statistical_analysis.html
     - text: "Shiny"
       href: https://p8105-finalproject-team34-crime-drug.shinyapps.io/Shiny_Map_Displaying/
     - text: "Project Report"
