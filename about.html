@@ -26,13 +26,10 @@
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
-<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="site_libs/datatables-binding-0.5/datatables.js"></script>
-<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="site_libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
-<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<script src="site_libs/datatables-binding-0.2.10/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
 <link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
 <script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
 <script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
@@ -293,22 +290,7 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="Website-About-Page.html">Project Overall Description</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Data Manipulation
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="crime_data.html">Crime dataset</a>
-    </li>
-    <li>
-      <a href="Drug_code.html">Drug dataset</a>
-    </li>
-  </ul>
+  <a href="crime_data.html">Crime Dataset Exploration</a>
 </li>
 <li>
   <a href="about.html">Statistical Analysis</a>
@@ -421,32 +403,32 @@ div.tocify {
 <li>Try bootstrap of the model of burglary rate</li>
 </ul>
 <pre><code>## # A tibble: 500 x 5
-##    term                          estimate std.error statistic   p.value
-##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 (Intercept)                   0.816     0.184        4.44  0.0000671
-##  2 illicit_drugs                -0.00922   0.00255     -3.61  0.000817 
-##  3 alcohol                      -0.000153  0.000726    -0.211 0.834    
-##  4 marijuana                     0.00371   0.00107      3.48  0.00119  
-##  5 percent_high_school_graduate -0.00770   0.00207     -3.72  0.000601 
-##  6 (Intercept)                   0.548     0.151        3.64  0.000692 
-##  7 illicit_drugs                -0.00494   0.00232     -2.13  0.0386   
-##  8 alcohol                      -0.00109   0.000808    -1.35  0.183    
-##  9 marijuana                     0.00201   0.00106      1.90  0.0633   
-## 10 percent_high_school_graduate -0.00437   0.00179     -2.44  0.0189   
+##    term                           estimate std.error statistic      p.value
+##    &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+##  1 (Intercept)                   0.727      0.232       3.13   0.00307     
+##  2 illicit_drugs                -0.0134     0.00365    -3.66   0.000666    
+##  3 alcohol                      -0.000762   0.00101    -0.755  0.454       
+##  4 marijuana                     0.00572    0.00140     4.07   0.000188    
+##  5 percent_high_school_graduate -0.00600    0.00259    -2.32   0.0249      
+##  6 (Intercept)                   0.391      0.0578      6.76   0.0000000172
+##  7 illicit_drugs                -0.00110    0.00120    -0.914  0.365       
+##  8 alcohol                      -0.000752   0.000281   -2.67   0.0102      
+##  9 marijuana                    -0.0000480  0.000528   -0.0909 0.928       
+## 10 percent_high_school_graduate -0.00295    0.000695   -4.24   0.0000998   
 ## # ... with 490 more rows</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                         estimate std.error statistic    p.value
-##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1 (Intercept)                    9.05     4.69         1.93 0.0595    
-##  2 illicit_drugs                 -0.163    0.0746      -2.18 0.0341    
-##  3 alcohol                       -0.0327   0.0186      -1.76 0.0852    
-##  4 marijuana                      0.0896   0.0334       2.68 0.0101    
-##  5 percent_high_school_graduate  -0.0677   0.0485      -1.40 0.169     
-##  6 (Intercept)                    5.81     1.09         5.31 0.00000239
-##  7 illicit_drugs                 -0.0406   0.0299      -1.36 0.181     
-##  8 alcohol                       -0.0175   0.00641     -2.74 0.00855   
-##  9 marijuana                      0.0206   0.0132       1.57 0.124     
-## 10 percent_high_school_graduate  -0.0438   0.0118      -3.73 0.000488  
+##    term                         estimate std.error statistic p.value
+##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+##  1 (Intercept)                   7.96       3.72       2.14   0.0381
+##  2 illicit_drugs                -0.115      0.0610    -1.88   0.0666
+##  3 alcohol                      -0.00498    0.0201    -0.248  0.806 
+##  4 marijuana                     0.0473     0.0249     1.90   0.0644
+##  5 percent_high_school_graduate -0.0659     0.0409    -1.61   0.115 
+##  6 (Intercept)                   5.31       2.03       2.61   0.0125
+##  7 illicit_drugs                -0.00896    0.0394    -0.227  0.821 
+##  8 alcohol                      -0.0238     0.0115    -2.07   0.0447
+##  9 marijuana                     0.00836    0.0169     0.494  0.624 
+## 10 percent_high_school_graduate -0.0356     0.0223    -1.60   0.118 
 ## # ... with 490 more rows</code></pre>
 <p>** model without District of Columbia and Hawaii**</p>
 <p>We remove two outliers and fit the model again</p>
@@ -461,8 +443,8 @@ div.tocify {
 ## 6 property_crime_r… white           -1.43e+1  5.95         -2.41   2.06e-2
 ## 7 burglary_rate     percent_high_s… -1.63e-1  0.0756       -2.16   3.64e-2
 ## 8 motor_vehicle_th… white           -3.68e+0  1.00         -3.67   6.82e-4</code></pre>
-<div id="htmlwidget-69a86666fe482deaffcc" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-69a86666fe482deaffcc">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"],["violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate"],["(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate"],[20.71,-0.25,0.01,0.11,-5.48,-0.13,0.48,-0.01,-0,0,-0.07,-0,0.26,-0.02,0,0.01,-0.2,0,6.05,-0.09,-0.01,0.05,-2.54,-0.03,13.91,-0.14,0.02,0.05,-2.67,-0.11,69.66,-0.46,-0.06,0.13,-19.33,-0.24,25.58,0.01,-0.04,-0.03,-1.87,-0.17,37.62,-0.43,-0.04,0.15,-13.48,-0.03,6.46,-0.04,0.03,0.01,-3.97,-0.03],[7.48,0.13,0.03,0.05,1.42,0.08,0.14,0,0,0,0.03,0,0.86,0.01,0,0.01,0.16,0.01,2.99,0.05,0.01,0.02,0.57,0.03,4.85,0.08,0.02,0.04,0.92,0.05,28.01,0.47,0.13,0.21,5.31,0.31,6.61,0.11,0.03,0.05,1.25,0.07,21.11,0.36,0.1,0.15,4,0.23,4.3,0.07,0.02,0.03,0.82,0.05],[2.77,-2.01,0.26,1.96,-3.87,-1.64,3.55,-2.4,-1.19,2.11,-2.74,-2.15,0.3,-1.23,0.96,1.17,-1.19,0.25,2.02,-1.79,-0.84,2.13,-4.49,-0.85,2.87,-1.71,0.78,1.43,-2.91,-1.98,2.49,-0.98,-0.46,0.64,-3.64,-0.76,3.87,0.05,-1.45,-0.62,-1.49,-2.36,1.78,-1.21,-0.42,0.99,-3.37,-0.15,1.5,-0.5,1.33,0.28,-4.87,-0.64],[0.01,0.05,0.79,0.06,0,0.11,0,0.02,0.24,0.04,0.01,0.04,0.77,0.22,0.34,0.25,0.24,0.81,0.05,0.08,0.41,0.04,0,0.4,0.01,0.09,0.44,0.16,0.01,0.05,0.02,0.33,0.65,0.52,0,0.45,0,0.96,0.16,0.54,0.14,0.02,0.08,0.23,0.67,0.33,0,0.89,0.14,0.62,0.19,0.78,0,0.53]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>crime_type<\/th>\n      <th>term<\/th>\n      <th>estimate<\/th>\n      <th>std.error<\/th>\n      <th>statistic<\/th>\n      <th>p.value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8db74f22d3943705609e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8db74f22d3943705609e">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"],["violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate"],["(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate"],[20.71,-0.25,0.01,0.11,-5.48,-0.13,0.48,-0.01,-0,0,-0.07,-0,0.26,-0.02,0,0.01,-0.2,0,6.05,-0.09,-0.01,0.05,-2.54,-0.03,13.91,-0.14,0.02,0.05,-2.67,-0.11,69.66,-0.46,-0.06,0.13,-19.33,-0.24,25.58,0.01,-0.04,-0.03,-1.87,-0.17,37.62,-0.43,-0.04,0.15,-13.48,-0.03,6.46,-0.04,0.03,0.01,-3.97,-0.03],[7.48,0.13,0.03,0.05,1.42,0.08,0.14,0,0,0,0.03,0,0.86,0.01,0,0.01,0.16,0.01,2.99,0.05,0.01,0.02,0.57,0.03,4.85,0.08,0.02,0.04,0.92,0.05,28.01,0.47,0.13,0.21,5.31,0.31,6.61,0.11,0.03,0.05,1.25,0.07,21.11,0.36,0.1,0.15,4,0.23,4.3,0.07,0.02,0.03,0.82,0.05],[2.77,-2.01,0.26,1.96,-3.87,-1.64,3.55,-2.4,-1.19,2.11,-2.74,-2.15,0.3,-1.23,0.96,1.17,-1.19,0.25,2.02,-1.79,-0.84,2.13,-4.49,-0.85,2.87,-1.71,0.78,1.43,-2.91,-1.98,2.49,-0.98,-0.46,0.64,-3.64,-0.76,3.87,0.05,-1.45,-0.62,-1.49,-2.36,1.78,-1.21,-0.42,0.99,-3.37,-0.15,1.5,-0.5,1.33,0.28,-4.87,-0.64],[0.01,0.05,0.79,0.06,0,0.11,0,0.02,0.24,0.04,0.01,0.04,0.77,0.22,0.34,0.25,0.24,0.81,0.05,0.08,0.41,0.04,0,0.4,0.01,0.09,0.44,0.16,0.01,0.05,0.02,0.33,0.65,0.52,0,0.45,0,0.96,0.16,0.54,0.14,0.02,0.08,0.23,0.67,0.33,0,0.89,0.14,0.62,0.19,0.78,0,0.53]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>crime_type<\/th>\n      <th>term<\/th>\n      <th>estimate<\/th>\n      <th>std.error<\/th>\n      <th>statistic<\/th>\n      <th>p.value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <p>After removing these two points, the estimated coefficients for drug use become not significant.</p>
 <p>We still check the diagnostics of the model mentioned above.</p>
 <pre><code>## 
@@ -522,30 +504,30 @@ div.tocify {
 <pre><code>## # A tibble: 500 x 5
 ##    term                          estimate std.error statistic     p.value
 ##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1 (Intercept)                   0.335     0.0717       4.67  0.0000233  
-##  2 illicit_drugs                -0.00247   0.00125     -1.98  0.0534     
-##  3 alcohol                      -0.00148   0.000349    -4.25  0.0000946  
-##  4 marijuana                     0.000716  0.000538     1.33  0.189      
-##  5 percent_high_school_graduate -0.00176   0.000788    -2.23  0.0304     
-##  6 (Intercept)                   0.371     0.0607       6.12  0.000000225
-##  7 illicit_drugs                 0.000257  0.00124      0.207 0.837      
-##  8 alcohol                      -0.000764  0.000277    -2.76  0.00842    
-##  9 marijuana                    -0.000649  0.000573    -1.13  0.264      
-## 10 percent_high_school_graduate -0.00281   0.000658    -4.27  0.000102   
+##  1 (Intercept)                   0.473     0.0785       6.03  0.000000306
+##  2 illicit_drugs                -0.00283   0.00144     -1.96  0.0558     
+##  3 alcohol                      -0.000515  0.000529    -0.973 0.336      
+##  4 marijuana                     0.000432  0.000693     0.623 0.537      
+##  5 percent_high_school_graduate -0.00377   0.000831    -4.53  0.0000447  
+##  6 (Intercept)                   0.331     0.0797       4.15  0.000144   
+##  7 illicit_drugs                -0.00333   0.00123     -2.72  0.00921    
+##  8 alcohol                      -0.000910  0.000404    -2.25  0.0294     
+##  9 marijuana                     0.00107   0.000531     2.02  0.0499     
+## 10 percent_high_school_graduate -0.00207   0.000838    -2.47  0.0176     
 ## # ... with 490 more rows</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                          estimate std.error statistic  p.value
-##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)                   4.49       1.73       2.59   0.0129  
-##  2 illicit_drugs                -0.0138     0.0395    -0.349  0.729   
-##  3 alcohol                      -0.0114     0.0109    -1.04   0.302   
-##  4 marijuana                     0.00658    0.0171     0.385  0.702   
-##  5 percent_high_school_graduate -0.0326     0.0199    -1.63   0.110   
-##  6 (Intercept)                   5.84       1.36       4.28   0.000121
-##  7 illicit_drugs                 0.00370    0.0271     0.136  0.892   
-##  8 alcohol                      -0.0304     0.00716   -4.24   0.000138
-##  9 marijuana                     0.000436   0.0127     0.0344 0.973   
-## 10 percent_high_school_graduate -0.0364     0.0157    -2.32   0.0256  
+##    term                         estimate std.error statistic  p.value
+##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)                   5.94      1.91        3.11  0.00338 
+##  2 illicit_drugs                -0.0196    0.0322     -0.609 0.546   
+##  3 alcohol                      -0.00945   0.0113     -0.838 0.407   
+##  4 marijuana                     0.0176    0.0151      1.17  0.249   
+##  5 percent_high_school_graduate -0.0544    0.0233     -2.34  0.0243  
+##  6 (Intercept)                   6.78      1.65        4.10  0.000197
+##  7 illicit_drugs                -0.0341    0.0373     -0.914 0.366   
+##  8 alcohol                      -0.0189    0.00698    -2.71  0.00991 
+##  9 marijuana                     0.0252    0.0155      1.63  0.111   
+## 10 percent_high_school_graduate -0.0577    0.0173     -3.34  0.00185 
 ## # ... with 490 more rows</code></pre>
 </div>
 
