@@ -368,7 +368,7 @@ In chart A, specific state and drug type have been selected, and then an interac
 
 By showing all these three types of distributions, the reader could explore the detailed information of the drug use in U.S. and its pattern across years.
 
-Finally, a shiny map of the United States was made to explore the distribution of each drug use in 2015 and 2016 respectively, and the color gradient corresponds to drug rate.
+Finally, a shiny map of the United States was made to explore the distribution of each drug use in 2015 and 2016 respectively, and the color gradient corresponds to drug rate. The variables selected for the map are past year alcohol abuse, dependence, and need treatment; past year illicit drugs cocaine used, dependence, need treatment; and past year marijuana used. The aggragated results were obtained by classfing these variables into three categories--alcohol, illicit drugs, and marijuana.
 
 Surprisingly, the rate of perception risk of marijuana was reduced over years in all age groups, whereas alcohol rate remained constant over years. The trend indicates the public awareness for marijuana as harmful decreases with time. We expected higher education to be negatively correlated to marijuana use.
 
@@ -406,9 +406,11 @@ In conlusion, with all 50 states and District of Columbia, at 0.05 significant l
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
-Our finding are that, in general, the crime rate is not highly related to alcohol, marijuana nor illicit drug use. It is associated to the race proportion of whites and the percentage of high school graduation.
+With the full crime data, our regression model suggests that murder is weakly associated with marijuana, illicit drug use, whites and the percentage of high school graduation. The model fitted without Hawaii and District of Columbia illustrate negative associations between whites and murder, and between percentage of high school graduation and murder respectively. The estimated coefficients of these significant predictors are close to zero, implying neither drugs, race, nor education affects murder.
 
-These result are not we initially expect, as the crime rate is not highly significantly associated with these drug use.
+For robbery crime, the significant predictors are marijuana and whites in the model fitted with the full crime data. Whites is the only significant predictor in the model fitted without Hawaii and District of Columbia. The estimated coefficients for whites are relatively high in both models, indicating whites are less likely to commit homicide. A study implies that the prevalence of illicit drug use is highest among whites and lowest among African-Americans (Jaegers et al., 2018). Thus, it is reasonable to assume whites to have a higher crime rates, given the positive correlation between drugs and crimes. However, our results suggest that drugs are not the determining factors for crime, consistent with our finding that whites are less likely to commit crime.
+
+
 
 
 
