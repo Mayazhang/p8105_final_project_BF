@@ -239,10 +239,87 @@ Taking the race proportion into consideration, we added proportion of whites as 
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
 
-*In order to visualize how the crime rate differs in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
+In order to visualize how the crime rate differs in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
+```{r, echo=FALSE, warning=FALSE}
+crime  <- crime %>% 
+  na.omit()
+
+crime$year = as.factor(crime$year)
 
 
-* Line plots to show trend of drug use across years
+index_ne <- which(crime$area == "Northeast")
+idnex_mw <- which(crime$area == "Midwest")
+idnex_s <- which(crime$area == "South")
+idnex_w <- which(crime$area == "West")
+
+index <- c(1:length(crime$area))
+crime$region <- c(rep(0, length(crime$area)))
+
+index_ne_state <- which(index > max(index_ne) & index < min(idnex_mw))
+crime$region[index_ne_state] <- 1
+
+index_ne_state <- which(index > max(idnex_mw) & index < min(idnex_s))
+crime$region[index_ne_state] <- 2
+
+index_ne_state <- which(index > max(idnex_s) & index < min(idnex_w))
+crime$region[index_ne_state] <- 3
+
+index_ne_state <- which(index > max(idnex_w) & index < 133)
+crime$region[index_ne_state] <- 4
+
+crime[,4:23] <- crime[,4:23]/100
+```
+
+```{r plot1, echo=FALSE, warning=FALSE}
+crime_plot <- crime %>% 
+  filter(!area %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>%  
+  filter(year != "Percent change") %>%
+  group_by(area) %>%
+  summarise_all(funs(mean))
+
+crime_plot$region <- as.character(crime_plot$region)
+index_1 <- which(crime_plot$region == "1")
+crime_plot$region[index_1] = "Northeast"
+index_2 <- which(crime_plot$region == "2")
+crime_plot$region[index_2] = "Midwest"
+index_3 <- which(crime_plot$region == "3")
+crime_plot$region[index_3] = "South"
+index_4 <- which(crime_plot$region == "4")
+crime_plot$region[index_4] = "West"
+crime_plot$region <- as.factor(crime_plot$region)
+
+crime_plot_violent_about <- crime_plot %>% 
+  mutate(area = fct_reorder(area, violent_crime_rate)) %>% 
+  ggplot(aes(x = area, y = violent_crime_rate, fill = region)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 14)) +
+  labs(
+    x = "State",
+    y = "Violent crime rate (Per 1000)"
+  )
+crime_plot_violent_about
+ggsave(filename = "violent_crime_rate_overall_plot.png", plot = crime_plot_violent_about, width = 30, height = 20, units = "cm")
+```
+
+```{r plot2, echo=FALSE, warning=FALSE}
+crime_plot_property_about <- crime_plot %>% 
+  mutate(area = fct_reorder(area, property_crime_number)) %>% 
+  ggplot(aes(x = area, y = property_crime_number, fill = region)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 14)) +
+  labs(
+    x = "State",
+    y = "Property crime rate (Per 1000)"
+  )
+crime_plot_property_about
+```
+
+
+Line plots to show trend of drug use across years
 
 ```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
