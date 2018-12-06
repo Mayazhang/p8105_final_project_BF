@@ -11,7 +11,7 @@ library(plotly)
 
 ## Data Import
 
-```{r read_data}
+```{r read_data, echo=FALSE}
 drug_raw =
   read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
@@ -19,7 +19,7 @@ drug_raw =
 
 ## Data Cleaning
 
-```{r clean_data}
+```{r clean_data, echo=FALSE}
 drug_data = 
   drug_raw %>%
   select(year, state,

@@ -209,6 +209,7 @@ There is a substantial decline in both the violent crime rate and property crime
 
 The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants.
 
+
 1.2 Data cleaning 
 
 The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow: column names were cleaned up using 'janitor' packages and the subscripts of text were manually deleted. Column 'area' was convert from character to factor. Commas were removed in columns containing numbers and rates, followed by transformation from character to numeric. Area names were filled where appropriate. 'rape_legacy' variable was deleted as it has overlapping information with 'rape_revise' columns. Additionally, NAs were removed. Also, subsets by states, region, and geographic division were created.

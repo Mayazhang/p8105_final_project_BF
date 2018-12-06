@@ -303,7 +303,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="crim_data.html">Crime Dataset</a>
+      <a href="crime_data.html">Crime Dataset</a>
     </li>
     <li>
       <a href="Drug_code.html">Drug Dataset</a>
@@ -351,121 +351,9 @@ div.tocify {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ---------</code></pre>
-<pre><code>## v ggplot2 3.0.0     v purrr   0.2.5
-## v tibble  1.4.2     v dplyr   0.7.7
-## v tidyr   0.8.1     v stringr 1.3.1
-## v readr   1.1.1     v forcats 0.3.0</code></pre>
-<pre><code>## -- Conflicts ------------------
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(readxl)
-library(PerformanceAnalytics)</code></pre>
-<pre><code>## Loading required package: xts</code></pre>
-<pre><code>## Loading required package: zoo</code></pre>
-<pre><code>## 
-## Attaching package: &#39;zoo&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     as.Date, as.Date.numeric</code></pre>
-<pre><code>## 
-## Attaching package: &#39;xts&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
-## 
-##     first, last</code></pre>
-<pre><code>## 
-## Attaching package: &#39;PerformanceAnalytics&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:graphics&#39;:
-## 
-##     legend</code></pre>
-<pre class="r"><code>library(rvest)</code></pre>
-<pre><code>## Loading required package: xml2</code></pre>
-<pre><code>## 
-## Attaching package: &#39;rvest&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     pluck</code></pre>
-<pre><code>## The following object is masked from &#39;package:readr&#39;:
-## 
-##     guess_encoding</code></pre>
-<pre class="r"><code>library(httr)
-library(DT)</code></pre>
 <p>Load crime data and some primary clean up</p>
-<pre class="r"><code># load data and clean up column names
-# not to omit NAs
-crime = readxl::read_excel(&quot;./data/crime-data-2016.xls&quot;, range = (&quot;A4:W202&quot;)) %&gt;% 
-  janitor::clean_names() %&gt;% 
-    rename_(population = names(.)[3],
-          violent_crime_number = names(.)[4],
-          violent_crime_rate = names(.)[5],
-          murder_manslaughter_number = names(.)[6],
-          murder_manslaughter_rate = names(.)[7],
-          rape_revise_number = names(.)[8],
-          rape_revise_rate = names(.)[9],
-          rape_legacy_number = names(.)[10],
-          rape_legacy_rate = names(.)[11],
-          robbery_number = names(.)[12],
-          robbery_rate = names(.)[13],
-          aggravated_assault_number = names(.)[14],
-          aggravated_assault_rate = names(.)[15],
-          property_crime_number = names(.)[16],
-          property_crime_rate = names(.)[17],
-          burglary_number = names(.)[18],
-          burglary_rate = names(.)[19],
-          larceny_theft_number = names(.)[20],
-          larceny_theft_rate = names(.)[21],
-          motor_vehicle_theft_number = names(.)[22],
-          motor_vehicle_theft_rate = names(.)[23]) %&gt;% 
-  mutate(area = as.factor(area)) 
-crime[,2:23] &lt;- as.numeric(unlist(crime[,2:23]))</code></pre>
 <pre><code>## Warning: NAs introduced by coercion</code></pre>
-<pre class="r"><code># fill up area name
-i = 1
-for (i in 0:65) {
-  n = 3 * i + 1
-  crime$area[n + 1] = paste0(crime$area[n]) 
-  crime$area[n + 2] = paste0(crime$area[n])
-  i = i + 1
-}
-
-crime  &lt;- crime %&gt;% 
-  na.omit()
-
-crime$year = as.factor(crime$year)
-# check head
-head(crime)</code></pre>
-<pre><code>## # A tibble: 6 x 23
-##   area  year  population violent_crime_n~ violent_crime_r~ murder_manslaug~
-##   &lt;fct&gt; &lt;fct&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Unit~ 2015   320896618          1234183             385.            15883
-## 2 Unit~ 2016   323127513          1283058             397.            17250
-## 3 Nort~ 2015    56184737           180474             321.             1967
-## 4 Nort~ 2016    56209510           178244             317.             1955
-## 5 New ~ 2015    14710229            42121             286.              326
-## 6 New ~ 2016    14735525            41598             282.              292
-## # ... with 17 more variables: murder_manslaughter_rate &lt;dbl&gt;,
-## #   rape_revise_number &lt;dbl&gt;, rape_revise_rate &lt;dbl&gt;,
-## #   rape_legacy_number &lt;dbl&gt;, rape_legacy_rate &lt;dbl&gt;,
-## #   robbery_number &lt;dbl&gt;, robbery_rate &lt;dbl&gt;,
-## #   aggravated_assault_number &lt;dbl&gt;, aggravated_assault_rate &lt;dbl&gt;,
-## #   property_crime_number &lt;dbl&gt;, property_crime_rate &lt;dbl&gt;,
-## #   burglary_number &lt;dbl&gt;, burglary_rate &lt;dbl&gt;,
-## #   larceny_theft_number &lt;dbl&gt;, larceny_theft_rate &lt;dbl&gt;,
-## #   motor_vehicle_theft_number &lt;dbl&gt;, motor_vehicle_theft_rate &lt;dbl&gt;</code></pre>
-<pre class="r"><code># Filter out &quot;percent change&quot; in &quot;year&quot; variable
-crime_clean = 
-  crime %&gt;%
-  filter(year != &quot;NA&quot;)
-
-
-# Change the name of &quot;area&quot; to &quot;state&quot;
-colnames(crime_clean)[1] = &quot;state&quot;</code></pre>
 <p>Load drug data and clean up</p>
-<pre class="r"><code># Remove the block later
-drug_raw =
-  read_csv(&quot;./data/drugs.csv&quot;) %&gt;%
-  janitor::clean_names()</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_integer(),
@@ -492,82 +380,11 @@ drug_raw =
 ##   # ... with 43 more columns
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>drug_clean = 
-  drug_raw %&gt;%
-  select(year, state,
-         rates_alcohol_abuse_past_year_12_17:rates_alcohol_dependence_past_year_26,
-         rates_alcohol_need_treatment_past_year_12_17:rates_illicit_drugs_abuse_past_month_26, 
-         rates_illicit_drugs_cocaine_used_past_year_12_17:rates_illicit_drugs_need_treatment_past_year_26,
-         rates_marijuana_new_users_12_17:rates_marijuana_used_past_year_26) %&gt;%
-  gather(key, value, -state, -year) %&gt;% 
-  mutate(key = str_replace_all(key, c(&quot;year_&quot; = &quot;year:&quot;, &quot;month_&quot; = &quot;month:&quot;, &quot;risk_&quot; = &quot;risk:&quot;, &quot;users_&quot; = &quot;users:&quot;))) %&gt;%
-  separate(key, into = c(&quot;rate&quot;, &quot;age&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;%
-  mutate(rate = str_replace(rate, &quot;^rates_&quot;, &quot;&quot;))
-
-population_data = 
-  drug_raw %&gt;% 
-  select(x12_17, x18_25:x26, year, state) %&gt;% 
-  gather(key = &quot;age&quot;, value = &quot;popul_in_thousands&quot;, -state, -year) %&gt;% 
-  mutate(age = str_replace(age, &quot;x&quot;, &quot;&quot;))</code></pre>
 <div id="get-y-and-x-for-regression" class="section level4">
 <h4>Get Y and X for regression</h4>
 <p>Y: 51 states, each with mean crime rates (10 types of crimes)</p>
-<pre class="r"><code>crime_mean_rate &lt;- 
-  crime_clean %&gt;% 
-  group_by(state) %&gt;% 
-  select(grep(&quot;rate&quot;,names(.))) %&gt;% 
-  summarise_all(funs(mean))</code></pre>
 <pre><code>## Adding missing grouping variables: `state`</code></pre>
-<pre class="r"><code>crime_mean_rate[,2:11] &lt;- crime_mean_rate[,2:11]/100
-
-# check dimension
-dim(crime_mean_rate) #right</code></pre>
-<pre><code>## [1] 66 11</code></pre>
-<pre class="r"><code>head(crime_mean_rate)</code></pre>
-<pre><code>## # A tibble: 6 x 11
-##   state violent_crime_r~ murder_manslaug~ rape_revise_rate rape_legacy_rate
-##   &lt;fct&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Alab~             5.03           0.078             0.407            0.292
-## 2 Alas~             7.68           0.075             1.32             0.949
-## 3 Ariz~             4.40           0.05              0.465            0.343
-## 4 Arka~             5.40           0.0675            0.696            0.498
-## 5 Cali~             4.37           0.0485            0.339            0.250
-## 6 Colo~             3.30           0.0345            0.626            0.458
-## # ... with 6 more variables: robbery_rate &lt;dbl&gt;,
-## #   aggravated_assault_rate &lt;dbl&gt;, property_crime_rate &lt;dbl&gt;,
-## #   burglary_rate &lt;dbl&gt;, larceny_theft_rate &lt;dbl&gt;,
-## #   motor_vehicle_theft_rate &lt;dbl&gt;</code></pre>
 <p>X: 51 states, each with mean drug rate (3 types of drugs)</p>
-<pre class="r"><code># clean drug data
-drug_mean_rate = drug_clean %&gt;% 
-  group_by(state, rate, age) %&gt;% 
-  summarize(drug_average = mean(value)) %&gt;% 
-  group_by(state, rate) %&gt;% 
-  summarize(drug_sum = sum(drug_average)) %&gt;% 
-  filter(!str_detect(rate, &#39;perceptions&#39;),
-         str_detect(rate, &#39;past_year&#39;)) %&gt;% 
-  mutate(rate = str_replace_all(rate, c(&quot;alcohol_&quot; = &quot;alcohol:&quot;, &quot;illicit_drugs_&quot; = &quot;illicit_drugs:&quot;, &quot;marijuana_&quot; = &quot;marijuana:&quot;))) %&gt;% 
-  separate(rate, into = c(&quot;drug&quot;, &quot;degree&quot;), sep = &quot;:&quot;, extra = &quot;merge&quot;) %&gt;% 
-  select(-degree) %&gt;% 
-  group_by(state, drug) %&gt;% 
-  summarize(use_past_year = sum(drug_sum)) %&gt;% 
-# up to here, it&#39;s already a tidy dataset, but for regression we need to define each drug as a variable, so we choose to spread &quot;drug&quot; column
-  spread(key = drug, value = use_past_year)
-
-head(drug_mean_rate)</code></pre>
-<pre><code>## # A tibble: 6 x 4
-## # Groups:   state [6]
-##   state      alcohol illicit_drugs marijuana
-##   &lt;chr&gt;        &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
-## 1 Alabama       53.2          24.8      41.2
-## 2 Alaska        65.5          31.3      68.4
-## 3 Arizona       68.5          34.1      51.7
-## 4 Arkansas      57.9          27.0      45.6
-## 5 California    63.1          32.4      56.0
-## 6 Colorado      73.1          38.1      70.9</code></pre>
-<pre class="r"><code># read data for race proportion
-race_data_raw = read_csv(&quot;./data/race_data.csv&quot;) %&gt;% janitor::clean_names() %&gt;%
-  select(state, white)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   State = col_character(),
@@ -580,55 +397,18 @@ race_data_raw = read_csv(&quot;./data/race_data.csv&quot;) %&gt;% janitor::clean
 ##   `Two Or More Races` = col_character(),
 ##   Total = col_integer()
 ## )</code></pre>
-<pre class="r"><code># Combine X and Y into one data frame
-regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %&gt;% 
-  select(-rape_legacy_rate)</code></pre>
 <pre><code>## Joining, by = &quot;state&quot;</code></pre>
 <pre><code>## Warning: Column `state` joining factor and character vector, coercing into
 ## character vector</code></pre>
-<pre class="r"><code>regression_data_raw = left_join(regression_data_raw, race_data_raw)</code></pre>
 <pre><code>## Joining, by = &quot;state&quot;</code></pre>
 <p>Consider education as a new variable.</p>
-<pre class="r"><code># Import dataset that contains education information
-url = &quot;https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment&quot;
-education = read_html(url)
-
-# tidy and clean
-education_data = education %&gt;% 
-  html_nodes(css = &quot;table&quot;) %&gt;%
-  .[[1]] %&gt;% 
-  html_table(fill = TRUE) %&gt;% 
-  janitor::clean_names() %&gt;% 
-  select(state, percent_high_school_graduate) %&gt;% 
-  filter(state != &quot;United States&quot;) %&gt;% 
-  mutate(percent_high_school_graduate = str_replace(percent_high_school_graduate, &quot;%&quot;, &quot;&quot;)) %&gt;% 
-  mutate(percent_high_school_graduate = as.numeric(percent_high_school_graduate))
-
-regression_data_all = left_join(regression_data_raw, education_data)</code></pre>
 <pre><code>## Joining, by = &quot;state&quot;</code></pre>
 </div>
 <div id="linear-regression" class="section level4">
 <h4>Linear Regression</h4>
 <p>** model with District of Columbia and Hawaii**</p>
-<p>Check the distribution for variables.</p>
-<pre class="r"><code># Check distributions 
-regression_data_all %&gt;%
-  select(-state) %&gt;%
-  chart.Correlation()</code></pre>
-<p><img src="about_files/figure-html/distribution%20checking-1.png" width="672" /></p>
+<p>Check the distribution for variables. <img src="about_files/figure-html/distribution%20checking-1.png" width="672" /></p>
 <p>Make models for MLR of crime types and drug uses, as well as race and education.</p>
-<pre class="r"><code># MLR linear regression using list columns
-regression_data_all %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  group_by(crime_type) %&gt;%
-  nest() %&gt;%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %&gt;%
-  select(-data) %&gt;%
-  unnest() %&gt;% 
-  filter(p.value &lt; 0.05,
-         term != &quot;(Intercept)&quot;)</code></pre>
 <pre><code>## # A tibble: 12 x 6
 ##    crime_type        term             estimate std.error statistic p.value
 ##    &lt;chr&gt;             &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
@@ -644,26 +424,10 @@ regression_data_all %&gt;%
 ## 10 burglary_rate     percent_high_sc~ -1.72e-1   0.0728      -2.36 2.28e-2
 ## 11 larceny_theft_ra~ white            -1.35e+1   4.00        -3.37 1.57e-3
 ## 12 motor_vehicle_th~ white            -3.97e+0   0.816       -4.87 1.48e-5</code></pre>
-<pre class="r"><code># Make a new dataframe to store the result of regression
-result_with =
-  regression_data_all %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  group_by(crime_type) %&gt;%
-  nest() %&gt;%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %&gt;%
-  select(-data) %&gt;%
-  unnest() %&gt;%
-  mutate_if(is.numeric, round, 2)
-datatable(result_with, options = list(pageLength = 5))</code></pre>
-<div id="htmlwidget-7d6a04b1cb1e13650a57" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7d6a04b1cb1e13650a57">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"],["violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate"],["(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate"],[20.71,-0.25,0.01,0.11,-5.48,-0.13,0.48,-0.01,-0,0,-0.07,-0,0.26,-0.02,0,0.01,-0.2,0,6.05,-0.09,-0.01,0.05,-2.54,-0.03,13.91,-0.14,0.02,0.05,-2.67,-0.11,69.66,-0.46,-0.06,0.13,-19.33,-0.24,25.58,0.01,-0.04,-0.03,-1.87,-0.17,37.62,-0.43,-0.04,0.15,-13.48,-0.03,6.46,-0.04,0.03,0.01,-3.97,-0.03],[7.48,0.13,0.03,0.05,1.42,0.08,0.14,0,0,0,0.03,0,0.86,0.01,0,0.01,0.16,0.01,2.99,0.05,0.01,0.02,0.57,0.03,4.85,0.08,0.02,0.04,0.92,0.05,28.01,0.47,0.13,0.21,5.31,0.31,6.61,0.11,0.03,0.05,1.25,0.07,21.11,0.36,0.1,0.15,4,0.23,4.3,0.07,0.02,0.03,0.82,0.05],[2.77,-2.01,0.26,1.96,-3.87,-1.64,3.55,-2.4,-1.19,2.11,-2.74,-2.15,0.3,-1.23,0.96,1.17,-1.19,0.25,2.02,-1.79,-0.84,2.13,-4.49,-0.85,2.87,-1.71,0.78,1.43,-2.91,-1.98,2.49,-0.98,-0.46,0.64,-3.64,-0.76,3.87,0.05,-1.45,-0.62,-1.49,-2.36,1.78,-1.21,-0.42,0.99,-3.37,-0.15,1.5,-0.5,1.33,0.28,-4.87,-0.64],[0.01,0.05,0.79,0.06,0,0.11,0,0.02,0.24,0.04,0.01,0.04,0.77,0.22,0.34,0.25,0.24,0.81,0.05,0.08,0.41,0.04,0,0.4,0.01,0.09,0.44,0.16,0.01,0.05,0.02,0.33,0.65,0.52,0,0.45,0,0.96,0.16,0.54,0.14,0.02,0.08,0.23,0.67,0.33,0,0.89,0.14,0.62,0.19,0.78,0,0.53]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>crime_type<\/th>\n      <th>term<\/th>\n      <th>estimate<\/th>\n      <th>std.error<\/th>\n      <th>statistic<\/th>\n      <th>p.value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-327124dd7326bacf3caa" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-327124dd7326bacf3caa">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"],["violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate"],["(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate"],[20.71,-0.25,0.01,0.11,-5.48,-0.13,0.48,-0.01,-0,0,-0.07,-0,0.26,-0.02,0,0.01,-0.2,0,6.05,-0.09,-0.01,0.05,-2.54,-0.03,13.91,-0.14,0.02,0.05,-2.67,-0.11,69.66,-0.46,-0.06,0.13,-19.33,-0.24,25.58,0.01,-0.04,-0.03,-1.87,-0.17,37.62,-0.43,-0.04,0.15,-13.48,-0.03,6.46,-0.04,0.03,0.01,-3.97,-0.03],[7.48,0.13,0.03,0.05,1.42,0.08,0.14,0,0,0,0.03,0,0.86,0.01,0,0.01,0.16,0.01,2.99,0.05,0.01,0.02,0.57,0.03,4.85,0.08,0.02,0.04,0.92,0.05,28.01,0.47,0.13,0.21,5.31,0.31,6.61,0.11,0.03,0.05,1.25,0.07,21.11,0.36,0.1,0.15,4,0.23,4.3,0.07,0.02,0.03,0.82,0.05],[2.77,-2.01,0.26,1.96,-3.87,-1.64,3.55,-2.4,-1.19,2.11,-2.74,-2.15,0.3,-1.23,0.96,1.17,-1.19,0.25,2.02,-1.79,-0.84,2.13,-4.49,-0.85,2.87,-1.71,0.78,1.43,-2.91,-1.98,2.49,-0.98,-0.46,0.64,-3.64,-0.76,3.87,0.05,-1.45,-0.62,-1.49,-2.36,1.78,-1.21,-0.42,0.99,-3.37,-0.15,1.5,-0.5,1.33,0.28,-4.87,-0.64],[0.01,0.05,0.79,0.06,0,0.11,0,0.02,0.24,0.04,0.01,0.04,0.77,0.22,0.34,0.25,0.24,0.81,0.05,0.08,0.41,0.04,0,0.4,0.01,0.09,0.44,0.16,0.01,0.05,0.02,0.33,0.65,0.52,0,0.45,0,0.96,0.16,0.54,0.14,0.02,0.08,0.23,0.67,0.33,0,0.89,0.14,0.62,0.19,0.78,0,0.53]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>crime_type<\/th>\n      <th>term<\/th>\n      <th>estimate<\/th>\n      <th>std.error<\/th>\n      <th>statistic<\/th>\n      <th>p.value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <p>From the result we could see that, both murder/manslaughter and robbery rate are positively related to marijuana use. In addition, murder/manslaughter rate is also related to illicit drugs. So, we would look into murder/manslaughter and robbery MLR models.</p>
 <p>Check the diagnostics of the model.</p>
-<pre class="r"><code># Fit models and then check the assumption
-model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
-summary(model1)</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = murder_manslaughter_rate ~ illicit_drugs + alcohol + 
@@ -688,11 +452,7 @@ summary(model1)</code></pre>
 ##   (16 observations deleted due to missingness)
 ## Multiple R-squared:  0.3497, Adjusted R-squared:  0.2759 
 ## F-statistic: 4.733 on 5 and 44 DF,  p-value: 0.001516</code></pre>
-<pre class="r"><code>par(mfrow = c(2,2))
-plot(model1)</code></pre>
 <p><img src="about_files/figure-html/model%20diagnostics-1.png" width="672" /></p>
-<pre class="r"><code>model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
-summary(model2)</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = robbery_rate ~ illicit_drugs + alcohol + marijuana + 
@@ -717,76 +477,41 @@ summary(model2)</code></pre>
 ##   (16 observations deleted due to missingness)
 ## Multiple R-squared:  0.4104, Adjusted R-squared:  0.3434 
 ## F-statistic: 6.124 on 5 and 44 DF,  p-value: 0.0002181</code></pre>
-<pre class="r"><code>par(mfrow = c(2,2))
-plot(model2)</code></pre>
 <p><img src="about_files/figure-html/model%20diagnostics-2.png" width="672" /></p>
 <p>From the diagnostics, these two models meet the model assumptions.</p>
 <ul>
 <li>Try bootstrap of the model of burglary rate</li>
 </ul>
-<pre class="r"><code>regression_data_all %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  filter(crime_type == &quot;murder_manslaughter_rate&quot;) %&gt;% 
-  modelr::bootstrap(n = 100) %&gt;% 
-  mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
-    results = map(linear_model, broom::tidy)) %&gt;% 
-  select(results) %&gt;%
-  unnest()</code></pre>
-<pre><code>## # A tibble: 500 x 5
-##    term                          estimate std.error statistic  p.value
-##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 (Intercept)                   0.491     0.176         2.79 0.00767 
-##  2 illicit_drugs                -0.00516   0.00235      -2.19 0.0335  
-##  3 alcohol                      -0.000812  0.000709     -1.15 0.258   
-##  4 marijuana                     0.00219   0.000975      2.24 0.0299  
-##  5 percent_high_school_graduate -0.00396   0.00192      -2.06 0.0451  
-##  6 (Intercept)                   0.546     0.132         4.13 0.000139
-##  7 illicit_drugs                -0.00561   0.00207      -2.71 0.00929 
-##  8 alcohol                      -0.00103   0.000530     -1.94 0.0574  
-##  9 marijuana                     0.00241   0.000939      2.56 0.0134  
-## 10 percent_high_school_graduate -0.00442   0.00143      -3.09 0.00323 
-## # ... with 490 more rows</code></pre>
-<pre class="r"><code>regression_data_all %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  filter(crime_type == &quot;robbery_rate&quot;) %&gt;% 
-  modelr::bootstrap(n = 100) %&gt;% 
-  mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
-    results = map(linear_model, broom::tidy)) %&gt;% 
-  select(results) %&gt;%
-  unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
 ##    term                          estimate std.error statistic   p.value
 ##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 (Intercept)                    6.13       3.05       2.01  0.0511   
-##  2 illicit_drugs                 -0.171      0.0607    -2.81  0.00734  
-##  3 alcohol                       -0.0325     0.0191    -1.70  0.0954   
-##  4 marijuana                      0.0744     0.0261     2.85  0.00661  
-##  5 percent_high_school_graduate  -0.0228     0.0346    -0.661 0.512    
-##  6 (Intercept)                   15.9        4.53       3.50  0.00102  
-##  7 illicit_drugs                 -0.244      0.0576    -4.24  0.000105 
-##  8 alcohol                       -0.00536    0.0216    -0.248 0.805    
-##  9 marijuana                      0.131      0.0277     4.74  0.0000198
-## 10 percent_high_school_graduate  -0.161      0.0555    -2.90  0.00564  
+##  1 (Intercept)                   0.398     0.0809       4.93  0.0000128
+##  2 illicit_drugs                -0.00344   0.00140     -2.46  0.0181   
+##  3 alcohol                      -0.00122   0.000425    -2.88  0.00616  
+##  4 marijuana                     0.00124   0.000591     2.10  0.0416   
+##  5 percent_high_school_graduate -0.00261   0.000914    -2.85  0.00667  
+##  6 (Intercept)                   0.367     0.0945       3.89  0.000346 
+##  7 illicit_drugs                -0.000190  0.00184     -0.103 0.918    
+##  8 alcohol                      -0.000697  0.000469    -1.49  0.145    
+##  9 marijuana                    -0.000457  0.000803    -0.569 0.572    
+## 10 percent_high_school_graduate -0.00281   0.000943    -2.98  0.00478  
+## # ... with 490 more rows</code></pre>
+<pre><code>## # A tibble: 500 x 5
+##    term                         estimate std.error statistic  p.value
+##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)                    4.60     1.73        2.66  0.0107  
+##  2 illicit_drugs                 -0.0326   0.0386     -0.847 0.402   
+##  3 alcohol                       -0.0201   0.00875    -2.30  0.0259  
+##  4 marijuana                      0.0129   0.0155      0.828 0.412   
+##  5 percent_high_school_graduate  -0.0257   0.0172     -1.50  0.142   
+##  6 (Intercept)                   15.6      5.49        2.85  0.00663 
+##  7 illicit_drugs                 -0.324    0.0884     -3.67  0.000645
+##  8 alcohol                       -0.0187   0.0258     -0.723 0.473   
+##  9 marijuana                      0.139    0.0342      4.08  0.000184
+## 10 percent_high_school_graduate  -0.126    0.0574     -2.20  0.0329  
 ## # ... with 490 more rows</code></pre>
 <p>** model without District of Columbia and Hawaii**</p>
 <p>We remove two outliers and fit the model again</p>
-<pre class="r"><code># MLR linear regression using list columns
-regression_data_no2states &lt;- regression_data_all %&gt;% 
-  filter(!state %in% c(&quot;District of Columbia&quot;, &quot;Hawaii&quot;))
-
-regression_data_no2states %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  group_by(crime_type) %&gt;%
-  nest() %&gt;%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %&gt;%
-  select(-data) %&gt;%
-  unnest() %&gt;% 
-  filter(p.value &lt; 0.05,
-         term != &quot;(Intercept)&quot;)</code></pre>
 <pre><code>## # A tibble: 8 x 6
 ##   crime_type        term            estimate std.error statistic   p.value
 ##   &lt;chr&gt;             &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
@@ -798,26 +523,10 @@ regression_data_no2states %&gt;%
 ## 6 property_crime_r~ white           -1.43e+1  5.95         -2.41   2.06e-2
 ## 7 burglary_rate     percent_high_s~ -1.63e-1  0.0756       -2.16   3.64e-2
 ## 8 motor_vehicle_th~ white           -3.68e+0  1.00         -3.67   6.82e-4</code></pre>
-<pre class="r"><code>result_without = 
-  regression_data_no2states %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  group_by(crime_type) %&gt;%
-  nest() %&gt;%
-  mutate(
-    linear_model = map(data, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = .x)),
-    linear_model = map(linear_model, broom::tidy)) %&gt;%
-  select(-data) %&gt;%
-  unnest() %&gt;%
-  mutate_if(is.numeric, round, 2)
-
-datatable(result_with, options = list(pageLength = 5))</code></pre>
-<div id="htmlwidget-91fe9c3e1f18864d83bb" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-91fe9c3e1f18864d83bb">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"],["violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate"],["(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate"],[20.71,-0.25,0.01,0.11,-5.48,-0.13,0.48,-0.01,-0,0,-0.07,-0,0.26,-0.02,0,0.01,-0.2,0,6.05,-0.09,-0.01,0.05,-2.54,-0.03,13.91,-0.14,0.02,0.05,-2.67,-0.11,69.66,-0.46,-0.06,0.13,-19.33,-0.24,25.58,0.01,-0.04,-0.03,-1.87,-0.17,37.62,-0.43,-0.04,0.15,-13.48,-0.03,6.46,-0.04,0.03,0.01,-3.97,-0.03],[7.48,0.13,0.03,0.05,1.42,0.08,0.14,0,0,0,0.03,0,0.86,0.01,0,0.01,0.16,0.01,2.99,0.05,0.01,0.02,0.57,0.03,4.85,0.08,0.02,0.04,0.92,0.05,28.01,0.47,0.13,0.21,5.31,0.31,6.61,0.11,0.03,0.05,1.25,0.07,21.11,0.36,0.1,0.15,4,0.23,4.3,0.07,0.02,0.03,0.82,0.05],[2.77,-2.01,0.26,1.96,-3.87,-1.64,3.55,-2.4,-1.19,2.11,-2.74,-2.15,0.3,-1.23,0.96,1.17,-1.19,0.25,2.02,-1.79,-0.84,2.13,-4.49,-0.85,2.87,-1.71,0.78,1.43,-2.91,-1.98,2.49,-0.98,-0.46,0.64,-3.64,-0.76,3.87,0.05,-1.45,-0.62,-1.49,-2.36,1.78,-1.21,-0.42,0.99,-3.37,-0.15,1.5,-0.5,1.33,0.28,-4.87,-0.64],[0.01,0.05,0.79,0.06,0,0.11,0,0.02,0.24,0.04,0.01,0.04,0.77,0.22,0.34,0.25,0.24,0.81,0.05,0.08,0.41,0.04,0,0.4,0.01,0.09,0.44,0.16,0.01,0.05,0.02,0.33,0.65,0.52,0,0.45,0,0.96,0.16,0.54,0.14,0.02,0.08,0.23,0.67,0.33,0,0.89,0.14,0.62,0.19,0.78,0,0.53]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>crime_type<\/th>\n      <th>term<\/th>\n      <th>estimate<\/th>\n      <th>std.error<\/th>\n      <th>statistic<\/th>\n      <th>p.value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7660568f2f0df1b68b65" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7660568f2f0df1b68b65">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"],["violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","violent_crime_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","murder_manslaughter_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","rape_revise_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","robbery_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","aggravated_assault_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","property_crime_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","burglary_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","larceny_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate","motor_vehicle_theft_rate"],["(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate","(Intercept)","illicit_drugs","alcohol","marijuana","white","percent_high_school_graduate"],[20.71,-0.25,0.01,0.11,-5.48,-0.13,0.48,-0.01,-0,0,-0.07,-0,0.26,-0.02,0,0.01,-0.2,0,6.05,-0.09,-0.01,0.05,-2.54,-0.03,13.91,-0.14,0.02,0.05,-2.67,-0.11,69.66,-0.46,-0.06,0.13,-19.33,-0.24,25.58,0.01,-0.04,-0.03,-1.87,-0.17,37.62,-0.43,-0.04,0.15,-13.48,-0.03,6.46,-0.04,0.03,0.01,-3.97,-0.03],[7.48,0.13,0.03,0.05,1.42,0.08,0.14,0,0,0,0.03,0,0.86,0.01,0,0.01,0.16,0.01,2.99,0.05,0.01,0.02,0.57,0.03,4.85,0.08,0.02,0.04,0.92,0.05,28.01,0.47,0.13,0.21,5.31,0.31,6.61,0.11,0.03,0.05,1.25,0.07,21.11,0.36,0.1,0.15,4,0.23,4.3,0.07,0.02,0.03,0.82,0.05],[2.77,-2.01,0.26,1.96,-3.87,-1.64,3.55,-2.4,-1.19,2.11,-2.74,-2.15,0.3,-1.23,0.96,1.17,-1.19,0.25,2.02,-1.79,-0.84,2.13,-4.49,-0.85,2.87,-1.71,0.78,1.43,-2.91,-1.98,2.49,-0.98,-0.46,0.64,-3.64,-0.76,3.87,0.05,-1.45,-0.62,-1.49,-2.36,1.78,-1.21,-0.42,0.99,-3.37,-0.15,1.5,-0.5,1.33,0.28,-4.87,-0.64],[0.01,0.05,0.79,0.06,0,0.11,0,0.02,0.24,0.04,0.01,0.04,0.77,0.22,0.34,0.25,0.24,0.81,0.05,0.08,0.41,0.04,0,0.4,0.01,0.09,0.44,0.16,0.01,0.05,0.02,0.33,0.65,0.52,0,0.45,0,0.96,0.16,0.54,0.14,0.02,0.08,0.23,0.67,0.33,0,0.89,0.14,0.62,0.19,0.78,0,0.53]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>crime_type<\/th>\n      <th>term<\/th>\n      <th>estimate<\/th>\n      <th>std.error<\/th>\n      <th>statistic<\/th>\n      <th>p.value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <p>After removing these two points, the estimated coefficients for drug use become not significant.</p>
 <p>We still check the diagnostics of the model mentioned above.</p>
-<pre class="r"><code># Fit models and then check the assumption
-model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
-summary(model1)</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = murder_manslaughter_rate ~ illicit_drugs + alcohol + 
@@ -842,11 +551,7 @@ summary(model1)</code></pre>
 ##   (16 observations deleted due to missingness)
 ## Multiple R-squared:  0.5307, Adjusted R-squared:  0.4748 
 ## F-statistic: 9.498 on 5 and 42 DF,  p-value: 4.085e-06</code></pre>
-<pre class="r"><code>par(mfrow = c(2,2))
-plot(model1)</code></pre>
 <p><img src="about_files/figure-html/model%20diagnostics_another-1.png" width="672" /></p>
-<pre class="r"><code>model2 = lm(robbery_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
-summary(model2)</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = robbery_rate ~ illicit_drugs + alcohol + marijuana + 
@@ -871,58 +576,38 @@ summary(model2)</code></pre>
 ##   (16 observations deleted due to missingness)
 ## Multiple R-squared:  0.6276, Adjusted R-squared:  0.5833 
 ## F-statistic: 14.16 on 5 and 42 DF,  p-value: 3.998e-08</code></pre>
-<pre class="r"><code>par(mfrow = c(2,2))
-plot(model2)</code></pre>
 <p><img src="about_files/figure-html/model%20diagnostics_another-2.png" width="672" /></p>
 <p>The R-squiared and adjusted R-squared increased, and these two models still meet the model assumptions.</p>
 <ul>
 <li>Try bootstrap of the model of burglary rate</li>
 </ul>
-<pre class="r"><code>regression_data_no2states %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  filter(crime_type == &quot;murder_manslaughter_rate&quot;) %&gt;% 
-  modelr::bootstrap(n = 100) %&gt;% 
-  mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
-    results = map(linear_model, broom::tidy)) %&gt;% 
-  select(results) %&gt;%
-  unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                          estimate std.error statistic      p.value
-##    &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-##  1 (Intercept)                   0.439     0.0760        5.77 0.000000840 
-##  2 illicit_drugs                -0.00264   0.00149      -1.77 0.0842      
-##  3 alcohol                      -0.000982  0.000397     -2.47 0.0176      
-##  4 marijuana                     0.000719  0.000623      1.15 0.255       
-##  5 percent_high_school_graduate -0.00329   0.000837     -3.92 0.000317    
-##  6 (Intercept)                   0.538     0.0764        7.04 0.0000000166
-##  7 illicit_drugs                -0.00439   0.00151      -2.90 0.00603     
-##  8 alcohol                      -0.000935  0.000362     -2.58 0.0136      
-##  9 marijuana                     0.00170   0.000617      2.75 0.00895     
-## 10 percent_high_school_graduate -0.00444   0.000857     -5.18 0.00000675  
+##    term                           estimate std.error statistic    p.value
+##    &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 (Intercept)                   0.452      0.0835      5.42   0.00000292
+##  2 illicit_drugs                -0.00175    0.00142    -1.23   0.225     
+##  3 alcohol                      -0.000395   0.000377   -1.05   0.301     
+##  4 marijuana                     0.0000287  0.000623    0.0461 0.963     
+##  5 percent_high_school_graduate -0.00374    0.000866   -4.32   0.0000981 
+##  6 (Intercept)                   0.459      0.0907      5.06   0.00000830
+##  7 illicit_drugs                -0.00338    0.00124    -2.73   0.00904   
+##  8 alcohol                      -0.00101    0.000314   -3.22   0.00243   
+##  9 marijuana                     0.00120    0.000537    2.24   0.0301    
+## 10 percent_high_school_graduate -0.00349    0.00101    -3.44   0.00130   
 ## # ... with 490 more rows</code></pre>
-<pre class="r"><code>regression_data_no2states %&gt;%
-  gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %&gt;%
-  filter(crime_type == &quot;robbery_rate&quot;) %&gt;% 
-  modelr::bootstrap(n = 100) %&gt;% 
-  mutate(
-    linear_model = map(strap, ~lm(crime_rate ~ illicit_drugs + alcohol + marijuana + percent_high_school_graduate, data = .x)),
-    results = map(linear_model, broom::tidy)) %&gt;% 
-  select(results) %&gt;%
-  unnest()</code></pre>
 <pre><code>## # A tibble: 500 x 5
-##    term                           estimate std.error statistic p.value
-##    &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-##  1 (Intercept)                   7.09        2.42      2.93    0.00542
-##  2 illicit_drugs                -0.0327      0.0348   -0.940   0.352  
-##  3 alcohol                      -0.0156      0.00962  -1.62    0.112  
-##  4 marijuana                     0.0248      0.0165    1.50    0.141  
-##  5 percent_high_school_graduate -0.0635      0.0289   -2.19    0.0339 
-##  6 (Intercept)                   2.56        1.46      1.76    0.0853 
-##  7 illicit_drugs                 0.0241      0.0283    0.852   0.399  
-##  8 alcohol                      -0.0240      0.00694  -3.45    0.00126
-##  9 marijuana                     0.0000356   0.0124    0.00289 0.998  
-## 10 percent_high_school_graduate -0.0102      0.0150   -0.678   0.501  
+##    term                         estimate std.error statistic p.value
+##    &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+##  1 (Intercept)                   4.20      1.69        2.48  0.0171 
+##  2 illicit_drugs                 0.0113    0.0311      0.364 0.717  
+##  3 alcohol                      -0.0198    0.00830    -2.39  0.0213 
+##  4 marijuana                    -0.00437   0.0136     -0.321 0.749  
+##  5 percent_high_school_graduate -0.0249    0.0180     -1.39  0.172  
+##  6 (Intercept)                   7.88      2.23        3.54  0.00116
+##  7 illicit_drugs                -0.0416    0.0381     -1.09  0.283  
+##  8 alcohol                      -0.0349    0.0134     -2.61  0.0133 
+##  9 marijuana                     0.0272    0.0167      1.62  0.114  
+## 10 percent_high_school_graduate -0.0576    0.0239     -2.41  0.0212 
 ## # ... with 490 more rows</code></pre>
 </div>
 
