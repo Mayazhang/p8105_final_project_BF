@@ -319,6 +319,8 @@ The adjusted R-squared increased by removing outliers.
 Use bootstrap to check the SE of two models
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+set.seed(1)
 # Try bootstrap with the model that has no outliers in murder rate
 regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
@@ -373,4 +375,3 @@ regression_data_all %>%
 ```
 
 From the results, we found that all standard errors of coefficients in the model without the outliers were smaller than that of the model with outliers and we further confirmed that the model without the outliers (Hawaii, District of Columbia) was more accurate to predict the coefficients of the model.
-
