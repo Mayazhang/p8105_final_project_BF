@@ -207,40 +207,38 @@ There is a substantial decline in both the violent crime rate and property crime
 
 1.1 Data description
 
-The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants. There are two major categories of crimes: (1) violent_crime_number/rate: violent crime involved force or threat of force against the victims. It included four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. Columns containing murder manslaughter, rape, robbery, and aggravated assault were subdivision of violent crime. (2) Property_crime_number/rate: property crime indicated offenses involving property lost without force or threat of force. It included three types of offenses: burglary, larceny-theft, motor vehicle theft. Columns containing burglary, larceny-theft, and motor vehicle theft were subdivision of property crime
- 
-
-    
-
-
+The crime data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, and geographic divisions. Each column represents a type of crime and values are recored as rate per 100,000. There are two categories of crimes: (1) violent_crime_number/rate: violent crime involves force or threat of force against the victims. It includes four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. Columns containing murder and manslaughter, rape, robbery, and aggravated assault are subdivisions of violent crime. (2) Property_crime_number/rate: property crime indicates offenses involving property lost without force or threat of force. It includes three types of offenses: burglary, larceny-theft, and motor vehicle theft. Columns containing burglary, larceny-theft, and motor vehicle theft are subdivisions of property crime.
 
 1.2 Data cleaning 
 
-The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow: column names were cleaned up using 'janitor' packages and the subscripts of text were manually deleted. Column 'area' was convert from character to factor. Commas were removed in columns containing numbers and rates, followed by transformation from character to numeric. Area names were filled where appropriate. 'rape_legacy' variable was deleted as it has overlapping information with 'rape_revise' columns. Additionally, NAs were removed. Also, subsets by states, region, and geographic division were created.
+The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
+
+column names were cleaned up using 'janitor' package and the subscripts of text were manually deleted from the original dataset. Column 'area' was converted from character to factor. Commas were removed in columns containing numbers and rates, followed by transformation from character to numeric. Area names were filled where appropriate. 'rape_legacy' variable was deleted as it contains overlapping information with 'rape_revise' columns. Additionally, NAs were removed, and data subsets by states, region, and geographic division were created.
 
 2. Drug dataset
 
 2.1 Data description
 
-This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) among different age groups (12-17, 18-25, 26 or above) and states in United States from year 2002 to 2014. Data was collected from individual state as part of the NSDUH study. 
+The drug data is collected by The National Survey on Drug Use and Health (NSDUH), an annual survey conducted in all 50 states and the District of Columbia. There are approximately 70,000 participants and questions on tobacco, alcohol, and drug use, mental health and other health-related issues are asked (What is NSDUH, 2018). The data consists of three age groups, which are age 12 to 17, age 18 to 25, and age 26 and above. Our study focues on substance abuse (alcohol, marijuana, cocaine, and illicit drugs).
 
 2.2 Data cleaning
 
 The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
  
-  Mainly focusing on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so firstly all related columns from the whole dataset were selected, including state, year and rate of different substance abuse in different age groups. Since the age groups and substance type were nested together in the column names, all the columns except year and state were gathered and then the strings were replaced before the age number for later separating. Finally, the data was separated into “age” and “rate” which resulted in a tidy dataset.
-  
+Firstly, we selected variables of interest, which are substance abuse of marijuana, illicit drug (cocaine), and alcohol with state and year columns. Next the age information was extracted from the column name into a unique column by gathering all the columns except year and state, followed by using string_replace and separate function, resulting in two columns of age and rate respectively.
+
 3. Education data
 
-In order to take education rate as a possible confounder in regression models, percentage of high school graduation in each state was extracted from a [wikipedia website](https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment) and combined it with original dataset. 
+In order to take education rate as a possible confounder in regression models, percentage of high school graduation in each state was extracted from a [wikipedia website](https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment) and added to drug data. 
  
 4. Race data
 
-Taking the race proportion into consideration, we added proportion of whites as a potential confounder. It was extracter from [Kaiser Family Foundation](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)
+Taking the race proportion into consideration, we added the proportion of whites as a potential confounder. It was extracted from [Kaiser Family Foundation](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D) and added to drug data.
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
 
-In order to visualize how the crime rate differs in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
+In order to visualize how the crime rates differ in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
+
 ```{r, echo=FALSE, warning=FALSE}
 crime  <- crime %>% 
   na.omit()
@@ -319,8 +317,7 @@ crime_plot_property_about <- crime_plot %>%
 crime_plot_property_about
 ```
 
-
-Line plots to show trend of drug use across years
+Spaghetti plots showing the trend of drug use across years
 
 ```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
@@ -361,17 +358,17 @@ drug_raw %>%
   scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010, 2012, 2014))
 ```
 
-From the plot, we could see that marijuana rate among age 18-25 obtained the highest rate among all and we could observe a slight decrease in alcohol use in all age groups. Both illicit drugs such as cocaine and marijuana kept steady rates through years.
+From the plots, marijuana rate among age 18-25 has the highest rate among all and there is a slight decrease in alcohol use in all age groups. The rates of both illicit drugs--cocaine and marijuana remain constant through years.
 
 * Process of building shiny for drug data:
 
-As there were 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degrees in each drug (abuse, binge, dependence, need treatment, use). The main purpose was to analyze the distribution of degrees in each drug in each state through years and also the distribution of degrees of each drug in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, thus we  analysis of the trend of perception risk in each age group and in each state for selected drug were further conducted. Thus,three interactive charts in total were created for exploring.
+There were 51 states, three types of drugs (marijuana, illicit drug, alcohol), three age groups (12-17, 18-25, 26 or above) and four or five degrees in each drug (abuse, binge, dependence, need treatment, use). The main purpose was to analyze the distribution of degrees in each drug in each state through years and also the distribution of degrees of each drug in a specific age group. Moreover, there were data for rate of perception risk in marijuana and alcohol use, thus we  analyzed the trend of perception risk in each age group and in each state for selected drug were further conducted. Thus,three interactive charts in total were created for exploring.
 
 In chart A, specific state and drug type been selected were firstly filtered and then an interactive bar chart with “year” as x axis, “rate” as y axis was built and different degrees with different colors. In chart B, similarly mainly focusing on the change through years about proportion of people in each state obtained perception of risk of a certain drug in different age groups. Thus, all perception risk rates were selected and then different colors were assigned to each age group. In chart C, attaching the importance to the trend over years on different age groups in each drug type and in each state. As a result, each degree was colored to show the change in a certain group.
 
 By showing all these three types of distribution, the reader could explore the every detailed information of the drug use in U.S. and across years.
 
-Finally, best to show the different rates in each drug use overall the whole country, a shiny map was made to explore the distribution of each drug use through U.S. and the shades of the color was related to the rates.
+Finally, best to show the different rates in each drug use overall the whole country, a shiny map was made to explore the distribution of each drug use through U.S. and the color gradient corresponds to rates.
 
 Surprisingly, the rate of perception risk of marijuana was continuously reduced over years in all age groups while that of alcohol fluctuated a little bit. This trend indicated potential higher popularity of marijuana in whole U.S. and less perception of marijuana risk. We expected further education in disadvantages of marijuana use.
 
@@ -436,4 +433,4 @@ Seddon, T. (2000). Explaining the drug–crime link: Theoretical, policy and res
 
 Nationwide Trends. (2015). Retrieved from https://www.drugabuse.gov/publications/drugfacts/nationwide-trends
 
-
+What is NSDUH. (2018). Retrieved from https://nsduhweb.rti.org/respweb/homepage.cfm
