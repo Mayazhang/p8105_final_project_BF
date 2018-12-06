@@ -13,13 +13,18 @@ library(PerformanceAnalytics)
 library(rvest)
 library(httr)
 library(DT)
+library(gsheet)
 ```
 
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-# load data and clean up column names
-# not to omit NAs
-crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+#Read in Crime data
+crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') 
+crime_raw = crime_raw[3:201,]
+
+#Clean column names
+crime = 
+  crime_raw %>% 
   janitor::clean_names() %>% 
     rename_(population = names(.)[3],
           violent_crime_number = names(.)[4],
@@ -43,7 +48,9 @@ crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
   mutate(area = as.factor(area)) 
-crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
+
+# Remove comma and convert to numeric
+crime[,3:23] <- as.numeric(gsub(",","",unlist(crime[,3:23])))
 
 # fill up area name
 i = 1
@@ -54,7 +61,9 @@ for (i in 0:65) {
   i = i + 1
 }
 
-crime  <- crime %>% 
+
+crime = 
+  crime %>% 
   na.omit()
 
 crime$year = as.factor(crime$year)
@@ -74,7 +83,7 @@ colnames(crime_clean)[1] = "state"
 ```{r drug dataset load and clean up, include=FALSE, warning=FALSE, message=FALSE}
 # Remove the block later
 drug_raw =
-  read_csv("./data/drugs.csv") %>%
+  read_csv("https://think.cs.vt.edu/corgis/csv/drugs/drugs.csv?forcedownload=1/drugs.csv") %>%
   janitor::clean_names()
 
 drug_clean = 
