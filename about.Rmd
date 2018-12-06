@@ -1,5 +1,5 @@
 ---
-title: "Linear Regression"
+title: "Explore possible relationship between crime rate and drug use"
 output:
   html_document: 
     toc: true
@@ -97,9 +97,16 @@ population_data =
 ```
 
 
-#### Get Y and X for regression
+## Fitting Linear regression
 
-Y: 51 states, each with mean crime rates (10 types of crimes)
+#### Distribution check and diagnosis
+
+We first checked whether each columns (including both outcomes and predictors) were normally distribted.
+
+
+ * Outcomes: rates of 10 types of crimes(two main crimes: violent and property, and their subtypes)
+ 
+ * Predictors: use of 3 types of drugs, ratio of white race(possible confounders), and high school graduations(possible confounders)
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 crime_mean_rate <- 
@@ -110,7 +117,6 @@ crime_mean_rate <-
 crime_mean_rate[,2:11] <- crime_mean_rate[,2:11]/100
 ```
 
-X: 51 states, each with mean drug rate (3 types of drugs)
 
 ```{r prepare the outcome and predictors, include=FALSE, warning=FALSE, message=FALSE}
 # clean drug data
@@ -140,7 +146,7 @@ regression_data_raw = left_join(crime_mean_rate, drug_mean_rate) %>%
 regression_data_raw = left_join(regression_data_raw, race_data_raw)
 ```
 
-Consider education as a new variable.
+
 
 ```{r read in new dataset, include=FALSE, warning=FALSE, message=FALSE}
 # Import dataset that contains education information
@@ -163,21 +169,15 @@ regression_data_all = left_join(regression_data_raw, education_data)
 ```
 
 
-#### Linear Regression
-
-* model with District of Columbia and Hawaii
-
-Check the distribution for variables.
 ```{r distribution checking, echo = FALSE, warning=FALSE}
-# Check distributions 
 regression_data_all %>%
   select(-state) %>%
   chart.Correlation()
 ```
 
+All columns were approximately normal distributed, which could be used for downstream analysis without transformation.
 
-Make models for MLR of crime types and drug uses, as well as race and education. 
-
+Fit multiple linear regression for all crime types and drug uses, as well as race and education. Check diagnostics plots to find possible outliers and influential points.
 
 ```{r linear regression, include=FALSE, warning=FALSE, message=FALSE}
 # MLR linear regression using list columns
@@ -208,14 +208,11 @@ result_with =
 datatable(result_with, options = list(pageLength = 5))
 ```
 
-From the result we could see that, both murder/manslaughter and robbery rate are positively related to marijuana use. In addition, murder/manslaughter rate is also related to illicit drugs. So, we would look into murder/manslaughter and robbery MLR models.
-
-Check the diagnostics of the model.
 
 ```{r model diagnostics, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
-summary(model1)
+
 par(mfrow = c(2,2))
 plot(model1)
 
@@ -225,13 +222,13 @@ par(mfrow = c(2,2))
 plot(model2)
 ```
 
-From the diagnostics, these two models meet the model assumptions.
+It was shown that both murder/manslaughter and robbery rate were positively related to marijuana use. In addition, murder/manslaughter rate was also related to illicit drugs. Therefore we would investigate deeper into MLR models for murder/manslaughter and robbery.
 
+Two outliers/influential points were identified: District of Columbia(observation 9) and Hawaii(observation 14), the MLR model would be refitted without these two observations.
 
-* Try bootstrap of the model of burglary rate
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-regression_data_all %>%
+murder_manslaughter_bt <- regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   filter(crime_type == "murder_manslaughter_rate") %>% 
   modelr::bootstrap(n = 100) %>% 
@@ -241,7 +238,7 @@ regression_data_all %>%
   select(results) %>%
   unnest()
 
-regression_data_all %>%
+robbery_rate_bt <- regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   filter(crime_type == "robbery_rate") %>% 
   modelr::bootstrap(n = 100) %>% 
@@ -255,8 +252,7 @@ regression_data_all %>%
 
 ** model without District of Columbia and Hawaii**
 
-We remove two outliers and fit the model again
-
+Then We remove two outliers and fit the model again
 
 ```{r linear regression_another, echo=FALSE, warning=FALSE, message=FALSE}
 # MLR linear regression using list columns
@@ -290,14 +286,14 @@ result_without =
 datatable(result_with, options = list(pageLength = 5))
 ```
 
-After removing these two points, the estimated coefficients for drug use become not significant.
+By removing these two observations, the estimated coefficients for drug use become not significant.
 
 We still check the diagnostics of the model mentioned above.
 
 ```{r model diagnostics_another, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
-summary(model1)
+
 par(mfrow = c(2,2))
 plot(model1)
 
