@@ -328,7 +328,7 @@ These result are not we initially expect, as the crime rate is not highly signif
 
 
 
-Reference
+**Reference**
 
 Andrew J. Resignato (2000) Violent crime: a function of drug use or drug enforcement? Applied Economics, 32:6, 681-688, DOI: 10.1080/000368400322291
 
