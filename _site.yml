@@ -8,7 +8,7 @@ navbar:
     - text: "Dataset Exploration"
       menu:
       - text: "Crime Dataset"
-        href: crim_data.html
+        href: crime_data.html
       - text: "Drug Dataset"
         href: Drug_code.html
     - text: "Statistical Analysis"
