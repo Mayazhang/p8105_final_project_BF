@@ -1,5 +1,5 @@
 ---
-title: "Team34 Data Science Project Home Page"
+title: "Ecologic study of association between crime rate and drug use in U.S."
 output:
   html_document: 
     toc: true
@@ -15,10 +15,6 @@ output:
 **Bingyu Sun (bs3142), Hongyao Xie (hx2264), Jieqi Tu (jt3098), **
 **Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)**
   
-
-### *The tentative project title*
-
-Ecologic study of association between crime rate and drug use in U.S. 
 
 ### *Screencast for overview*
 This screencast illustrates our project, emphasizing our motivation, questions, and results.
