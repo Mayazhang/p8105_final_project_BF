@@ -384,25 +384,25 @@ Linear Regression:
 
 We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients.
 
-The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.
+The outcomes are the rates of ten crime types, the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.
 
-We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". Because of the relatively small sample size, the distributions could not be exactly normal, and we do not use transformation for the outcomes.
+We checked the overal distribution of outcomes and variables using package "PerformanceAnalytics". We expected to have a skewed distributions of the outcomes in terms of small sample size, however, the distributions were roughly normal and transformation was not necessary. Therefore, the original unit of the outcome was used.
 
 
-We fitted the models and obtain the results for each regression.
+We fitted the models and obtained the results for each regression.
 `r datatable(result_withoutliers, options = list(pageLength = 10))`
 
 
-We filtered the estimated coefficients with p-value less than 0.05. We found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we run the diagnostics for these two multivariable linear regression models. There are two leverages and they are also influential points (Cook's distance > 0.5). These two influential points are from state "Hawaii" and "District of Columbia".
+We filtered the estimated coefficients with respect to a p-value of 0.05. We found that two outcomes (murder/manslaughter, robbery) are significantly corelated to drug use (illicit drug and marijuana). Then we ran the model diagnostics for these two multivariable linear regression models. There were two leverages and they were also influential points (Cook's distance > 0.5). These two influential points were from state "Hawaii" and "District of Columbia".
 
-We tried to remove these two outliers, and then fitted models again. 
+We fitted models again without Hawaii and District of Columbia. 
 `r datatable(result_withoutoutliers, options = list(pageLength = 10))`
 
-The R-squared and adjusted R-squared increased by approximately 0.3, indicating a higher goodness of fit. However, the estimated coefficients of drug use became unsiginficent (p-value > 0.05).
+The R-squared and adjusted R-squared increased by approximately 30%, indicating a higher goodness of fit. However, the estimated coefficients of drug use became nonsiginficent (p-value > 0.05).
 
-After we fitted the models and obtain the results for each regression, we filtered the estimated coefficients with p-value less than 0.05, we found that there are two outcomes (murder/manslaughter, robbery) are significantly related to drug use (illicit drug and marijuana). Then we ran the diagnostics for these two multivariable linear regression models. They were all good with model assumptions.
+After we fitted the models and obtained the results for each regression, we filtered the estimated coefficients with p-value less than 0.05, we found that there were two significant outcomes (murder/manslaughter, robbery) related to drug use (illicit drug and marijuana). Then we ran the diagnostics for these two multivariable linear regression models. The models satisfied assumptions of constant variance and normality.
 
-In conlusion, with data from Hawaii and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).
+In conlusion, with all 50 states and District of Columbia, at 0.05 significant level, murder/manslaughter is negatively associated with illicit drug, while robbery and murder/manslaughter are positively associated with marijuana use. Without data from Hawaii and District of Columbia, at 0.05 significant level, the race proportion of white people and percentage of high school graduation become the main predictors. They are both negatively related to the outcomes (murder_manslughter_rate, robbery_rate, violent_crime_rate, aggravated_assault_rate, motor_vehicle_theft_rate, property_crime_rate, burglary_rate).
 
 ##Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
 
