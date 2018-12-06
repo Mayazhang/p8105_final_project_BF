@@ -43,4 +43,7 @@ Ecologic study of association between crime rate and drug use in U.S.
  * Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use as well as to make predictions.
  * Draw a map across U.S. about detailed data of crime rate and drug use in each state 
 
+### *Additional Exploration and Code*
+
+We explored our datasets around throughout whole process of working on the analyses. Here are some additional [efforts/graphics](Drug_code.html) we made regarding exploring certain distributions of our datasets.
 
