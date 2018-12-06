@@ -5,11 +5,11 @@ navbar:
   right:
     - text: "Project Overall Description"
       href: Website-About-Page.html
-    - text: "Data Explore"
+    - text: Data Manipulation
       menu:
-      - text: "Crime dataset"
+      - text: Crime dataset
         href: crime_data.html
-      - text: "Drug dataset"
+      - text: Drug dataset
         href: Drug_code.html
     - text: "Statistical Analysis"
       href: about.html
