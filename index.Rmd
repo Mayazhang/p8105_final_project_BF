@@ -10,32 +10,20 @@ output:
 ## A brief introductory landing page
 
 
-### *Screencast for overview*
-This screencast illustrates our project, emphasizing our motivation, questions, and results.
-
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
-  
-
-
-
-
 ### *Group members*
 
 **Bingyu Sun (bs3142), Hongyao Xie (hx2264), Jieqi Tu (jt3098), **
 **Mengran Ma (mm5354), Xiaoyue Zhang (xz2788)**
-
-
-
-
-
+  
 
 ### *The tentative project title*
 
 Ecologic study of association between crime rate and drug use in U.S. 
 
+### *Screencast for overview*
+This screencast illustrates our project, emphasizing our motivation, questions, and results.
 
-
-
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=nEqlPeCH6QE&list=PLGwgTarsp82ReHt_zysockiMiav9CkEQ4&index=3&t=0s" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
 ### *The motivation for this project*
  * Explore the association between rate of different types of crime and abuse of four kinds of drugs and build a regression model for different crimes by state level.
@@ -43,4 +31,7 @@ Ecologic study of association between crime rate and drug use in U.S.
  * Analyze data from 2002 to 2016 to conduct hypothesis test of the trend of crime rate and drug use as well as to make predictions.
  * Draw a map across U.S. about detailed data of crime rate and drug use in each state 
 
+### *Additional Exploration and Code*
+
+We explored our datasets around throughout whole process of working on the analyses. Here are some additional [efforts/graphics](Drug_code.html) we made regarding exploring certain distributions of our datasets.
 
