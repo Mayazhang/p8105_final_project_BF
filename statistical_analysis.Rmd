@@ -19,12 +19,7 @@ library(gsheet)
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 #Read in Crime data
-crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') 
-crime_raw = crime_raw[3:201,]
-
-#Clean column names
-crime = 
-  crime_raw %>% 
+crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
   janitor::clean_names() %>% 
     rename_(population = names(.)[3],
           violent_crime_number = names(.)[4],
@@ -48,9 +43,7 @@ crime =
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
   mutate(area = as.factor(area)) 
-
-# Remove comma and convert to numeric
-crime[,3:23] <- as.numeric(gsub(",","",unlist(crime[,3:23])))
+crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
 
 # fill up area name
 i = 1
@@ -61,9 +54,7 @@ for (i in 0:65) {
   i = i + 1
 }
 
-
-crime = 
-  crime %>% 
+crime  <- crime %>% 
   na.omit()
 
 crime$year = as.factor(crime$year)
@@ -71,8 +62,11 @@ crime$year = as.factor(crime$year)
 # Filter out "percent change" in "year" variable
 crime_clean = 
   crime %>%
-  filter(year != "NA") %>% 
-  rename(state = area) #Change the name of "area" to "state"
+  filter(year != "NA")
+
+
+# Change the name of "area" to "state"
+colnames(crime_clean)[1] = "state"
 ```
 
 
@@ -141,7 +135,7 @@ drug_mean_rate = drug_clean %>%
   spread(key = drug, value = use_past_year)
 
 # read data for race proportion
-race_data_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1Xw2v4feQPLEVql-aTEyYCv4cQ_dOFB1qclt-6dGlGxU/edit?usp=sharing') %>% janitor::clean_names() %>%
+race_data_raw = read_csv("./data/race_data.csv") %>% janitor::clean_names() %>%
   select(state, white)
 
 # Combine X and Y into one data frame
