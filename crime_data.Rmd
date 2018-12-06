@@ -1,23 +1,32 @@
 ---
-title: "Crime Code"
+title: "Crime dataset"
 ---
 
 #### load crime and drug data and do some clean up!
 
-```{r}
+```{r, include = FALSE}
 library(tidyverse)
 library(readxl)
 library(PerformanceAnalytics)
 library(rvest)
 library(httr)
+library(gridExtra)
+library(flexdashboard)
+library(viridis)
+library(plotly)
+library(gsheet)
 ```
 
-Load crime data and some primary clean up
 
-```{r}
+
+```{r, include = FALSE}
+options( warn = -1 )
 # load data and clean up column names
 # not to omit NAs
-crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>% 
+crime_raw = gsheet2tbl('https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096') 
+crime_raw = crime_raw[3:201,]
+
+crime = crime_raw %>% 
   janitor::clean_names() %>% 
     rename_(population = names(.)[3],
           violent_crime_number = names(.)[4],
@@ -41,6 +50,10 @@ crime = readxl::read_excel("./data/crime-data-2016.xls", range = ("A4:W202")) %>
           motor_vehicle_theft_number = names(.)[22],
           motor_vehicle_theft_rate = names(.)[23]) %>% 
   mutate(area = as.factor(area)) 
+
+# Remove comma and convert to numeric
+crime[,3:23] <- as.numeric(gsub(",","",unlist(crime[,3:23])))
+
 crime[,2:23] <- as.numeric(unlist(crime[,2:23]))
 
 # fill up area name
@@ -56,11 +69,6 @@ crime  <- crime %>%
   na.omit()
 
 crime$year = as.factor(crime$year)
-# check head
-head(crime)
-
-unique(crime$area)
-"Northeast, Midwest, South, West"
 
 
 index_ne <- which(crime$area == "Northeast")
@@ -69,30 +77,29 @@ idnex_s <- which(crime$area == "South")
 idnex_w <- which(crime$area == "West")
 
 index <- c(1:length(crime$area))
-crime$region <- c(rep("a", 132))
+crime$region <- c(rep(0, length(crime$area)))
 
 index_ne_state <- which(index > max(index_ne) & index < min(idnex_mw))
-crime$region[index_ne_state] <- "Northeast"
+crime$region[index_ne_state] <- 1
 
 index_ne_state <- which(index > max(idnex_mw) & index < min(idnex_s))
-crime$region[index_ne_state] <- "Midwest"
+crime$region[index_ne_state] <- 2
 
 index_ne_state <- which(index > max(idnex_s) & index < min(idnex_w))
-crime$region[index_ne_state] <- "South"
+crime$region[index_ne_state] <- 3
 
 index_ne_state <- which(index > max(idnex_w) & index < 133)
-crime$region[index_ne_state] <- "West"
+crime$region[index_ne_state] <- 4
 
-crime %>% 
-  select(area, region)
-
-
+crime[,4:23] <- crime[,4:23]/100
 
 ```
 
-some further clean up on crime data 
 
-```{r data cleaning on crime dataset}
+
+```{r data cleaning on crime dataset, include = FALSE}
+options( warn = -1 )
+# Some further clean up on crime data 
 # Filter out "percent change" in "year" variable
 crime_clean = 
   crime %>%
@@ -120,100 +127,83 @@ crime_west =
   crime_clean %>%
   filter(area %in% c("Mountain", "Pacific", "Puerto Rico"))
 
-# Change the name of "area" to "state"
-colnames(crime_clean)[1] = "state"
 
 # Filter out these areas in the tidied dataset
 crime_clean = 
   crime_clean %>%
-  filter(!state %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
+  filter(!area %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico"))
+
+
+
 ```
 
 #### Some Graphs
 
-Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories.
 
-```{r}
-# rank areas by average violent crime rate from 2015 to 2016
-crime %>% 
-  group_by(area) %>% 
+
+```{r, echo=FALSE}
+options( warn = -1 )
+# Group by districts(i.e. Northeast, Midwest, South, West), each district can be subdivide into smaller categories
+# Rank areas by average violent crime rate from 2015 to 2016
+crime_plot <- crime %>% 
+  filter(!area %in% c("United States Total", "Northeast", "Midwest", "South", "West", "New England", "Middle Atlantic", "East North Central", "West North Central", "South Atlantic", "East South Central", "West South Central", "Mountain", "Pacific", "Puerto Rico")) %>%  
   filter(year != "Percent change") %>%
-  summarise_each(funs(mean)) %>%
+  group_by(area) %>%
+  summarise_all(funs(mean))
+
+crime_plot$region <- as.character(crime_plot$region)
+index_1 <- which(crime_plot$region == "1")
+crime_plot$region[index_1] = "Northeast"
+index_2 <- which(crime_plot$region == "2")
+crime_plot$region[index_2] = "Midwest"
+index_3 <- which(crime_plot$region == "3")
+crime_plot$region[index_3] = "South"
+index_4 <- which(crime_plot$region == "4")
+crime_plot$region[index_4] = "West"
+crime_plot$region <- as.factor(crime_plot$region)
+
+crime_plot_violent_about <- crime_plot %>% 
   mutate(area = fct_reorder(area, violent_crime_rate)) %>% 
-  ggplot(aes(x = area, y = violent_crime_rate)) +
-  geom_point() +
+  ggplot(aes(x = area, y = violent_crime_rate, fill = region)) +
+  geom_bar(stat = "identity", width = 0.5) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, size = 8),
-        title = element_text(size = 6))
-```
-
-
-Visualize the crime distribution at different geographic levels.
-```{r distribution of violent crime rate}
-# At state level
-ggplot(crime_clean, aes(x = state, y = violent_crime_rate, color = year)) + geom_point() +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, size = 10)) +
+        title = element_text(size = 14)) +
   labs(
-    title = "Crime Rate in Each State",
     x = "State",
-    y = "Crime Rate (Per 100000)"
+    y = "Violent crime rate (Per 1000)"
   )
+crime_plot_violent_about
+ggsave(filename = "violent_crime_rate_overall_plot.png", plot = crime_plot_violent_about, width = 30, height = 20, units = "cm")
 
-# At area level
-area = 
-  ggplot(crime_largearea, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in Each Area",
-    x = "Area",
-    y = "Crime Rate (Per 100000)"
-  ) 
 
-# In the midwest area
-mid_west = 
-  ggplot(crime_midwest, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in Midwest Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the northeast area
-north_east = 
-  ggplot(crime_northeast, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in Northeast Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the south area
-south =
-  ggplot(crime_south, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in South Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
-
-# In the west area
-west = 
-  ggplot(crime_west, aes(x = area, y = violent_crime_rate, fill = year)) + geom_col(width = 0.6) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 10)) +
-  labs(
-    title = "Crime Rate in West Area",
-    x = "Regions",
-    y = "Crime Rate (Per 100000)"
-  ) 
 ```
+
+```{r, echo=FALSE}
+options( warn = -1 )
+
+crime_plot_property_about <- crime_plot %>% 
+  mutate(area = fct_reorder(area, property_crime_number)) %>% 
+  ggplot(aes(x = area, y = property_crime_number, fill = region)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, size = 8),
+        title = element_text(size = 14)) +
+  labs(
+    x = "State",
+    y = "Property crime rate (Per 1000)"
+  )
+crime_plot_property_about
+ggsave(filename = "property_crime_rate_overall_plot.png", plot = crime_plot_property_about, width = 30, height = 20, units = "cm")
+```
+
+
+
+
+
+
+
+
+
 
 

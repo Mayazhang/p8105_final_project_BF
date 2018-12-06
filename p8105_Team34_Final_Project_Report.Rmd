@@ -207,37 +207,11 @@ There is a substantial decline in both the violent crime rate and property crime
 
 1.1 Data description
 
-The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants. Detailed description of columns were as follow:
-
- * state: state names
- 
- * year: year the offense recorded
- 
- * population: total population of the state
- 
- * violent_crime_number/rate: violent crime involved force or threat of force against the victims. It included four types of offenses: murder and nonnegligent manslaughter, rape, robbery, and aggravated assault. 
- 
- * columns containing murder manslaughter, rape, robbery, and aggravated assault were subdivision of violent crime
- 
- * property_crime_number/rate: property crime indicated offenses involving property lost without force or threat of force. It included three types of offenses: burglary, larceny-theft, motor vehicle theft.
- 
- * columns containing burglary, larceny-theft, and motor vehicle theft were subdivision of property crime
+The data was collected by FBI's Uniform Crime Reporting (UCR) Program, which recorded different types of offenses by states, regions, or geographic divisions. The data presented each crime by volumn and rate per 100,000 inhabitants.
 
 1.2 Data cleaning 
 
-The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow:
-
- * Clean up column names using 'janitor' packages and manually delete the subscripts of text
- 
- * Convert column 'area' from character to factor
- 
- * Remove comma in columns containing numbers and rates, followed by transformation from character to numeric
- 
- * Fill up area names where appropriate
- 
- * Remove 'rape_legacy' related columns as it has overlapping information with 'rape_revise' columns
- 
- * Remove NAs and create subsets by states, region, and geographic division
+The crime dataset was loaded from the [google sheet](https://docs.google.com/spreadsheets/d/1iYhSFxs_IdRDrfrn1xqdK6uesNKWRjCIJ2GYloO0Ll8/edit#gid=249460096), detailed data cleaning steps were as follow: column names were cleaned up using 'janitor' packages and the subscripts of text were manually deleted. Column 'area' was convert from character to factor. Commas were removed in columns containing numbers and rates, followed by transformation from character to numeric. Area names were filled where appropriate. 'rape_legacy' variable was deleted as it has overlapping information with 'rape_revise' columns. Additionally, NAs were removed. Also, subsets by states, region, and geographic division were created.
 
 2. Drug dataset
 
@@ -250,15 +224,22 @@ This dataset is about substance abuse (cigarettes, marijuana, cocaine, alcohol) 
 The dataset can be accessed through its [original website](https://think.cs.vt.edu/corgis/csv/drugs/drugs.html), detailed data cleaning steps were as follows: 
  
   Mainly focusing on the substance abuse of marijuana, illicit drug (cocaine) and alcohol, so firstly all related columns from the whole dataset were selected, including state, year and rate of different substance abuse in different age groups. Since the age groups and substance type were nested together in the column names, all the columns except year and state were gathered and then the strings were replaced before the age number for later separating. Finally, the data was separated into “age” and “rate” which resulted in a tidy dataset.
+  
+3. Education data
+
+In order to take education rate as a possible confounder in regression models, percentage of high school graduation in each state was extracted from a [wikipedia website](https://en.wikipedia.org/wiki/List_of_U.S._states_by_educational_attainment) and combined it with original dataset. 
  
+4. Race data
+
+Taking the race proportion into consideration, we added proportion of whites as a potential confounder. It was extracter from [Kaiser Family Foundation](https://www.kff.org/other/state-indicator/distribution-by-raceethnicity/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)
 
 ##Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
 
-* Scatter point plots of crime rate:
+*In order to visualize how the crime rate differs in different areas, regions and states, we made a barplot to show the distribution of crime rate at different geographic levels.
 
-In order to visualize how the crime rate differs in different areas, regions and states, and how it change over time, we made scatter plots to show the differences at different geographic levels.
 
-*
+* Line plots to show trend of drug use across years
+
 ```{r ,echo=FALSE, warning=FALSE}
 # retidy the data for plot
 drug_raw %>%
@@ -298,6 +279,7 @@ drug_raw %>%
   scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010, 2012, 2014))
 ```
 
+From the plot, we could see that marijuana rate among age 18-25 obtained the highest rate among all and we could observe a slight decrease in alcohol use in all age groups. Both illicit drugs such as cocaine and marijuana kept steady rates through years.
 
 * Process of building shiny for drug data:
 
@@ -309,11 +291,11 @@ By showing all these three types of distribution, the reader could explore the e
 
 Finally, best to show the different rates in each drug use overall the whole country, a shiny map was made to explore the distribution of each drug use through U.S. and the shades of the color was related to the rates.
 
-
+Surprisingly, the rate of perception risk of marijuana was continuously reduced over years in all age groups while that of alcohol fluctuated a little bit. This trend indicated potential higher popularity of marijuana in whole U.S. and less perception of marijuana risk. We expected further education in disadvantages of marijuana use.
 
 ##Additional analysis: If you undertake formal statistical analyses, describe these in detail
 
-* Linear Regression:
+Linear Regression:
 
 We are interested in the association between the crime rate and the drug use, so we undertake multivariable linear regression to test the significance of the estimated coefficients.
 The rates of various crime types are considered to be the outcome, and the amount of drug (illicit drug, alcohol and marijuana) use, race proprtion of white people, rate of high school graduation are the predictors.
