@@ -5,8 +5,12 @@ navbar:
   right:
     - text: "Project Overall Description"
       href: Website-About-Page.html
-    - text: "Crime Dataset Exploration"
-      href: crime_data.html
+    - text: "Data Explore"
+      menu:
+      - text: "Crime dataset"
+        href: crime_data.html
+      - text: "Drug dataset"
+        href: Drug_code.html
     - text: "Statistical Analysis"
       href: about.html
     - text: "Shiny"
