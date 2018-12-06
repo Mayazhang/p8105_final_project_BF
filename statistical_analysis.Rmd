@@ -217,7 +217,7 @@ datatable(result_with, options = list(pageLength = 5))
 ```{r model diagnostics, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_all)
-
+summary(model1)
 par(mfrow = c(2,2))
 plot(model1)
 
@@ -302,7 +302,7 @@ Check the diagnostics plots for MLR without two outliers/influential points.
 ```{r model diagnostics_another, echo=FALSE, warning=FALSE, message=FALSE}
 # Fit models and then check the assumption
 model1 = lm(murder_manslaughter_rate ~ illicit_drugs + alcohol + marijuana + white + percent_high_school_graduate, data = regression_data_no2states)
-
+summary(model1)
 par(mfrow = c(2,2))
 plot(model1)
 
