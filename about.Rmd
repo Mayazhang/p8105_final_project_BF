@@ -179,9 +179,10 @@ All columns were approximately normal distributed, which could be used for downs
 
 Fit multiple linear regression for all crime types and drug uses, as well as race and education. Check diagnostics plots to find possible outliers and influential points.
 
-```{r linear regression, include=FALSE, warning=FALSE, message=FALSE}
+```{r linear regression, echo=FALSE, warning=FALSE, message=FALSE}
 # MLR linear regression using list columns
-regression_data_all %>%
+significant_coefficients1 =
+  regression_data_all %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   group_by(crime_type) %>%
   nest() %>%
@@ -192,6 +193,7 @@ regression_data_all %>%
   unnest() %>% 
   filter(p.value < 0.05,
          term != "(Intercept)")
+  
 
 # Make a new dataframe to store the result of regression
 result_with =
@@ -204,7 +206,8 @@ result_with =
     linear_model = map(linear_model, broom::tidy)) %>%
   select(-data) %>%
   unnest() %>%
-  mutate_if(is.numeric, round, 2)
+  mutate_if(is.numeric, round, 2) 
+
 datatable(result_with, options = list(pageLength = 5))
 ```
 
@@ -259,7 +262,8 @@ Then two outliers were removed and the model was fitted again
 regression_data_no2states <- regression_data_all %>% 
   filter(!state %in% c("District of Columbia", "Hawaii"))
 
-regression_data_no2states %>%
+significant_coefficients2 = 
+  regression_data_no2states %>%
   gather(key = crime_type, value = crime_rate, violent_crime_rate:motor_vehicle_theft_rate) %>%
   group_by(crime_type) %>%
   nest() %>%
